@@ -8,7 +8,7 @@ namespace Contracts
     public interface IRepositoryWrapper
     {
         ITacGiaRepository TacGia { get; }
-        ITheLoaiRepository Account { get; }
+        ITheLoaiRepository TheLoai { get; }
         void Save();
     }
 }

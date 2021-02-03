@@ -9,10 +9,10 @@ namespace Contracts
     public interface ITacGiaRepository
     {
         Task<IEnumerable<TacGia>> GetAllTacGiasAsync();
-        Task<TacGia> GetTacGiaByIdAsync(Guid ownerId);
-        Task<TacGia> GetTacGiaByDetailAsync(Guid ownerId);
-        TacGia CreateTacGia(IEnumerable<TacGia> owner);
-        bool UpdateTacGia(TacGia owner);
-        void DeleteTacGia(TacGia owner);
+        Task<TacGia> GetTacGiaByIdAsync(Guid tacGiaId);
+        Task<TacGia> GetTacGiaByDetailAsync(Guid tacGiaId);
+        TacGia CreateTacGia(IEnumerable<TacGia> tacGias);
+        bool UpdateTacGia(TacGia tacGia);
+        void DeleteTacGia(TacGia tacGia);
     }
 }

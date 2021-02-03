@@ -6,7 +6,7 @@ namespace CoreLibrary.DataTransferObjects
 {
     public class TheLoaiDto
     {
-        public int TheLoaiID { get; set; }
+        public Guid TheLoaiID { get; set; }
 
         public string TenTheLoai { get; set; }
 

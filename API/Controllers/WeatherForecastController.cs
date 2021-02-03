@@ -23,8 +23,9 @@ namespace API.Controllers
         public async Task<IEnumerable<string>> Get()
         {
             //var domesticAccounts = _repoWrapper.Account.FindByCondition(x => x.AccountType.Equals("Domestic"));
-            var owners = await _repoWrapper.TacGia.GetAllTacGiasAsync();
-            return new string[] {"SL Tác giả: " + owners.Count().ToString()};
+            var tacGias = await _repoWrapper.TacGia.GetAllTacGiasAsync();
+            var theLoais = await _repoWrapper.TheLoai.GetAllTheLoaisAsync();
+            return new string[] {"SL Tác giả: " + tacGias.Count().ToString(), "SL thể loại: " + theLoais.Count().ToString()};
         }
     }
 }

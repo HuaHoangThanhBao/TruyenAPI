@@ -23,7 +23,7 @@ namespace Repository
                 return _tacGia;
             }
         }
-        public ITheLoaiRepository Account
+        public ITheLoaiRepository TheLoai
         {
             get
             {

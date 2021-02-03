@@ -18,6 +18,10 @@ namespace API
             CreateMap<TacGiaForCreationDto, TacGia>();
 
             CreateMap<TacGiaForUpdateDto, TacGia>();
+
+            CreateMap<TheLoaiForCreationDto, TheLoai>();
+
+            CreateMap<TheLoaiForUpdateDto, TheLoai>();
         }
     }
 }

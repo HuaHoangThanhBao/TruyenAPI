@@ -40,14 +40,18 @@ namespace Repository
             return true;
         }
 
+        //Xóa logic
         public void DeleteTacGia(TacGia tacGia)
         {
-            Delete(tacGia);
+            tacGia.TinhTrang = true;
+            Update(tacGia);
         }
 
+        //Lấy danh sách các tác giả không bị xóa
         public async Task<IEnumerable<TacGia>> GetAllTacGiasAsync()
         {
             return await FindAll()
+                .Where(ow => !ow.TinhTrang)
                 .OrderBy(ow => ow.TenTacGia)
                 .ToListAsync();
         }

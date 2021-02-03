@@ -8,61 +8,60 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TacGiaController : ControllerBase
+    public class TheLoaiController : ControllerBase
     {
         private IRepositoryWrapper _repository;
         private IMapper _mapper;
 
-        public TacGiaController(IRepositoryWrapper repository, IMapper mapper)
+        public TheLoaiController(IRepositoryWrapper repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTacGias()
+        public async Task<IActionResult> GetAllTheLoais()
         {
             try
             {
-                var tacGias = await _repository.TacGia.GetAllTacGiasAsync();
-                var tacGiasResult = _mapper.Map<IEnumerable<TacGiaDto>>(tacGias);
+                var theLoais = await _repository.TheLoai.GetAllTheLoaisAsync();
+                var theLoaisResult = _mapper.Map<IEnumerable<TheLoaiDto>>(theLoais);
 
-                return Ok(tacGiasResult);
+                return Ok(theLoaisResult);
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetAllTacGias function");
+                throw new Exception("Exception occured when implement GetAllTheLoais function");
             }
         }
 
-        [HttpGet("{id}", Name = "TacGiaById")]
-        public async Task<IActionResult> GetTacGiaById(Guid id)
+        [HttpGet("{id}", Name = "TheLoaiById")]
+        public async Task<IActionResult> GetTheLoaiById(Guid id)
         {
             try
             {
-                var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
-                if (tacGia == null)
+                var theLoai = await _repository.TheLoai.GetTheLoaiByIdAsync(id);
+                if (theLoai == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    var tacGiaResult = _mapper.Map<TacGiaDto>(tacGia);
-                    return Ok(tacGiaResult);
+                    var theLoaiResult = _mapper.Map<TacGiaDto>(theLoai);
+                    return Ok(theLoaiResult);
                 }
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetTacGiaById function");
+                throw new Exception("Exception occured when implement GetTheLoaiById function");
             }
         }
-        
+
         //[HttpGet("{id}/account")]
         //public async Task<IActionResult> GetTacGiaByDetails(Guid id)
         //{
@@ -87,13 +86,13 @@ namespace API.Controllers
         //}
 
         [HttpPost]
-        public IActionResult CreateTacGia([FromBody] IEnumerable<TacGiaForCreationDto> tacGia)
+        public IActionResult CreateTheLoai([FromBody] IEnumerable<TheLoaiForCreationDto> theLoai)
         {
             try
             {
-                if(tacGia == null)
+                if (theLoai == null)
                 {
-                    return BadRequest("TacGia object is null");
+                    return BadRequest("TheLoai object is null");
                 }
 
                 if (!ModelState.IsValid)
@@ -101,9 +100,9 @@ namespace API.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var tacGiaEntity = _mapper.Map<IEnumerable<TacGia>>(tacGia);
+                var theLoaiEntity = _mapper.Map<IEnumerable<TheLoai>>(theLoai);
 
-                var founded = _repository.TacGia.CreateTacGia(tacGiaEntity);
+                var founded = _repository.TheLoai.CreateTheLoai(theLoaiEntity);
                 if (founded == null)
                 {
                     _repository.Save();
@@ -111,27 +110,27 @@ namespace API.Controllers
                 else return BadRequest(new ErrorDetails()
                 {
                     StatusCode = Response.StatusCode,
-                    Message = founded.TenTacGia
+                    Message = founded.TenTheLoai
                 });
 
-                var createdTacGia = _mapper.Map<IEnumerable<TacGiaDto>>(tacGiaEntity);
+                var createdTheLoai = _mapper.Map<IEnumerable<TheLoaiDto>>(theLoaiEntity);
 
-                return Ok(createdTacGia);
+                return Ok(createdTheLoai);
             }
             catch
             {
-                throw new Exception("Exception occured when implement CreateTacGia function");
+                throw new Exception("Exception occured when implement CreateTheLoai function");
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTacGia(Guid id, [FromBody]TacGiaForUpdateDto tacGia)
+        public async Task<IActionResult> UpdateTheLoai(Guid id, [FromBody] TheLoaiForUpdateDto theLoai)
         {
             try
             {
-                if (tacGia == null)
+                if (theLoai == null)
                 {
-                    return BadRequest("TacGia object is null");
+                    return BadRequest("TheLoai object is null");
                 }
 
                 if (!ModelState.IsValid)
@@ -139,15 +138,15 @@ namespace API.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var tacGiaEntity = await _repository.TacGia.GetTacGiaByIdAsync(id);
-                if (tacGiaEntity == null)
+                var theLoaiEntity = await _repository.TheLoai.GetTheLoaiByIdAsync(id);
+                if (theLoaiEntity == null)
                 {
                     return NotFound();
                 }
 
-                _mapper.Map(tacGia, tacGiaEntity);
+                _mapper.Map(theLoai, theLoaiEntity);
 
-                bool updateStatus = _repository.TacGia.UpdateTacGia(tacGiaEntity);
+                bool updateStatus = _repository.TheLoai.UpdateTheLoai(theLoaiEntity);
 
                 if (updateStatus)
                 {
@@ -156,7 +155,7 @@ namespace API.Controllers
                 else return BadRequest(new ErrorDetails()
                 {
                     StatusCode = Response.StatusCode,
-                    Message = "Tên tác giả cập nhật bị trùng"
+                    Message = "Tên thể loại cập nhật bị trùng"
                 });
 
                 return Ok();
@@ -168,12 +167,12 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTacGia(Guid id)
+        public async Task<IActionResult> DeleteTheLoai(Guid id)
         {
             try
             {
-                var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
-                if (tacGia == null)
+                var theLoai = await _repository.TheLoai.GetTheLoaiByIdAsync(id);
+                if (theLoai == null)
                 {
                     return NotFound();
                 }
@@ -183,7 +182,7 @@ namespace API.Controllers
                 //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
                 //}
 
-                _repository.TacGia.DeleteTacGia(tacGia);
+                _repository.TheLoai.DeleteTheLoai(theLoai);
 
                 _repository.Save();
 
@@ -191,7 +190,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement DeleteTacGia function");
+                throw new Exception("Exception occured when implement DeleteTheLoai function");
             }
         }
     }

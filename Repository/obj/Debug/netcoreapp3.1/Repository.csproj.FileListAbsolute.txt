@@ -1,0 +1,14 @@
+F:\Du-An\Net\Core\Repository\bin\Debug\netcoreapp3.1\Repository.deps.json
+F:\Du-An\Net\Core\Repository\bin\Debug\netcoreapp3.1\Repository.dll
+F:\Du-An\Net\Core\Repository\bin\Debug\netcoreapp3.1\Repository.pdb
+F:\Du-An\Net\Core\Repository\bin\Debug\netcoreapp3.1\Contracts.dll
+F:\Du-An\Net\Core\Repository\bin\Debug\netcoreapp3.1\CoreLibrary.dll
+F:\Du-An\Net\Core\Repository\bin\Debug\netcoreapp3.1\Contracts.pdb
+F:\Du-An\Net\Core\Repository\bin\Debug\netcoreapp3.1\CoreLibrary.pdb
+F:\Du-An\Net\Core\Repository\obj\Debug\netcoreapp3.1\Repository.csprojAssemblyReference.cache
+F:\Du-An\Net\Core\Repository\obj\Debug\netcoreapp3.1\Repository.AssemblyInfoInputs.cache
+F:\Du-An\Net\Core\Repository\obj\Debug\netcoreapp3.1\Repository.AssemblyInfo.cs
+F:\Du-An\Net\Core\Repository\obj\Debug\netcoreapp3.1\Repository.csproj.CoreCompileInputs.cache
+F:\Du-An\Net\Core\Repository\obj\Debug\netcoreapp3.1\Repository.csproj.CopyComplete
+F:\Du-An\Net\Core\Repository\obj\Debug\netcoreapp3.1\Repository.dll
+F:\Du-An\Net\Core\Repository\obj\Debug\netcoreapp3.1\Repository.pdb

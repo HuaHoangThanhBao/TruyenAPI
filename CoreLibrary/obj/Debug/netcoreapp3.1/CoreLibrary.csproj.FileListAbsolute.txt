@@ -1,0 +1,12 @@
+F:\Du-An\Net\Core\CoreLibrary\bin\Debug\netcoreapp3.1\CoreLibrary.deps.json
+F:\Du-An\Net\Core\CoreLibrary\bin\Debug\netcoreapp3.1\CoreLibrary.runtimeconfig.json
+F:\Du-An\Net\Core\CoreLibrary\bin\Debug\netcoreapp3.1\CoreLibrary.runtimeconfig.dev.json
+F:\Du-An\Net\Core\CoreLibrary\bin\Debug\netcoreapp3.1\CoreLibrary.dll
+F:\Du-An\Net\Core\CoreLibrary\bin\Debug\netcoreapp3.1\CoreLibrary.pdb
+F:\Du-An\Net\Core\CoreLibrary\obj\Debug\netcoreapp3.1\CoreLibrary.AssemblyInfoInputs.cache
+F:\Du-An\Net\Core\CoreLibrary\obj\Debug\netcoreapp3.1\CoreLibrary.AssemblyInfo.cs
+F:\Du-An\Net\Core\CoreLibrary\obj\Debug\netcoreapp3.1\CoreLibrary.csproj.CoreCompileInputs.cache
+F:\Du-An\Net\Core\CoreLibrary\obj\Debug\netcoreapp3.1\CoreLibrary.dll
+F:\Du-An\Net\Core\CoreLibrary\obj\Debug\netcoreapp3.1\CoreLibrary.pdb
+F:\Du-An\Net\Core\CoreLibrary\obj\Debug\netcoreapp3.1\CoreLibrary.genruntimeconfig.cache
+F:\Du-An\Net\Core\CoreLibrary\obj\Debug\netcoreapp3.1\CoreLibrary.csprojAssemblyReference.cache

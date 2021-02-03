@@ -1,0 +1,9 @@
+F:\Du-An\Net\Core\LoggerService\bin\Release\netcoreapp3.1\LoggerService.deps.json
+F:\Du-An\Net\Core\LoggerService\bin\Release\netcoreapp3.1\LoggerService.dll
+F:\Du-An\Net\Core\LoggerService\bin\Release\netcoreapp3.1\LoggerService.pdb
+F:\Du-An\Net\Core\LoggerService\obj\Release\netcoreapp3.1\LoggerService.csprojAssemblyReference.cache
+F:\Du-An\Net\Core\LoggerService\obj\Release\netcoreapp3.1\LoggerService.AssemblyInfoInputs.cache
+F:\Du-An\Net\Core\LoggerService\obj\Release\netcoreapp3.1\LoggerService.AssemblyInfo.cs
+F:\Du-An\Net\Core\LoggerService\obj\Release\netcoreapp3.1\LoggerService.csproj.CoreCompileInputs.cache
+F:\Du-An\Net\Core\LoggerService\obj\Release\netcoreapp3.1\LoggerService.dll
+F:\Du-An\Net\Core\LoggerService\obj\Release\netcoreapp3.1\LoggerService.pdb

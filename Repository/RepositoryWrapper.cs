@@ -12,6 +12,8 @@ namespace Repository
         private RepositoryContext _repoContext;
         private ITacGiaRepository _tacGia;
         private ITheLoaiRepository _theLoai;
+        private ITruyenRepository _truyen;
+        private IPhuLucRepository _phuLuc;
         public ITacGiaRepository TacGia
         {
             get
@@ -32,6 +34,28 @@ namespace Repository
                     _theLoai = new TheLoaiRepository(_repoContext);
                 }
                 return _theLoai;
+            }
+        }
+        public ITruyenRepository Truyen
+        {
+            get
+            {
+                if (_truyen == null)
+                {
+                    _truyen = new TruyenRepository(_repoContext);
+                }
+                return _truyen;
+            }
+        }
+        public IPhuLucRepository PhuLuc
+        {
+            get
+            {
+                if (_phuLuc == null)
+                {
+                    _phuLuc = new PhuLucRepository(_repoContext);
+                }
+                return _phuLuc;
             }
         }
         public RepositoryWrapper(RepositoryContext repositoryContext)

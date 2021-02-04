@@ -8,61 +8,60 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TacGiaController : ControllerBase
+    public class TruyenController : ControllerBase
     {
         private IRepositoryWrapper _repository;
         private IMapper _mapper;
 
-        public TacGiaController(IRepositoryWrapper repository, IMapper mapper)
+        public TruyenController(IRepositoryWrapper repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTacGias()
+        public async Task<IActionResult> GetAllTruyens()
         {
             try
             {
-                var tacGias = await _repository.TacGia.GetAllTacGiasAsync();
-                var tacGiasResult = _mapper.Map<IEnumerable<TacGiaDto>>(tacGias);
+                var truyens = await _repository.Truyen.GetAllTruyensAsync();
+                var truyensResult = _mapper.Map<IEnumerable<TruyenDto>>(truyens);
 
-                return Ok(tacGiasResult);
+                return Ok(truyensResult);
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetAllTacGias function");
+                throw new Exception("Exception occured when implement GetAllTruyens function");
             }
         }
 
-        [HttpGet("{id}", Name = "TacGiaById")]
-        public async Task<IActionResult> GetTacGiaById(int id)
+        [HttpGet("{id}", Name = "TruyenById")]
+        public async Task<IActionResult> GetTruyenById(int id)
         {
             try
             {
-                var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
-                if (tacGia == null)
+                var truyen = await _repository.Truyen.GetTruyenByIdAsync(id);
+                if (truyen == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    var tacGiaResult = _mapper.Map<TacGiaDto>(tacGia);
-                    return Ok(tacGiaResult);
+                    var truyenResult = _mapper.Map<TruyenDto>(truyen);
+                    return Ok(truyenResult);
                 }
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetTacGiaById function");
+                throw new Exception("Exception occured when implement GetTruyenById function");
             }
         }
-        
+
         //[HttpGet("{id}/account")]
         //public async Task<IActionResult> GetTacGiaByDetails(Guid id)
         //{
@@ -87,13 +86,13 @@ namespace API.Controllers
         //}
 
         [HttpPost]
-        public IActionResult CreateTacGia([FromBody] IEnumerable<TacGiaForCreationDto> tacGia)
+        public IActionResult CreateTruyen([FromBody] IEnumerable<TruyenForCreationDto> truyen)
         {
             try
             {
-                if(tacGia == null)
+                if (truyen == null)
                 {
-                    return BadRequest("TacGia object is null");
+                    return BadRequest("Truyen object is null");
                 }
 
                 if (!ModelState.IsValid)
@@ -101,9 +100,9 @@ namespace API.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var tacGiaEntity = _mapper.Map<IEnumerable<TacGia>>(tacGia);
+                var truyenEntity = _mapper.Map<IEnumerable<Truyen>>(truyen);
 
-                var founded = _repository.TacGia.CreateTacGia(tacGiaEntity);
+                var founded = _repository.Truyen.CreateTruyen(truyenEntity);
                 if (founded == null)
                 {
                     _repository.Save();
@@ -111,25 +110,25 @@ namespace API.Controllers
                 else return BadRequest(new ErrorDetails()
                 {
                     StatusCode = Response.StatusCode,
-                    Message = founded.TenTacGia
+                    Message = founded.TenTruyen
                 });
 
-                var createdTacGia = _mapper.Map<IEnumerable<TacGiaDto>>(tacGiaEntity);
+                var createdTruyen= _mapper.Map<IEnumerable<TruyenDto>>(truyenEntity);
 
-                return Ok(createdTacGia);
+                return Ok(createdTruyen);
             }
             catch
             {
-                throw new Exception("Exception occured when implement CreateTacGia function");
+                throw new Exception("Exception occured when implement CreateTruyen function");
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTacGia(int id, [FromBody]TacGiaForUpdateDto tacGia)
+        public async Task<IActionResult> UpdateTruyen(int id, [FromBody] TruyenForUpdateDto truyen)
         {
             try
             {
-                if (tacGia == null)
+                if (truyen == null)
                 {
                     return BadRequest("TacGia object is null");
                 }
@@ -139,15 +138,15 @@ namespace API.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var tacGiaEntity = await _repository.TacGia.GetTacGiaByIdAsync(id);
-                if (tacGiaEntity == null)
+                var truyenEntity = await _repository.Truyen.GetTruyenByIdAsync(id);
+                if (truyenEntity == null)
                 {
                     return NotFound();
                 }
 
-                _mapper.Map(tacGia, tacGiaEntity);
+                _mapper.Map(truyen, truyenEntity);
 
-                bool updateStatus = _repository.TacGia.UpdateTacGia(tacGiaEntity);
+                bool updateStatus = _repository.Truyen.UpdateTruyen(truyenEntity);
 
                 if (updateStatus)
                 {
@@ -156,24 +155,24 @@ namespace API.Controllers
                 else return BadRequest(new ErrorDetails()
                 {
                     StatusCode = Response.StatusCode,
-                    Message = "Tên tác giả cập nhật bị trùng"
+                    Message = "Tên truyện cập nhật bị trùng"
                 });
 
                 return Ok();
             }
             catch
             {
-                throw new Exception("Exception occured when implement UpdateTacGia function");
+                throw new Exception("Exception occured when implement UpdateTruyen function");
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTacGia(int id)
+        public async Task<IActionResult> DeleteTruyen(int id)
         {
             try
             {
-                var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
-                if (tacGia == null)
+                var truyen = await _repository.Truyen.GetTruyenByIdAsync(id);
+                if (truyen == null)
                 {
                     return NotFound();
                 }
@@ -183,7 +182,7 @@ namespace API.Controllers
                 //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
                 //}
 
-                _repository.TacGia.DeleteTacGia(tacGia);
+                _repository.Truyen.DeleteTruyen(truyen);
 
                 _repository.Save();
 
@@ -191,7 +190,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement DeleteTacGia function");
+                throw new Exception("Exception occured when implement DeleteTruyen function");
             }
         }
     }

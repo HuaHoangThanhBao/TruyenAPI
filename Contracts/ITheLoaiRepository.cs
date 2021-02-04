@@ -8,10 +8,9 @@ namespace Contracts
 {
     public interface ITheLoaiRepository : IRepositoryBase<TheLoai>
     {
-        //IEnumerable<TheLoai> AccountsByOwner(int ownerId);
         Task<IEnumerable<TheLoai>> GetAllTheLoaisAsync();
-        Task<TheLoai> GetTheLoaiByIdAsync(Guid theLoaiId);
-        Task<TheLoai> GetTheLoaiByDetailAsync(Guid theLoaiId);
+        Task<TheLoai> GetTheLoaiByIdAsync(int theLoaiId);
+        Task<TheLoai> GetTheLoaiByDetailAsync(int theLoaiId);
         TheLoai CreateTheLoai(IEnumerable<TheLoai> theLoais);
         bool UpdateTheLoai(TheLoai theLoai);
         void DeleteTheLoai(TheLoai theLoai);

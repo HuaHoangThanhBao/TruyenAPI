@@ -11,14 +11,16 @@ namespace CoreLibrary.Models
     public class PhuLuc
     {
         [Key]
-        public Guid PhuLucID { get; set; }
+        public int PhuLucID { get; set; }
 
+        [Required(ErrorMessage = "TruyenID is required")]
         //Tập khóa ngoại
-        public Guid TruyenID { get; set; }
+        public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 
+        [Required(ErrorMessage = "TheLoaiID is required")]
         //Tập khóa ngoại
-        public Guid TheLoaiID { get; set; }
+        public int TheLoaiID { get; set; }
         public TheLoai TheLoai { get; set; }
     }
 }

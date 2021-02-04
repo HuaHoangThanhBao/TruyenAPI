@@ -41,7 +41,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}", Name = "TheLoaiById")]
-        public async Task<IActionResult> GetTheLoaiById(Guid id)
+        public async Task<IActionResult> GetTheLoaiById(int id)
         {
             try
             {
@@ -62,28 +62,28 @@ namespace API.Controllers
             }
         }
 
-        //[HttpGet("{id}/account")]
-        //public async Task<IActionResult> GetTacGiaByDetails(Guid id)
-        //{
-        //    try
-        //    {
-        //        var tacGia = await _repository.TacGia.GetTacGiaByDetailAsync(id);
+        [HttpGet("{id}/the-loai-details")]
+        public async Task<IActionResult> GetTheLoaiByDetails(int id)
+        {
+            try
+            {
+                var theLoai = await _repository.TheLoai.GetTheLoaiByDetailAsync(id);
 
-        //        if(tacGia == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            var ownerResult = _mapper.Map<TacGiaDto>(tacGia);
-        //            return Ok(ownerResult);
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        throw new Exception("Exception occured when implement GetTacGiaByDetails function");
-        //    }
-        //}
+                if (theLoai == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var theLoaiResult = _mapper.Map<TheLoaiDto>(theLoai);
+                    return Ok(theLoaiResult);
+                }
+            }
+            catch
+            {
+                throw new Exception("Exception occured when implement GetTheLoaiByDetails function");
+            }
+        }
 
         [HttpPost]
         public IActionResult CreateTheLoai([FromBody] IEnumerable<TheLoaiForCreationDto> theLoai)
@@ -124,7 +124,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTheLoai(Guid id, [FromBody] TheLoaiForUpdateDto theLoai)
+        public async Task<IActionResult> UpdateTheLoai(int id, [FromBody] TheLoaiForUpdateDto theLoai)
         {
             try
             {
@@ -167,7 +167,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTheLoai(Guid id)
+        public async Task<IActionResult> DeleteTheLoai(int id)
         {
             try
             {
@@ -177,10 +177,10 @@ namespace API.Controllers
                     return NotFound();
                 }
 
-                //if (_repository.Account.AccountsByOwner(id).Any())
-                //{
-                //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
-                //}
+                if (_repository.PhuLuc.TheLoaisInPhuLuc(id).Any())
+                {
+                    return BadRequest("Cannot delete this TheLoai. It has related PhuLucs. Delete those PhuLucs first");
+                }
 
                 _repository.TheLoai.DeleteTheLoai(theLoai);
 

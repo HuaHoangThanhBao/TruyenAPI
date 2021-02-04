@@ -10,14 +10,14 @@ namespace CoreLibrary.Models
     public class BinhLuan
     {
         [Key]
-        public Guid BinhLuanID { get; set; }
+        public int BinhLuanID { get; set; }
 
         //Tập khóa ngoại
         public Guid UserID { get; set; }
         public User User { get; set; }
 
         //Tập khóa ngoại
-        public Guid TruyenID { get; set; }
+        public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 
         [Required(ErrorMessage = "Noi dung is required")]

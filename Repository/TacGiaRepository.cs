@@ -56,13 +56,13 @@ namespace Repository
                 .ToListAsync();
         }
 
-        public async Task<TacGia> GetTacGiaByIdAsync(Guid tacGiaId)
+        public async Task<TacGia> GetTacGiaByIdAsync(int tacGiaId)
         {
             return await FindByCondition(tacGia => tacGia.TacGiaID.Equals(tacGiaId))
                     .FirstOrDefaultAsync();
         }
 
-        public async Task<TacGia> GetTacGiaByDetailAsync(Guid tacGiaId)
+        public async Task<TacGia> GetTacGiaByDetailAsync(int tacGiaId)
         {
             return await FindByCondition(tacGia => tacGia.TacGiaID.Equals(tacGiaId))
                 .Include(ac => ac.Truyens)

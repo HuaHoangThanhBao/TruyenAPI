@@ -11,11 +11,11 @@ namespace CoreLibrary.Models
     public class Chuong
     {
         [Key]
-        public Guid ChuongID { get; set; }
+        public int ChuongID { get; set; }
 
 
         //Tập khóa ngoại
-        public Guid TruyenID { get; set; }
+        public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 
 

@@ -15,6 +15,10 @@ namespace API
 
             CreateMap<TheLoai, TheLoaiDto>();
 
+            CreateMap<Truyen, TruyenDto>();
+
+            CreateMap<PhuLuc, PhuLucDto>();
+
             CreateMap<TacGiaForCreationDto, TacGia>();
 
             CreateMap<TacGiaForUpdateDto, TacGia>();
@@ -22,6 +26,14 @@ namespace API
             CreateMap<TheLoaiForCreationDto, TheLoai>();
 
             CreateMap<TheLoaiForUpdateDto, TheLoai>();
+
+            CreateMap<TruyenForCreationDto, Truyen>();
+
+            CreateMap<TruyenForUpdateDto, Truyen>();
+
+            CreateMap<PhuLucForCreationDto, PhuLuc>();
+
+            CreateMap<PhuLucForUpdateDto, PhuLuc>();
         }
     }
 }

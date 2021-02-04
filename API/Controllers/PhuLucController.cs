@@ -8,61 +8,60 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TacGiaController : ControllerBase
+    public class PhuLucController : ControllerBase
     {
         private IRepositoryWrapper _repository;
         private IMapper _mapper;
 
-        public TacGiaController(IRepositoryWrapper repository, IMapper mapper)
+        public PhuLucController(IRepositoryWrapper repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTacGias()
+        public async Task<IActionResult> GetAllPhuLucs()
         {
             try
             {
-                var tacGias = await _repository.TacGia.GetAllTacGiasAsync();
-                var tacGiasResult = _mapper.Map<IEnumerable<TacGiaDto>>(tacGias);
+                var phuLucs = await _repository.PhuLuc.GetAllPhuLucsAsync();
+                var phuLucsResult = _mapper.Map<IEnumerable<PhuLucDto>>(phuLucs);
 
-                return Ok(tacGiasResult);
+                return Ok(phuLucsResult);
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetAllTacGias function");
+                throw new Exception("Exception occured when implement GetAllPhuLucs function");
             }
         }
 
-        [HttpGet("{id}", Name = "TacGiaById")]
-        public async Task<IActionResult> GetTacGiaById(int id)
+        [HttpGet("{id}", Name = "PhuLucById")]
+        public async Task<IActionResult> GetPhuLucById(int id)
         {
             try
             {
-                var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
-                if (tacGia == null)
+                var phuLuc = await _repository.PhuLuc.GetPhuLucByIdAsync(id);
+                if (phuLuc == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    var tacGiaResult = _mapper.Map<TacGiaDto>(tacGia);
-                    return Ok(tacGiaResult);
+                    var phuLucResult = _mapper.Map<PhuLucDto>(phuLuc);
+                    return Ok(phuLucResult);
                 }
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetTacGiaById function");
+                throw new Exception("Exception occured when implement GetPhuLucById function");
             }
         }
-        
+
         //[HttpGet("{id}/account")]
         //public async Task<IActionResult> GetTacGiaByDetails(Guid id)
         //{
@@ -87,13 +86,13 @@ namespace API.Controllers
         //}
 
         [HttpPost]
-        public IActionResult CreateTacGia([FromBody] IEnumerable<TacGiaForCreationDto> tacGia)
+        public IActionResult CreatePhuLuc([FromBody] IEnumerable<PhuLucForCreationDto> phuLuc)
         {
             try
             {
-                if(tacGia == null)
+                if (phuLuc == null)
                 {
-                    return BadRequest("TacGia object is null");
+                    return BadRequest("PhuLuc object is null");
                 }
 
                 if (!ModelState.IsValid)
@@ -101,37 +100,37 @@ namespace API.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var tacGiaEntity = _mapper.Map<IEnumerable<TacGia>>(tacGia);
+                var phuLucEntity = _mapper.Map<IEnumerable<PhuLuc>>(phuLuc);
 
-                var founded = _repository.TacGia.CreateTacGia(tacGiaEntity);
-                if (founded == null)
+                var created = _repository.PhuLuc.CreatePhuLuc(phuLucEntity);
+                if (created)
                 {
                     _repository.Save();
                 }
                 else return BadRequest(new ErrorDetails()
                 {
                     StatusCode = Response.StatusCode,
-                    Message = founded.TenTacGia
+                    Message = "Mã truyện hoặc thể loại không hợp lệ"
                 });
 
-                var createdTacGia = _mapper.Map<IEnumerable<TacGiaDto>>(tacGiaEntity);
+                var createdPhuLuc = _mapper.Map<IEnumerable<PhuLucDto>>(phuLucEntity);
 
-                return Ok(createdTacGia);
+                return Ok(createdPhuLuc);
             }
             catch
             {
-                throw new Exception("Exception occured when implement CreateTacGia function");
+                throw new Exception("Exception occured when implement CreatePhuLuc function");
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTacGia(int id, [FromBody]TacGiaForUpdateDto tacGia)
+        public async Task<IActionResult> UpdatePhuLuc(int id, [FromBody] PhuLucForUpdateDto phuLuc)
         {
             try
             {
-                if (tacGia == null)
+                if (phuLuc == null)
                 {
-                    return BadRequest("TacGia object is null");
+                    return BadRequest("PhuLuc object is null");
                 }
 
                 if (!ModelState.IsValid)
@@ -139,15 +138,15 @@ namespace API.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var tacGiaEntity = await _repository.TacGia.GetTacGiaByIdAsync(id);
-                if (tacGiaEntity == null)
+                var phuLucEntity = await _repository.PhuLuc.GetPhuLucByIdAsync(id);
+                if (phuLucEntity == null)
                 {
                     return NotFound();
                 }
 
-                _mapper.Map(tacGia, tacGiaEntity);
+                _mapper.Map(phuLuc, phuLucEntity);
 
-                bool updateStatus = _repository.TacGia.UpdateTacGia(tacGiaEntity);
+                bool updateStatus = _repository.PhuLuc.UpdatePhuLuc(phuLucEntity);
 
                 if (updateStatus)
                 {
@@ -156,24 +155,24 @@ namespace API.Controllers
                 else return BadRequest(new ErrorDetails()
                 {
                     StatusCode = Response.StatusCode,
-                    Message = "Tên tác giả cập nhật bị trùng"
+                    Message = "Mã truyện hoặc thể loại không hợp lệ"
                 });
 
                 return Ok();
             }
             catch
             {
-                throw new Exception("Exception occured when implement UpdateTacGia function");
+                throw new Exception("Exception occured when implement UpdatePhuLuc function");
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTacGia(int id)
+        public async Task<IActionResult> DeletePhuLuc(int id)
         {
             try
             {
-                var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
-                if (tacGia == null)
+                var phuLuc = await _repository.PhuLuc.GetPhuLucByIdAsync(id);
+                if (phuLuc == null)
                 {
                     return NotFound();
                 }
@@ -183,7 +182,7 @@ namespace API.Controllers
                 //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
                 //}
 
-                _repository.TacGia.DeleteTacGia(tacGia);
+                _repository.PhuLuc.DeletePhuLuc(phuLuc);
 
                 _repository.Save();
 
@@ -191,7 +190,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement DeleteTacGia function");
+                throw new Exception("Exception occured when implement DeletePhuLuc function");
             }
         }
     }

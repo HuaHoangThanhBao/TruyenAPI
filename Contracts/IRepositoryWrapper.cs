@@ -9,6 +9,8 @@ namespace Contracts
     {
         ITacGiaRepository TacGia { get; }
         ITheLoaiRepository TheLoai { get; }
+        ITruyenRepository Truyen { get; }
+        IPhuLucRepository PhuLuc { get; }
         void Save();
     }
 }

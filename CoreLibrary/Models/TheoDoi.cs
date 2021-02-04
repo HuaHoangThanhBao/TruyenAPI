@@ -10,10 +10,10 @@ namespace CoreLibrary.Models
     public class TheoDoi
     {
         [Key]
-        public Guid TheoDoiID { get; set; }
+        public int TheoDoiID { get; set; }
 
         //Tập khóa ngoại
-        public Guid TruyenID { get; set; }
+        public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 
         //Tập khóa ngoại

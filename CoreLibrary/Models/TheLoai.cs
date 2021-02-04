@@ -10,7 +10,7 @@ namespace CoreLibrary.Models
     public class TheLoai
     {
         [Key]
-        public Guid TheLoaiID { get; set; }
+        public int TheLoaiID { get; set; }
 
         [Required(ErrorMessage = "Ten the loai is required")]
         [StringLength(50, ErrorMessage = "Ten the loai can't be longer than 50 characters")]

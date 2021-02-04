@@ -17,11 +17,6 @@ namespace Repository
         {
         }
 
-        //public IEnumerable<TheLoai> AccountsByOwner(int ownerId)
-        //{
-        //    return FindByCondition(a => a.TheLoaiID.Equals(ownerId)).ToList();
-        //}
-
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: !null = TenTacGia bị trùng, null: thêm thành công
         public TheLoai CreateTheLoai(IEnumerable<TheLoai> theLoais)
@@ -61,13 +56,13 @@ namespace Repository
                 .ToListAsync();
         }
 
-        public async Task<TheLoai> GetTheLoaiByIdAsync(Guid theLoaiId)
+        public async Task<TheLoai> GetTheLoaiByIdAsync(int theLoaiId)
         {
             return await FindByCondition(theLoai => theLoai.TheLoaiID.Equals(theLoaiId))
                     .FirstOrDefaultAsync();
         }
 
-        public async Task<TheLoai> GetTheLoaiByDetailAsync(Guid theLoaiId)
+        public async Task<TheLoai> GetTheLoaiByDetailAsync(int theLoaiId)
         {
             return await FindByCondition(theLoai => theLoai.TheLoaiID.Equals(theLoaiId))
                 .Include(ac => ac.PhuLucs)

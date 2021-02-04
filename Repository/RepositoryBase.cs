@@ -13,6 +13,10 @@ namespace Repository
         {
             this.RepositoryContext = repositoryContext;
         }
+        public IQueryable<T> GetAll()
+        {
+            return this.RepositoryContext.Set<T>();
+        }
         public IQueryable<T> FindAll()
         {
             return this.RepositoryContext.Set<T>().AsNoTracking();

@@ -36,7 +36,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetAllPhuLucs function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllPhuLucs" });
             }
         }
 
@@ -48,7 +48,7 @@ namespace API.Controllers
                 var phuLuc = await _repository.PhuLuc.GetPhuLucByIdAsync(id);
                 if (phuLuc == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Phụ lục không tồn tại" });
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetPhuLucById function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetPhuLucById" });
             }
         }
 
@@ -92,26 +92,22 @@ namespace API.Controllers
             {
                 if (phuLuc == null)
                 {
-                    return BadRequest("PhuLuc object is null");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Invalid model object");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
                 var phuLucEntity = _mapper.Map<IEnumerable<PhuLuc>>(phuLuc);
 
-                var created = _repository.PhuLuc.CreatePhuLuc(phuLucEntity);
-                if (created)
+                ResponseDetails response = _repository.PhuLuc.CreatePhuLuc(phuLucEntity);
+                if (response.StatusCode == ResponseCode.Success)
                 {
                     _repository.Save();
                 }
-                else return BadRequest(new ErrorDetails()
-                {
-                    StatusCode = Response.StatusCode,
-                    Message = "Mã truyện hoặc thể loại không hợp lệ"
-                });
+                else return BadRequest(response);
 
                 var createdPhuLuc = _mapper.Map<IEnumerable<PhuLucDto>>(phuLucEntity);
 
@@ -119,7 +115,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement CreatePhuLuc function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreatePhuLuc" });
             }
         }
 
@@ -130,39 +126,35 @@ namespace API.Controllers
             {
                 if (phuLuc == null)
                 {
-                    return BadRequest("PhuLuc object is null");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Invalid model object");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
                 var phuLucEntity = await _repository.PhuLuc.GetPhuLucByIdAsync(id);
                 if (phuLucEntity == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Phụ lục không tồn tại" });
                 }
 
                 _mapper.Map(phuLuc, phuLucEntity);
 
-                bool updateStatus = _repository.PhuLuc.UpdatePhuLuc(phuLucEntity);
+                ResponseDetails response = _repository.PhuLuc.UpdatePhuLuc(phuLucEntity);
 
-                if (updateStatus)
+                if (response.StatusCode == ResponseCode.Success)
                 {
                     _repository.Save();
                 }
-                else return BadRequest(new ErrorDetails()
-                {
-                    StatusCode = Response.StatusCode,
-                    Message = "Mã truyện hoặc thể loại không hợp lệ"
-                });
+                else return BadRequest(response);
 
-                return Ok();
+                return Ok(response);
             }
             catch
             {
-                throw new Exception("Exception occured when implement UpdatePhuLuc function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdatePhuLuc" });
             }
         }
 
@@ -174,7 +166,7 @@ namespace API.Controllers
                 var phuLuc = await _repository.PhuLuc.GetPhuLucByIdAsync(id);
                 if (phuLuc == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID phụ lục không tồn tại" });
                 }
 
                 //if (_repository.Account.AccountsByOwner(id).Any())
@@ -182,15 +174,16 @@ namespace API.Controllers
                 //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
                 //}
 
-                _repository.PhuLuc.DeletePhuLuc(phuLuc);
+                ResponseDetails response = _repository.PhuLuc.DeletePhuLuc(phuLuc);
 
-                _repository.Save();
+                if (response.StatusCode == ResponseCode.Success)
+                    _repository.Save();
 
-                return NoContent();
+                return Ok(response);
             }
             catch
             {
-                throw new Exception("Exception occured when implement DeletePhuLuc function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeletePhuLuc" });
             }
         }
     }

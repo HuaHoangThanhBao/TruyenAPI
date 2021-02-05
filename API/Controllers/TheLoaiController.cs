@@ -36,7 +36,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetAllTheLoais function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllTheLoais" });
             }
         }
 
@@ -58,7 +58,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetTheLoaiById function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTruyen" });
             }
         }
 
@@ -81,7 +81,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetTheLoaiByDetails function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTheLoaiByDetails" });
             }
         }
 
@@ -102,16 +102,12 @@ namespace API.Controllers
 
                 var theLoaiEntity = _mapper.Map<IEnumerable<TheLoai>>(theLoai);
 
-                var founded = _repository.TheLoai.CreateTheLoai(theLoaiEntity);
-                if (founded == null)
+                ResponseDetails response = _repository.TheLoai.CreateTheLoai(theLoaiEntity);
+                if (response.StatusCode == ResponseCode.Success)
                 {
                     _repository.Save();
                 }
-                else return BadRequest(new ErrorDetails()
-                {
-                    StatusCode = Response.StatusCode,
-                    Message = founded.TenTheLoai
-                });
+                else return BadRequest(response);
 
                 var createdTheLoai = _mapper.Map<IEnumerable<TheLoaiDto>>(theLoaiEntity);
 
@@ -119,7 +115,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement CreateTheLoai function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateTheLoai" });
             }
         }
 
@@ -146,23 +142,19 @@ namespace API.Controllers
 
                 _mapper.Map(theLoai, theLoaiEntity);
 
-                bool updateStatus = _repository.TheLoai.UpdateTheLoai(theLoaiEntity);
+                ResponseDetails response = _repository.TheLoai.UpdateTheLoai(theLoaiEntity);
 
-                if (updateStatus)
+                if (response.StatusCode == ResponseCode.Success)
                 {
                     _repository.Save();
                 }
-                else return BadRequest(new ErrorDetails()
-                {
-                    StatusCode = Response.StatusCode,
-                    Message = "Tên thể loại cập nhật bị trùng"
-                });
+                else return BadRequest(response);
 
-                return Ok();
+                return Ok(response);
             }
             catch
             {
-                throw new Exception("Exception occured when implement UpdateTacGia function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateTheLoai" });
             }
         }
 
@@ -179,18 +171,23 @@ namespace API.Controllers
 
                 if (_repository.PhuLuc.TheLoaisInPhuLuc(id).Any())
                 {
-                    return BadRequest("Cannot delete this TheLoai. It has related PhuLucs. Delete those PhuLucs first");
+                    return BadRequest(new ResponseDetails()
+                    { 
+                        StatusCode = 500, 
+                        Message = "Không thể xóa TheLoai này. Tồn tại khóa ngoại tới bảng PhuLucs."
+                    });
                 }
 
-                _repository.TheLoai.DeleteTheLoai(theLoai);
+                ResponseDetails response = _repository.TheLoai.DeleteTheLoai(theLoai);
 
-                _repository.Save();
+                if (response.StatusCode == ResponseCode.Success)
+                    _repository.Save();
 
                 return NoContent();
             }
             catch
             {
-                throw new Exception("Exception occured when implement DeleteTheLoai function");
+                return BadRequest(new ResponseDetails() { StatusCode = 500, Message = "Lỗi execption ở hàm DeleteTheLoai" });
             }
         }
     }

@@ -11,8 +11,8 @@ namespace Contracts
         Task<IEnumerable<TheLoai>> GetAllTheLoaisAsync();
         Task<TheLoai> GetTheLoaiByIdAsync(int theLoaiId);
         Task<TheLoai> GetTheLoaiByDetailAsync(int theLoaiId);
-        TheLoai CreateTheLoai(IEnumerable<TheLoai> theLoais);
-        bool UpdateTheLoai(TheLoai theLoai);
-        void DeleteTheLoai(TheLoai theLoai);
+        ResponseDetails CreateTheLoai(IEnumerable<TheLoai> theLoais);
+        ResponseDetails UpdateTheLoai(TheLoai theLoai);
+        ResponseDetails DeleteTheLoai(TheLoai theLoai);
     }
 }

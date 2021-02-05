@@ -27,40 +27,73 @@ namespace Repository
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: false = TruyenID hoặc TheLoaiID không tồn tại, true: thêm thành công
-        public bool CreatePhuLuc(IEnumerable<PhuLuc> phuLucs)
+        public ResponseDetails CreatePhuLuc(IEnumerable<PhuLuc> phuLucs)
         {
             foreach (var phuLuc in phuLucs)
             {
                 var truyenRepo = new TruyenRepository(_context);
                 var theLoaiRepo = new TheLoaiRepository(_context);
 
-                if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(phuLuc.TruyenID)).Any()) return false;
-                if (!theLoaiRepo.FindByCondition(t => t.TheLoaiID.Equals(phuLuc.TheLoaiID)).Any()) return false;
+                if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(phuLuc.TruyenID)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "ID truyện không tồn tại",
+                        Value = phuLuc.TruyenID.ToString()
+                    };
+                }
+                if (!theLoaiRepo.FindByCondition(t => t.TheLoaiID.Equals(phuLuc.TheLoaiID)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "ID thể loại không tồn tại",
+                        Value = phuLuc.TruyenID.ToString()
+                    };
+                }
 
 
                 Create(phuLuc);
             }
-            return true;
+            return new ResponseDetails() { StatusCode = ResponseCode.Success};
         }
 
         //Kiểm tra object truyền vào có tên trùng trong database không
         //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
-        public bool UpdatePhuLuc(PhuLuc phuLuc)
+        public ResponseDetails UpdatePhuLuc(PhuLuc phuLuc)
         {
             var truyenRepo = new TruyenRepository(_context);
             var theLoaiRepo = new TheLoaiRepository(_context);
 
-            if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(phuLuc.TruyenID)).Any()) return false;
-            if (!theLoaiRepo.FindByCondition(t => t.TheLoaiID.Equals(phuLuc.TheLoaiID)).Any()) return false;
+            if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(phuLuc.TruyenID)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID truyện không tồn tại",
+                    Value = phuLuc.TruyenID.ToString()
+                };
+            }
+            if (!theLoaiRepo.FindByCondition(t => t.TheLoaiID.Equals(phuLuc.TheLoaiID)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID thể loại không tồn tại",
+                    Value = phuLuc.TruyenID.ToString()
+                };
+            }
 
             Update(phuLuc);
-            return true;
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa phụ lục thành công" };
         }
 
         //Xóa logic
-        public void DeletePhuLuc(PhuLuc phuLuc)
+        public ResponseDetails DeletePhuLuc(PhuLuc phuLuc)
         {
             Delete(phuLuc);
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa phụ lục thành công" };
         }
 
         //Lấy danh sách các tác giả không bị xóa

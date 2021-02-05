@@ -22,8 +22,6 @@ namespace CoreLibrary.DataTransferObjects
 
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }
-
-        public string HinhAnh { get; set; }
     }
 
     public class TruyenForUpdateDto
@@ -42,7 +40,5 @@ namespace CoreLibrary.DataTransferObjects
 
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }
-
-        public string HinhAnh { get; set; }
     }
 }

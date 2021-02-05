@@ -11,8 +11,8 @@ namespace Contracts
         Task<IEnumerable<TacGia>> GetAllTacGiasAsync();
         Task<TacGia> GetTacGiaByIdAsync(int tacGiaId);
         Task<TacGia> GetTacGiaByDetailAsync(int tacGiaId);
-        TacGia CreateTacGia(IEnumerable<TacGia> tacGias);
-        bool UpdateTacGia(TacGia tacGia);
-        void DeleteTacGia(TacGia tacGia);
+        ResponseDetails CreateTacGia(IEnumerable<TacGia> tacGias);
+        ResponseDetails UpdateTacGia(TacGia tacGia);
+        ResponseDetails DeleteTacGia(TacGia tacGia);
     }
 }

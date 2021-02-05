@@ -36,7 +36,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetAllTruyens function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllTruyens" });
             }
         }
 
@@ -48,7 +48,7 @@ namespace API.Controllers
                 var truyen = await _repository.Truyen.GetTruyenByIdAsync(id);
                 if (truyen == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Truyện không tồn tại" });
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetTruyenById function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTruyenById" });
             }
         }
 
@@ -92,26 +92,22 @@ namespace API.Controllers
             {
                 if (truyen == null)
                 {
-                    return BadRequest("Truyen object is null");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Invalid model object");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
                 var truyenEntity = _mapper.Map<IEnumerable<Truyen>>(truyen);
 
-                var founded = _repository.Truyen.CreateTruyen(truyenEntity);
-                if (founded == null)
+                var response = _repository.Truyen.CreateTruyen(truyenEntity);
+                if (response.StatusCode == ResponseCode.Success)
                 {
                     _repository.Save();
                 }
-                else return BadRequest(new ErrorDetails()
-                {
-                    StatusCode = Response.StatusCode,
-                    Message = founded.TenTruyen
-                });
+                else return BadRequest(response);
 
                 var createdTruyen= _mapper.Map<IEnumerable<TruyenDto>>(truyenEntity);
 
@@ -119,7 +115,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement CreateTruyen function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateTruyen" });
             }
         }
 
@@ -130,39 +126,35 @@ namespace API.Controllers
             {
                 if (truyen == null)
                 {
-                    return BadRequest("TacGia object is null");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Invalid model object");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
                 var truyenEntity = await _repository.Truyen.GetTruyenByIdAsync(id);
                 if (truyenEntity == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Truyện không tồn tại" });
                 }
 
                 _mapper.Map(truyen, truyenEntity);
 
-                bool updateStatus = _repository.Truyen.UpdateTruyen(truyenEntity);
+                ResponseDetails response = _repository.Truyen.UpdateTruyen(truyenEntity);
 
-                if (updateStatus)
+                if (response.StatusCode == ResponseCode.Success)
                 {
                     _repository.Save();
                 }
-                else return BadRequest(new ErrorDetails()
-                {
-                    StatusCode = Response.StatusCode,
-                    Message = "Tên truyện cập nhật bị trùng"
-                });
+                else return BadRequest(response);
 
-                return Ok();
+                return Ok(response);
             }
             catch
             {
-                throw new Exception("Exception occured when implement UpdateTruyen function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateTruyen" });
             }
         }
 
@@ -174,7 +166,7 @@ namespace API.Controllers
                 var truyen = await _repository.Truyen.GetTruyenByIdAsync(id);
                 if (truyen == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID truyện không tồn tại" });
                 }
 
                 //if (_repository.Account.AccountsByOwner(id).Any())
@@ -182,15 +174,16 @@ namespace API.Controllers
                 //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
                 //}
 
-                _repository.Truyen.DeleteTruyen(truyen);
+                ResponseDetails response = _repository.Truyen.DeleteTruyen(truyen);
 
-                _repository.Save();
+                if (response.StatusCode == ResponseCode.Success)
+                    _repository.Save();
 
-                return NoContent();
+                return Ok(response);
             }
             catch
             {
-                throw new Exception("Exception occured when implement DeleteTruyen function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTruyen" });
             }
         }
     }

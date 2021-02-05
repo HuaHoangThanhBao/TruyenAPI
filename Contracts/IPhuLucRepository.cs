@@ -11,8 +11,8 @@ namespace Contracts
         IEnumerable<PhuLuc> TheLoaisInPhuLuc(int theLoaiId);
         Task<IEnumerable<PhuLuc>> GetAllPhuLucsAsync();
         Task<PhuLuc> GetPhuLucByIdAsync(int phuLucId);
-        bool CreatePhuLuc(IEnumerable<PhuLuc> phuLucs);
-        bool UpdatePhuLuc(PhuLuc phuLuc);
-        void DeletePhuLuc(PhuLuc phuLuc);
+        ResponseDetails CreatePhuLuc(IEnumerable<PhuLuc> phuLucs);
+        ResponseDetails UpdatePhuLuc(PhuLuc phuLuc);
+        ResponseDetails DeletePhuLuc(PhuLuc phuLuc);
     }
 }

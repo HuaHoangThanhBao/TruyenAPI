@@ -37,7 +37,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetAllTacGias function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllTacGias" });
             }
         }
 
@@ -49,7 +49,7 @@ namespace API.Controllers
                 var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
                 if (tacGia == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Tác giả không tồn tại" });
                 }
                 else
                 {
@@ -59,7 +59,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement GetTacGiaById function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTacGiaById" });
             }
         }
         
@@ -91,28 +91,24 @@ namespace API.Controllers
         {
             try
             {
-                if(tacGia == null)
+                if (tacGia == null)
                 {
-                    return BadRequest("TacGia object is null");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Invalid model object");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
                 var tacGiaEntity = _mapper.Map<IEnumerable<TacGia>>(tacGia);
 
-                var founded = _repository.TacGia.CreateTacGia(tacGiaEntity);
-                if (founded == null)
+                ResponseDetails response = _repository.TacGia.CreateTacGia(tacGiaEntity);
+                if (response.StatusCode == ResponseCode.Success)
                 {
                     _repository.Save();
                 }
-                else return BadRequest(new ErrorDetails()
-                {
-                    StatusCode = Response.StatusCode,
-                    Message = founded.TenTacGia
-                });
+                else return BadRequest(response);
 
                 var createdTacGia = _mapper.Map<IEnumerable<TacGiaDto>>(tacGiaEntity);
 
@@ -120,7 +116,7 @@ namespace API.Controllers
             }
             catch
             {
-                throw new Exception("Exception occured when implement CreateTacGia function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateTacGia" });
             }
         }
 
@@ -131,39 +127,35 @@ namespace API.Controllers
             {
                 if (tacGia == null)
                 {
-                    return BadRequest("TacGia object is null");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Invalid model object");
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
                 var tacGiaEntity = await _repository.TacGia.GetTacGiaByIdAsync(id);
                 if (tacGiaEntity == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Tác giả không tồn tại" });
                 }
 
                 _mapper.Map(tacGia, tacGiaEntity);
 
-                bool updateStatus = _repository.TacGia.UpdateTacGia(tacGiaEntity);
+                ResponseDetails response = _repository.TacGia.UpdateTacGia(tacGiaEntity);
 
-                if (updateStatus)
+                if (response.StatusCode == ResponseCode.Success)
                 {
                     _repository.Save();
                 }
-                else return BadRequest(new ErrorDetails()
-                {
-                    StatusCode = Response.StatusCode,
-                    Message = "Tên tác giả cập nhật bị trùng"
-                });
+                else return BadRequest(response);
 
-                return Ok();
+                return Ok(response);
             }
             catch
             {
-                throw new Exception("Exception occured when implement UpdateTacGia function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateTacGia" });
             }
         }
 
@@ -175,7 +167,7 @@ namespace API.Controllers
                 var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
                 if (tacGia == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID tác giả không tồn tại" });
                 }
 
                 //if (_repository.Account.AccountsByOwner(id).Any())
@@ -183,15 +175,16 @@ namespace API.Controllers
                 //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
                 //}
 
-                _repository.TacGia.DeleteTacGia(tacGia);
+                ResponseDetails response = _repository.TacGia.DeleteTacGia(tacGia);
 
-                _repository.Save();
+                if (response.StatusCode == ResponseCode.Success)
+                    _repository.Save();
 
-                return NoContent();
+                return Ok(response);
             }
             catch
             {
-                throw new Exception("Exception occured when implement DeleteTacGia function");
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTacGia" });
             }
         }
     }

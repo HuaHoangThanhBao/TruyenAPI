@@ -23,8 +23,8 @@ namespace Entities.Configuration
             builder.Property(s => s.TinhTrang)
                 .HasDefaultValue(false);
 
-            builder.Property(s => s.HinhAnh)
-                .IsRequired();
+            //builder.Property(s => s.HinhAnh)
+            //    .IsRequired();
 
             //1 - n relations
             builder.HasOne(e => e.TacGia)

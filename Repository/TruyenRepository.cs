@@ -12,9 +12,11 @@ namespace Repository
 {
     public class TruyenRepository : RepositoryBase<Truyen>, ITruyenRepository
     {
+        private RepositoryContext _context;
         public TruyenRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
         {
+            _context = repositoryContext;
         }
 
         //public IEnumerable<TheLoai> AccountsByOwner(int ownerId)
@@ -24,32 +26,71 @@ namespace Repository
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: !null = TenTruyen bị trùng, null: thêm thành công
-        public Truyen CreateTruyen(IEnumerable<Truyen> truyens)
+        public ResponseDetails CreateTruyen(IEnumerable<Truyen> truyens)
         {
             foreach (var truyen in truyens)
             {
-                if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any()) return truyen;
+                if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Tên truyện bị trùng",
+                        Value = truyen.TenTruyen
+                    };
+                }
+
+
+                var tacGiaRepo = new TacGiaRepository(_context);
+                if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "ID tác giả không tồn tại",
+                        Value = truyen.TacGiaID.ToString()
+                    };
+                }
 
                 Create(truyen);
             }
-            return null;
+            return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
 
         //Kiểm tra object truyền vào có tên trùng trong database không
-        //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
-        public bool UpdateTruyen(Truyen truyen)
+        //KQ: false: TenTruyen bị trùng, true: cập nhật thành công
+        public ResponseDetails UpdateTruyen(Truyen truyen)
         {
-            if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any()) return false;
+            if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên truyện bị trùng"
+                };
+            }
+
+            var tacGiaRepo = new TacGiaRepository(_context);
+            if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID tác giả không tồn tại",
+                    Value = truyen.TacGiaID.ToString()
+                };
+            }
 
             Update(truyen);
-            return true;
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa truyện thành công" };
         }
 
         //Xóa logic
-        public void DeleteTruyen(Truyen truyen)
+        public ResponseDetails DeleteTruyen(Truyen truyen)
         {
             truyen.TinhTrang = true;
             Update(truyen);
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa truyện thành công" };
         }
 
         //Lấy danh sách các tác giả không bị xóa

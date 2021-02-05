@@ -19,32 +19,49 @@ namespace Repository
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: !null = TenTacGia bị trùng, null: thêm thành công
-        public TheLoai CreateTheLoai(IEnumerable<TheLoai> theLoais)
+        public ResponseDetails CreateTheLoai(IEnumerable<TheLoai> theLoais)
         {
             foreach (var theLoai in theLoais)
             {
-                if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai)).Any()) return theLoai;
+                if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Tên thể loại bị trùng",
+                        Value = theLoai.TenTheLoai
+                    };
+                }
 
                 Create(theLoai);
             }
-            return null;
+            return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
 
         //Kiểm tra object truyền vào có tên trùng trong database không
         //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
-        public bool UpdateTheLoai(TheLoai theLoai)
+        public ResponseDetails UpdateTheLoai(TheLoai theLoai)
         {
-            if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai)).Any()) return false;
+            if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên thể loại bị trùng",
+                    Value = theLoai.TenTheLoai
+                };
+            }
 
             Update(theLoai);
-            return true;
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa thể loại thành công" };
         }
 
         //Xóa logic
-        public void DeleteTheLoai(TheLoai theLoai)
+        public ResponseDetails DeleteTheLoai(TheLoai theLoai)
         {
             theLoai.TinhTrang = true;
             Update(theLoai);
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa thể loại thành công" };
         }
 
         //Lấy danh sách các tác giả không bị xóa

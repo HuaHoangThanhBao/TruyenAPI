@@ -19,32 +19,49 @@ namespace Repository
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: !null = TenTacGia bị trùng, null: thêm thành công
-        public TacGia CreateTacGia(IEnumerable<TacGia> tacGias)
+        public ResponseDetails CreateTacGia(IEnumerable<TacGia> tacGias)
         {
             foreach (var tacGia in tacGias)
             {
-                if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia)).Any()) return tacGia;
+                if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Tên tác giả bị trùng",
+                        Value = tacGia.TenTacGia
+                    };
+                }
 
                 Create(tacGia);
             }
-            return null;
+            return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
 
         //Kiểm tra object truyền vào có tên trùng trong database không
         //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
-        public bool UpdateTacGia(TacGia tacGia)
+        public ResponseDetails UpdateTacGia(TacGia tacGia)
         {
-            if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia)).Any()) return false;
+            if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên tác giả bị trùng",
+                    Value = tacGia.TenTacGia
+                };
+            }
             
             Update(tacGia);
-            return true;
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa tác giả thành công" };
         }
 
         //Xóa logic
-        public void DeleteTacGia(TacGia tacGia)
+        public ResponseDetails DeleteTacGia(TacGia tacGia)
         {
             tacGia.TinhTrang = true;
             Update(tacGia);
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa tác giả thành công" };
         }
 
         //Lấy danh sách các tác giả không bị xóa

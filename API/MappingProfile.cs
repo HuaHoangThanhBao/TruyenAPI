@@ -19,6 +19,9 @@ namespace API
 
             CreateMap<PhuLuc, PhuLucDto>();
 
+            CreateMap<NoiDungTruyen, NoiDungTruyenDto>();
+
+            //CRUD Map
             CreateMap<TacGiaForCreationDto, TacGia>();
 
             CreateMap<TacGiaForUpdateDto, TacGia>();

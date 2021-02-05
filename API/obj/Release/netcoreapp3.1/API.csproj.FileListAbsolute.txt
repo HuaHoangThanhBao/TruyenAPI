@@ -10,6 +10,7 @@ F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\API.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\API.pdb
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\AutoMapper.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.AspNetCore.Http.Features.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.AspNetCore.Razor.Language.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
@@ -68,6 +69,7 @@ F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\System.Composition.TypedParts.dl
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\System.IO.Pipelines.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\System.Runtime.Caching.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\System.Text.Json.dll

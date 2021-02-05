@@ -11,6 +11,7 @@ namespace Contracts
         ITheLoaiRepository TheLoai { get; }
         ITruyenRepository Truyen { get; }
         IPhuLucRepository PhuLuc { get; }
+        INoiDungTruyenRepository NoiDungTruyen { get; }
         void Save();
     }
 }

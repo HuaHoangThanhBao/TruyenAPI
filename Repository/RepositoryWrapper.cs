@@ -14,6 +14,7 @@ namespace Repository
         private ITheLoaiRepository _theLoai;
         private ITruyenRepository _truyen;
         private IPhuLucRepository _phuLuc;
+        private INoiDungTruyenRepository _noiDungTruyen;
         public ITacGiaRepository TacGia
         {
             get
@@ -56,6 +57,17 @@ namespace Repository
                     _phuLuc = new PhuLucRepository(_repoContext);
                 }
                 return _phuLuc;
+            }
+        }
+        public INoiDungTruyenRepository NoiDungTruyen
+        {
+            get
+            {
+                if (_noiDungTruyen == null)
+                {
+                    _noiDungTruyen = new NoiDungTruyenRepository(_repoContext);
+                }
+                return _noiDungTruyen;
             }
         }
         public RepositoryWrapper(RepositoryContext repositoryContext)

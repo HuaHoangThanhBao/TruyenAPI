@@ -1,0 +1,12 @@
+F:\Du-An\Net\Core\DataAccessLayer\bin\Release\netcoreapp3.1\DataAccessLayer.deps.json
+F:\Du-An\Net\Core\DataAccessLayer\bin\Release\netcoreapp3.1\DataAccessLayer.dll
+F:\Du-An\Net\Core\DataAccessLayer\bin\Release\netcoreapp3.1\DataAccessLayer.pdb
+F:\Du-An\Net\Core\DataAccessLayer\bin\Release\netcoreapp3.1\CoreLibrary.dll
+F:\Du-An\Net\Core\DataAccessLayer\bin\Release\netcoreapp3.1\CoreLibrary.pdb
+F:\Du-An\Net\Core\DataAccessLayer\obj\Release\netcoreapp3.1\DataAccessLayer.csprojAssemblyReference.cache
+F:\Du-An\Net\Core\DataAccessLayer\obj\Release\netcoreapp3.1\DataAccessLayer.AssemblyInfoInputs.cache
+F:\Du-An\Net\Core\DataAccessLayer\obj\Release\netcoreapp3.1\DataAccessLayer.AssemblyInfo.cs
+F:\Du-An\Net\Core\DataAccessLayer\obj\Release\netcoreapp3.1\DataAccessLayer.csproj.CoreCompileInputs.cache
+F:\Du-An\Net\Core\DataAccessLayer\obj\Release\netcoreapp3.1\DataAccessLayer.csproj.CopyComplete
+F:\Du-An\Net\Core\DataAccessLayer\obj\Release\netcoreapp3.1\DataAccessLayer.dll
+F:\Du-An\Net\Core\DataAccessLayer\obj\Release\netcoreapp3.1\DataAccessLayer.pdb

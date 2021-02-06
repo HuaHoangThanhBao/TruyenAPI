@@ -4,68 +4,6 @@
     "F:\\Du-An\\Net\\Core\\Repository\\Repository.csproj": {}
   },
   "projects": {
-    "F:\\Du-An\\Net\\Core\\Contracts\\Contracts.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "F:\\Du-An\\Net\\Core\\Contracts\\Contracts.csproj",
-        "projectName": "Contracts",
-        "projectPath": "F:\\Du-An\\Net\\Core\\Contracts\\Contracts.csproj",
-        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "F:\\Du-An\\Net\\Core\\Contracts\\obj\\",
-        "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
-        ],
-        "originalTargetFrameworks": [
-          "netcoreapp3.1"
-        ],
-        "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
-        },
-        "frameworks": {
-          "netcoreapp3.1": {
-            "projectReferences": {
-              "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj": {
-                "projectPath": "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj"
-              }
-            }
-          }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
-        }
-      },
-      "frameworks": {
-        "netcoreapp3.1": {
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.2, 3.1.2]"
-            }
-          ],
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
-        }
-      }
-    },
     "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -148,6 +86,68 @@
         }
       }
     },
+    "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj",
+        "projectName": "DataAccessLayer",
+        "projectPath": "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj",
+        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
+        "outputPath": "F:\\Du-An\\Net\\Core\\DataAccessLayer\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj": {
+                "projectPath": "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.2, 3.1.2]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
     "F:\\Du-An\\Net\\Core\\Repository\\Repository.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -171,11 +171,11 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "F:\\Du-An\\Net\\Core\\Contracts\\Contracts.csproj": {
-                "projectPath": "F:\\Du-An\\Net\\Core\\Contracts\\Contracts.csproj"
-              },
               "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj": {
                 "projectPath": "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj"
+              },
+              "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj": {
+                "projectPath": "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj"
               }
             }
           }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace CoreLibrary.Models
 {
@@ -13,6 +10,7 @@ namespace CoreLibrary.Models
         public int NoiDungTruyenID { get; set; }
 
         [Required(ErrorMessage = "ID Truyen is required")]
+        [ForeignKey(nameof(Truyen))]
         public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 

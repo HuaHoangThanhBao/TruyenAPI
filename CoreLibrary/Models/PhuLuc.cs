@@ -15,11 +15,13 @@ namespace CoreLibrary.Models
 
         [Required(ErrorMessage = "TruyenID is required")]
         //Tập khóa ngoại
+        [ForeignKey(nameof(Truyen))]
         public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 
         [Required(ErrorMessage = "TheLoaiID is required")]
         //Tập khóa ngoại
+        [ForeignKey(nameof(TheLoai))]
         public int TheLoaiID { get; set; }
         public TheLoai TheLoai { get; set; }
     }

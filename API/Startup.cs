@@ -31,6 +31,7 @@ namespace API
         {
             services.ConfigureCors();
             services.ConfigureSqlContext(Configuration);
+            services.ConfigureLoop();
             services.ConfigureRepositoryWrapper();
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();

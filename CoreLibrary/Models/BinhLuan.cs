@@ -13,10 +13,12 @@ namespace CoreLibrary.Models
         public int BinhLuanID { get; set; }
 
         //Tập khóa ngoại
+        [ForeignKey(nameof(User))]
         public Guid UserID { get; set; }
         public User User { get; set; }
 
         //Tập khóa ngoại
+        [ForeignKey(nameof(Truyen))]
         public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 

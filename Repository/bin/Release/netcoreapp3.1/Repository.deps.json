@@ -8,8 +8,8 @@
     ".NETCoreApp,Version=v3.1": {
       "Repository/1.0.0": {
         "dependencies": {
-          "Contracts": "1.0.0",
-          "CoreLibrary": "1.0.0"
+          "CoreLibrary": "1.0.0",
+          "DataAccessLayer": "1.0.0"
         },
         "runtime": {
           "Repository.dll": {}
@@ -1052,14 +1052,6 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
-      "Contracts/1.0.0": {
-        "dependencies": {
-          "CoreLibrary": "1.0.0"
-        },
-        "runtime": {
-          "Contracts.dll": {}
-        }
-      },
       "CoreLibrary/1.0.0": {
         "dependencies": {
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "8.1.0",
@@ -1069,6 +1061,14 @@
         },
         "runtime": {
           "CoreLibrary.dll": {}
+        }
+      },
+      "DataAccessLayer/1.0.0": {
+        "dependencies": {
+          "CoreLibrary": "1.0.0"
+        },
+        "runtime": {
+          "DataAccessLayer.dll": {}
         }
       }
     }
@@ -1793,12 +1793,12 @@
       "path": "system.xml.xmlserializer/4.3.0",
       "hashPath": "system.xml.xmlserializer.4.3.0.nupkg.sha512"
     },
-    "Contracts/1.0.0": {
+    "CoreLibrary/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "CoreLibrary/1.0.0": {
+    "DataAccessLayer/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

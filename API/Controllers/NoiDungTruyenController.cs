@@ -1,14 +1,11 @@
-﻿using System;
+﻿using DataAccessLayer;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AutoMapper;
-using Contracts;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -92,9 +89,9 @@ namespace API.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
+                if(model.HinhAnh == null)
                 {
-                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "File hình ảnh bị trống" });
                 }
 
                 var folderName = Path.Combine("Resources", "Images");

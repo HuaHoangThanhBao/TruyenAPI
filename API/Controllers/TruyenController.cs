@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Contracts;
+using DataAccessLayer;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -62,28 +59,28 @@ namespace API.Controllers
             }
         }
 
-        //[HttpGet("{id}/account")]
-        //public async Task<IActionResult> GetTacGiaByDetails(Guid id)
-        //{
-        //    try
-        //    {
-        //        var tacGia = await _repository.TacGia.GetTacGiaByDetailAsync(id);
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetTacGiaByDetails(int id)
+        {
+            try
+            {
+                var truyen = await _repository.Truyen.GetTruyenByDetailAsync(id);
 
-        //        if(tacGia == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            var ownerResult = _mapper.Map<TacGiaDto>(tacGia);
-        //            return Ok(ownerResult);
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        throw new Exception("Exception occured when implement GetTacGiaByDetails function");
-        //    }
-        //}
+                if (truyen == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var truyenResult = _mapper.Map<TruyenDto>(truyen);
+                    return Ok(truyenResult);
+                }
+            }
+            catch
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTacGiaByDetails" });
+            }
+        }
 
         [HttpPost]
         public IActionResult CreateTruyen([FromBody] IEnumerable<TruyenForCreationDto> truyen)

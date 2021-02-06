@@ -11,6 +11,8 @@ F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\API.pdb
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\AutoMapper.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.AspNetCore.Http.Features.dll
+F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.AspNetCore.Razor.Language.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
@@ -55,6 +57,7 @@ F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.VisualStudio.Web.CodeG
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Newtonsoft.Json.dll
+F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Newtonsoft.Json.Bson.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\NuGet.Frameworks.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\SQLitePCLRaw.batteries_v2.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\SQLitePCLRaw.nativelibrary.dll
@@ -145,11 +148,11 @@ F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\runtimes\win-x86\native\e_sqlite
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.0\System.Runtime.Caching.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Contracts.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\CoreLibrary.dll
+F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\DataAccessLayer.dll
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Repository.dll
-F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Contracts.pdb
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\CoreLibrary.pdb
+F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\DataAccessLayer.pdb
 F:\Du-An\Net\Core\API\bin\Release\netcoreapp3.1\Repository.pdb
 F:\Du-An\Net\Core\API\obj\Release\netcoreapp3.1\API.csprojAssemblyReference.cache
 F:\Du-An\Net\Core\API\obj\Release\netcoreapp3.1\API.AssemblyInfoInputs.cache

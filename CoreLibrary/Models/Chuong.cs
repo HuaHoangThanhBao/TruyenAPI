@@ -15,6 +15,7 @@ namespace CoreLibrary.Models
 
 
         //Tập khóa ngoại
+        [ForeignKey(nameof(Truyen))]
         public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 

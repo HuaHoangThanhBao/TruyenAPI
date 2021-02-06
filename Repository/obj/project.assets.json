@@ -1510,19 +1510,6 @@
           "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Contracts/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v3.1",
-        "dependencies": {
-          "CoreLibrary": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Contracts.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Contracts.dll": {}
-        }
-      },
       "CoreLibrary/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
@@ -1537,6 +1524,19 @@
         },
         "runtime": {
           "bin/placeholder/CoreLibrary.dll": {}
+        }
+      },
+      "DataAccessLayer/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "dependencies": {
+          "CoreLibrary": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DataAccessLayer.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DataAccessLayer.dll": {}
         }
       }
     }
@@ -5813,21 +5813,21 @@
         "system.xml.xmlserializer.nuspec"
       ]
     },
-    "Contracts/1.0.0": {
-      "type": "project",
-      "path": "../Contracts/Contracts.csproj",
-      "msbuildProject": "../Contracts/Contracts.csproj"
-    },
     "CoreLibrary/1.0.0": {
       "type": "project",
       "path": "../CoreLibrary/CoreLibrary.csproj",
       "msbuildProject": "../CoreLibrary/CoreLibrary.csproj"
+    },
+    "DataAccessLayer/1.0.0": {
+      "type": "project",
+      "path": "../DataAccessLayer/DataAccessLayer.csproj",
+      "msbuildProject": "../DataAccessLayer/DataAccessLayer.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
-      "Contracts >= 1.0.0",
-      "CoreLibrary >= 1.0.0"
+      "CoreLibrary >= 1.0.0",
+      "DataAccessLayer >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -5856,11 +5856,11 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "F:\\Du-An\\Net\\Core\\Contracts\\Contracts.csproj": {
-              "projectPath": "F:\\Du-An\\Net\\Core\\Contracts\\Contracts.csproj"
-            },
             "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj": {
               "projectPath": "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj"
+            },
+            "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj": {
+              "projectPath": "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj"
             }
           }
         }

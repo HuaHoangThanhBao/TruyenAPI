@@ -11,6 +11,10 @@ namespace Repository
         private ITruyenRepository _truyen;
         private IPhuLucRepository _phuLuc;
         private INoiDungTruyenRepository _noiDungTruyen;
+        private IChuongRepository _chuong;
+        private IUserRepository _user;
+        private ITheoDoiRepository _theoDoi;
+        private IBinhLuanRepository _binhLuan;
         public ITacGiaRepository TacGia
         {
             get
@@ -64,6 +68,50 @@ namespace Repository
                     _noiDungTruyen = new NoiDungTruyenRepository(_repoContext);
                 }
                 return _noiDungTruyen;
+            }
+        }
+        public IChuongRepository Chuong
+        {
+            get
+            {
+                if (_chuong == null)
+                {
+                    _chuong = new ChuongRepository(_repoContext);
+                }
+                return _chuong;
+            }
+        }
+        public IUserRepository User
+        {
+            get
+            {
+                if (_user == null)
+                {
+                    _user = new UserRepository(_repoContext);
+                }
+                return _user;
+            }
+        }
+        public ITheoDoiRepository TheoDoi
+        {
+            get
+            {
+                if (_theoDoi == null)
+                {
+                    _theoDoi = new TheoDoiRepository(_repoContext);
+                }
+                return _theoDoi;
+            }
+        }
+        public IBinhLuanRepository BinhLuan
+        {
+            get
+            {
+                if (_binhLuan == null)
+                {
+                    _binhLuan = new BinhLuanRepository(_repoContext);
+                }
+                return _binhLuan;
             }
         }
         public RepositoryWrapper(RepositoryContext repositoryContext)

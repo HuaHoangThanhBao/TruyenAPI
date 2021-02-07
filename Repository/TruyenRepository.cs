@@ -17,11 +17,6 @@ namespace Repository
             _context = repositoryContext;
         }
 
-        //public IEnumerable<TheLoai> AccountsByOwner(int ownerId)
-        //{
-        //    return FindByCondition(a => a.TheLoaiID.Equals(ownerId)).ToList();
-        //}
-
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: !null = TenTruyen bị trùng, null: thêm thành công
         public ResponseDetails CreateTruyen(IEnumerable<Truyen> truyens)

@@ -19,7 +19,15 @@ namespace API
 
             CreateMap<PhuLuc, PhuLucDto>();
 
+            CreateMap<Chuong, ChuongDto>();
+
             CreateMap<NoiDungTruyen, NoiDungTruyenDto>();
+
+            CreateMap<User, UserDto>();
+
+            CreateMap<TheoDoi, TheoDoiDto>();
+
+            CreateMap<BinhLuan, BinhLuanDto>();
 
             //CRUD Map
             CreateMap<TacGiaForCreationDto, TacGia>();
@@ -37,6 +45,22 @@ namespace API
             CreateMap<PhuLucForCreationDto, PhuLuc>();
 
             CreateMap<PhuLucForUpdateDto, PhuLuc>();
+
+            CreateMap<ChuongForCreationDto, Chuong>();
+
+            CreateMap<ChuongForUpdateDto, Chuong>();
+
+            CreateMap<UserForCreationDto, User>();
+
+            CreateMap<UserForUpdateDto, User>();
+
+            CreateMap<TheoDoiForCreationDto, TheoDoi>();
+
+            CreateMap<TheoDoiForUpdateDto, TheoDoi>();
+
+            CreateMap<BinhLuanForCreationDto, BinhLuan>();
+
+            CreateMap<BinhLuanForUpdateDto, BinhLuan>();
         }
     }
 }

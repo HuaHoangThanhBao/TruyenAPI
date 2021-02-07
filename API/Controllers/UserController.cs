@@ -1,79 +1,80 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using DataAccessLayer;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
+using DataAccessLayer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TruyenController : ControllerBase
+    public class UserController : ControllerBase
     {
         private IRepositoryWrapper _repository;
         private IMapper _mapper;
 
-        public TruyenController(IRepositoryWrapper repository, IMapper mapper)
+        public UserController(IRepositoryWrapper repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTruyens()
+        public async Task<IActionResult> GetAllUsers()
         {
             try
             {
-                var truyens = await _repository.Truyen.GetAllTruyensAsync();
-                var truyensResult = _mapper.Map<IEnumerable<TruyenDto>>(truyens);
+                var users = await _repository.User.GetAllUsersAsync();
+                var usersResult = _mapper.Map<IEnumerable<UserDto>>(users);
 
-                return Ok(truyensResult);
+                return Ok(usersResult);
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllTruyens" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllUsers" });
             }
         }
 
-        [HttpGet("{id}", Name = "TruyenById")]
-        public async Task<IActionResult> GetTruyenById(int id)
+        [HttpGet("{id}", Name = "UserById")]
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             try
             {
-                var truyen = await _repository.Truyen.GetTruyenByIdAsync(id);
-                if (truyen == null)
+                var user = await _repository.User.GetUserByIdAsync(id);
+                if (user == null)
                 {
-                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Truyện không tồn tại" });
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "User không tồn tại" });
                 }
                 else
                 {
-                    var truyenResult = _mapper.Map<TruyenDto>(truyen);
-                    return Ok(truyenResult);
+                    var userResult = _mapper.Map<UserDto>(user);
+                    return Ok(userResult);
                 }
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTruyenById" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetUserById" });
             }
         }
 
         [HttpGet("{id}/details")]
-        public async Task<IActionResult> GetTruyenByDetails(int id)
+        public async Task<IActionResult> GetUserByDetails(Guid id)
         {
             try
             {
-                var truyen = await _repository.Truyen.GetTruyenByDetailAsync(id);
+                var user = await _repository.User.GetUserByDetailAsync(id);
 
-                if (truyen == null)
+                if (user == null)
                 {
-                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Truyện không tồn tại" });
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "User không tồn tại" });
                 }
                 else
                 {
-                    //var truyenResult = _mapper.Map<TruyenDto>(truyen);
-                    return Ok(truyen);
+                    //var UserResult = _mapper.Map<UserDto>(User);
+                    return Ok(user);
                 }
             }
             catch
@@ -83,11 +84,11 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTruyen([FromBody] IEnumerable<TruyenForCreationDto> truyen)
+        public IActionResult CreateUser([FromBody] UserForCreationDto user)
         {
             try
             {
-                if (truyen == null)
+                if (user == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
                 }
@@ -97,31 +98,31 @@ namespace API.Controllers
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
-                var truyenEntity = _mapper.Map<IEnumerable<Truyen>>(truyen);
+                var userEntity = _mapper.Map<User>(user);
 
-                var response = _repository.Truyen.CreateTruyen(truyenEntity);
+                var response = _repository.User.CreateUser(userEntity);
                 if (response.StatusCode == ResponseCode.Success)
                 {
                     _repository.Save();
                 }
                 else return BadRequest(response);
 
-                var createdTruyen= _mapper.Map<IEnumerable<TruyenDto>>(truyenEntity);
+                var createdUser = _mapper.Map<UserDto>(userEntity);
 
-                return Ok(createdTruyen);
+                return Ok(createdUser);
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateTruyen" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateUser" });
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTruyen(int id, [FromBody] TruyenForUpdateDto truyen)
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserForUpdateDto user)
         {
             try
             {
-                if (truyen == null)
+                if (user == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
                 }
@@ -131,15 +132,15 @@ namespace API.Controllers
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
-                var truyenEntity = await _repository.Truyen.GetTruyenByIdAsync(id);
-                if (truyenEntity == null)
+                var userEntity = await _repository.User.GetUserByIdAsync(id);
+                if (userEntity == null)
                 {
-                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Truyện không tồn tại" });
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "User không tồn tại" });
                 }
 
-                _mapper.Map(truyen, truyenEntity);
+                _mapper.Map(user, userEntity);
 
-                ResponseDetails response = _repository.Truyen.UpdateTruyen(truyenEntity);
+                ResponseDetails response = _repository.User.UpdateUser(userEntity);
 
                 if (response.StatusCode == ResponseCode.Success)
                 {
@@ -151,17 +152,17 @@ namespace API.Controllers
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateTruyen" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateUser" });
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTruyen(int id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
             {
-                var truyen = await _repository.Truyen.GetTruyenByIdAsync(id);
-                if (truyen == null)
+                var user = await _repository.User.GetUserByIdAsync(id);
+                if (user == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID truyện không tồn tại" });
                 }
@@ -171,7 +172,7 @@ namespace API.Controllers
                 //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
                 //}
 
-                ResponseDetails response = _repository.Truyen.DeleteTruyen(truyen);
+                ResponseDetails response = _repository.User.DeleteUser(user);
 
                 if (response.StatusCode == ResponseCode.Success)
                     _repository.Save();
@@ -180,7 +181,7 @@ namespace API.Controllers
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTruyen" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteUser" });
             }
         }
     }

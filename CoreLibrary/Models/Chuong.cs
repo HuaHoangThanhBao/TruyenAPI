@@ -20,8 +20,12 @@ namespace CoreLibrary.Models
         public Truyen Truyen { get; set; }
 
 
+        [Required(ErrorMessage = "Tên chương is required")]
         public string TenChuong { get; set; }
+
+        [Required(ErrorMessage = "Thời gian cập nhật is required")]
         public DateTime ThoiGianCapNhat { get; set; }
+
         public int LuotXem { get; set; }
     }
 }

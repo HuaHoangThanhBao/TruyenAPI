@@ -10,6 +10,7 @@ namespace CoreLibrary.Models
     public class BinhLuan
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int BinhLuanID { get; set; }
 
         //Tập khóa ngoại

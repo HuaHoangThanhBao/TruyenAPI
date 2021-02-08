@@ -11,6 +11,7 @@ namespace CoreLibrary.Models
     public class Chuong
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ChuongID { get; set; }
 
 

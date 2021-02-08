@@ -12,6 +12,7 @@ namespace CoreLibrary.Models
     public class Truyen
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TruyenID { get; set; }
 
         //Tập khóa ngoại

@@ -10,6 +10,7 @@ namespace CoreLibrary.Models
     public class TheLoai
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TheLoaiID { get; set; }
 
         [Required(ErrorMessage = "Ten the loai is required")]

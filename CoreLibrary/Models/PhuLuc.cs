@@ -11,6 +11,7 @@ namespace CoreLibrary.Models
     public class PhuLuc
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int PhuLucID { get; set; }
 
         [Required(ErrorMessage = "TruyenID is required")]

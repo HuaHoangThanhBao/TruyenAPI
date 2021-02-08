@@ -11,6 +11,7 @@ namespace CoreLibrary.Models
     public class User
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid UserID { get; set; }
 
         [Required(ErrorMessage = "Ten user is required")]

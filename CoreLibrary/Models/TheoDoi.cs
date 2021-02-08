@@ -10,6 +10,7 @@ namespace CoreLibrary.Models
     public class TheoDoi
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TheoDoiID { get; set; }
 
         //Tập khóa ngoại

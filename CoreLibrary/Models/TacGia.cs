@@ -11,6 +11,7 @@ namespace CoreLibrary.Models
     public class TacGia
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TacGiaID { get; set; }
         
         [Required(ErrorMessage = "Ten tac gia is required")]

@@ -7,6 +7,7 @@ namespace CoreLibrary.Models
     public class NoiDungTruyen
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int NoiDungTruyenID { get; set; }
 
         [Required(ErrorMessage = "ID Truyen is required")]

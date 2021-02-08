@@ -104,11 +104,15 @@ namespace Repository
         public async Task<Truyen> GetTruyenByDetailAsync(int truyenId)
         {
             return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId))
-                .Include(ac => ac.BinhLuans)
-                .Include(ac => ac.Chuongs)
-                .Include(ac => ac.PhuLucs)
-                .Include(ac => ac.TheoDois)
-                .Include(ac => ac.NoiDungTruyens)
+                .Include(a => a.TacGia)
+                .Include(a => a.BinhLuans)
+                    .ThenInclude(b => b.User)
+                .Include(a => a.Chuongs)
+                .Include(a => a.PhuLucs)
+                    .ThenInclude(b => b.TheLoai)
+                .Include(a => a.TheoDois)
+                    .ThenInclude(b => b.User)
+                .Include(a => a.NoiDungTruyens)
                 .FirstOrDefaultAsync();
         }
     }

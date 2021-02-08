@@ -39,51 +39,6 @@ namespace API.Controllers
             }
         }
 
-        //[HttpGet("{id}", Name = "NoiDungTruyenById")]
-        //public async Task<IActionResult> GetNoiDungTruyenByTruyenId(int id)
-        //{
-        //    try
-        //    {
-        //        var noiDungTruyen = await _repository.NoiDungTruyen.GetNoiDungTruyenByTruyenIdAsync(id);
-        //        if (noiDungTruyen == null)
-        //        {
-        //            return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID Truyện không tồn tại" });
-        //        }
-        //        else
-        //        {
-        //            var noiDungTruyenResult = _mapper.Map<NoiDungTruyenDto>(noiDungTruyen);
-        //            return Ok(noiDungTruyenResult);
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetPhuLucById" });
-        //    }
-        //}
-
-        //[HttpGet("{id}/account")]
-        //public async Task<IActionResult> GetTacGiaByDetails(Guid id)
-        //{
-        //    try
-        //    {
-        //        var tacGia = await _repository.TacGia.GetTacGiaByDetailAsync(id);
-
-        //        if(tacGia == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            var ownerResult = _mapper.Map<TacGiaDto>(tacGia);
-        //            return Ok(ownerResult);
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        throw new Exception("Exception occured when implement GetTacGiaByDetails function");
-        //    }
-        //}
-
         [HttpPost]
         public IActionResult CreateNoiDungTruyen([FromForm] NoiDungTruyenForCreationDto model)
         {
@@ -100,7 +55,7 @@ namespace API.Controllers
                 {
                     var fileName = ContentDispositionHeaderValue.Parse(model.HinhAnh.ContentDisposition).FileName.Trim('"');
                     var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
+                    //var dbPath = Path.Combine(folderName, fileName);
                     var noiDung = new NoiDungTruyen() { TruyenID = model.TruyenID, HinhAnh = fileName };
 
                     ResponseDetails response = _repository.NoiDungTruyen.CreateNoiDungTruyen(noiDung);
@@ -143,7 +98,7 @@ namespace API.Controllers
                 {
                     var fileName = ContentDispositionHeaderValue.Parse(model.HinhAnh.ContentDisposition).FileName.Trim('"');
                     var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
+                    //var dbPath = Path.Combine(folderName, fileName);
 
                     var noiDungTruyenEntity = await _repository.NoiDungTruyen.GetNoiDungTruyenByTruyenIdAsync(model.NoiDungTruyenID, model.TruyenID);
                     if (noiDungTruyenEntity == null)

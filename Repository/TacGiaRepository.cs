@@ -10,9 +10,12 @@ namespace Repository
 {
     public class TacGiaRepository : RepositoryBase<TacGia>, ITacGiaRepository
     {
+        private RepositoryContext _context;
+
         public TacGiaRepository(RepositoryContext repositoryContext)
             :base(repositoryContext)
         {
+            _context = repositoryContext;
         }
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
@@ -57,9 +60,17 @@ namespace Repository
         //Xóa logic
         public ResponseDetails DeleteTacGia(TacGia tacGia)
         {
-            tacGia.TinhTrang = true;
-            Update(tacGia);
-            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa tác giả thành công" };
+            var truyenRepo = new TruyenRepository(_context);
+            if (!truyenRepo.FindByCondition(t => t.TacGiaID.Equals(tacGia.TacGiaID) && !t.TinhTrang).Any())
+            {
+                tacGia.TinhTrang = true;
+                Update(tacGia);
+                return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa tác giả thành công" };
+            }
+            else
+            {
+                return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Tác giả này đang tồn tại ở Truyện" };
+            }
         }
 
         //Lấy danh sách các tác giả không bị xóa

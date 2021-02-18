@@ -21,7 +21,7 @@ namespace API
 
             CreateMap<Chuong, ChuongDto>();
 
-            CreateMap<NoiDungTruyen, NoiDungTruyenDto>();
+            CreateMap<NoiDungChuong, NoiDungChuongDto>();
 
             CreateMap<User, UserDto>();
 

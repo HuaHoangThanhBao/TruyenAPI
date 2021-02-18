@@ -21,7 +21,6 @@ namespace CoreLibrary.Models
         public TacGia TacGia { get; set; }
 
 
-        public ICollection<NoiDungTruyen> NoiDungTruyens { get; set; }
         public ICollection<PhuLuc> PhuLucs { get; set; }
         public ICollection<Chuong> Chuongs { get; set; }
         public ICollection<TheoDoi> TheoDois { get; set; }

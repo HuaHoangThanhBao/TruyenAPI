@@ -111,7 +111,6 @@ namespace Repository
                     .ThenInclude(b => b.TheLoai)
                 .Include(a => a.TheoDois)
                     .ThenInclude(b => b.User)
-                .Include(a => a.NoiDungTruyens)
                 .FirstOrDefaultAsync();
         }
     }

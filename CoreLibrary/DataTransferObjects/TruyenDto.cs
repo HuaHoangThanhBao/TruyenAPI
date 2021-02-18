@@ -12,7 +12,6 @@ namespace CoreLibrary.DataTransferObjects
         public int TacGiaID { get; set; }
 
         
-        public IEnumerable<NoiDungTruyen> NoiDungTruyens { get; set; }
         public IEnumerable<PhuLucDto> PhuLucs { get; set; }
         public IEnumerable<Chuong> Chuongs { get; set; }
         public IEnumerable<TheoDoi> TheoDois { get; set; }

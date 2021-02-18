@@ -27,7 +27,7 @@ namespace CoreLibrary
         }
 
         public DbSet<Truyen> Truyens { get; set; }
-        public DbSet<NoiDungTruyen> NoiDungTruyens { get; set; }
+        public DbSet<NoiDungChuong> NoiDungTruyens { get; set; }
         public DbSet<TacGia> TacGias { get; set; }
         public DbSet<TheLoai> TheLoais { get; set; }
         public DbSet<Chuong> Chuongs { get; set; }

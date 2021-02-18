@@ -10,7 +10,7 @@ namespace Repository
         private ITheLoaiRepository _theLoai;
         private ITruyenRepository _truyen;
         private IPhuLucRepository _phuLuc;
-        private INoiDungTruyenRepository _noiDungTruyen;
+        private INoiDungChuongRepository _noiDungChuong;
         private IChuongRepository _chuong;
         private IUserRepository _user;
         private ITheoDoiRepository _theoDoi;
@@ -59,15 +59,15 @@ namespace Repository
                 return _phuLuc;
             }
         }
-        public INoiDungTruyenRepository NoiDungTruyen
+        public INoiDungChuongRepository NoiDungChuong
         {
             get
             {
-                if (_noiDungTruyen == null)
+                if (_noiDungChuong == null)
                 {
-                    _noiDungTruyen = new NoiDungTruyenRepository(_repoContext);
+                    _noiDungChuong = new NoiDungChuongRepository(_repoContext);
                 }
-                return _noiDungTruyen;
+                return _noiDungChuong;
             }
         }
         public IChuongRepository Chuong

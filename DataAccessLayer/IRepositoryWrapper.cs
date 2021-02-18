@@ -6,7 +6,7 @@
         ITheLoaiRepository TheLoai { get; }
         ITruyenRepository Truyen { get; }
         IPhuLucRepository PhuLuc { get; }
-        INoiDungTruyenRepository NoiDungTruyen { get; }
+        INoiDungChuongRepository NoiDungChuong { get; }
         IChuongRepository Chuong { get; }
         IUserRepository User { get; }
         ITheoDoiRepository TheoDoi { get; }

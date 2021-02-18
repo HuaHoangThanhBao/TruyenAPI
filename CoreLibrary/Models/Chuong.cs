@@ -21,6 +21,7 @@ namespace CoreLibrary.Models
         public Truyen Truyen { get; set; }
 
         public ICollection<BinhLuan> BinhLuans { get; set; }
+        public ICollection<NoiDungChuong> NoiDungChuongs { get; set; }
 
 
         [Required(ErrorMessage = "Tên chương is required")]

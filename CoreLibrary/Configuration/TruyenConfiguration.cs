@@ -48,11 +48,6 @@ namespace Entities.Configuration
                 .WithOne(s => s.Truyen)
                 .HasForeignKey(s => s.TheoDoiID)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasMany(e => e.BinhLuans)
-                .WithOne(s => s.Truyen)
-                .HasForeignKey(s => s.BinhLuanID)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

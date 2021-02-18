@@ -104,6 +104,8 @@ namespace Repository
         {
             return await FindByCondition(chuong => chuong.ChuongID.Equals(chuongId))
                 .Include(ac => ac.Truyen)
+                .Include(a => a.BinhLuans)
+                    .ThenInclude(b => b.User)
                 .FirstOrDefaultAsync();
         }
     }

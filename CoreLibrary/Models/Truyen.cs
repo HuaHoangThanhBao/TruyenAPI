@@ -25,7 +25,6 @@ namespace CoreLibrary.Models
         public ICollection<PhuLuc> PhuLucs { get; set; }
         public ICollection<Chuong> Chuongs { get; set; }
         public ICollection<TheoDoi> TheoDois { get; set; }
-        public ICollection<BinhLuan> BinhLuans { get; set; }
 
 
         [Required(ErrorMessage = "Ten truyen is required")]

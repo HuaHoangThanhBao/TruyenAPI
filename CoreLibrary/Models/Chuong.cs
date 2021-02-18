@@ -20,6 +20,8 @@ namespace CoreLibrary.Models
         public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 
+        public ICollection<BinhLuan> BinhLuans { get; set; }
+
 
         [Required(ErrorMessage = "Tên chương is required")]
         public string TenChuong { get; set; }

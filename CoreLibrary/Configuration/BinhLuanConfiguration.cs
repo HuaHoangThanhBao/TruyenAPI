@@ -20,7 +20,7 @@ namespace Entities.Configuration
                 .IsRequired();
 
             //n - 1 relations
-            builder.HasOne(e => e.Truyen)
+            builder.HasOne(e => e.Chuong)
                 .WithMany(s => s.BinhLuans)
                 .HasForeignKey(s => s.BinhLuanID)
                 .OnDelete(DeleteBehavior.Restrict);

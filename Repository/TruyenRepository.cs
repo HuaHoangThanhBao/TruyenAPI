@@ -105,9 +105,8 @@ namespace Repository
         {
             return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId))
                 .Include(a => a.TacGia)
-                .Include(a => a.BinhLuans)
-                    .ThenInclude(b => b.User)
                 .Include(a => a.Chuongs)
+                    .ThenInclude(a => a.BinhLuans)
                 .Include(a => a.PhuLucs)
                     .ThenInclude(b => b.TheLoai)
                 .Include(a => a.TheoDois)

@@ -56,7 +56,7 @@ namespace Repository
         public async Task<BinhLuan> GetBinhLuanByDetailAsync(int binhLuanId)
         {
             return await FindByCondition(BinhLuan => BinhLuan.BinhLuanID.Equals(binhLuanId))
-                .Include(ac => ac.Truyen)
+                .Include(ac => ac.Chuong)
                 .Include(ac => ac.User)
                 .FirstOrDefaultAsync();
         }

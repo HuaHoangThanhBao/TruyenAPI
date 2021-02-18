@@ -10,7 +10,7 @@ namespace CoreLibrary.DataTransferObjects
 
         public Guid UserID { get; set; }
 
-        public int TruyenID { get; set; }
+        public int ChuongID { get; set; }
 
         public string NoiDung { get; set; }
 

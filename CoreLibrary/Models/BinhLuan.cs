@@ -20,10 +20,10 @@ namespace CoreLibrary.Models
         public User User { get; set; }
 
         //Tập khóa ngoại
-        [ForeignKey(nameof(Truyen))]
-        [Required(ErrorMessage = "TruyenID is required")]
-        public int TruyenID { get; set; }
-        public Truyen Truyen { get; set; }
+        [ForeignKey(nameof(Chuong))]
+        [Required(ErrorMessage = "ChuongID is required")]
+        public int ChuongID { get; set; }
+        public Chuong Chuong { get; set; }
 
         [Required(ErrorMessage = "Noi dung is required")]
         public string NoiDung { get; set; }

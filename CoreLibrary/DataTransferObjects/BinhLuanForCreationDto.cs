@@ -8,8 +8,8 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "UserID is required")]
         public Guid UserID { get; set; }
 
-        [Required(ErrorMessage = "TruyenID is required")]
-        public int TruyenID { get; set; }
+        [Required(ErrorMessage = "ChuongID is required")]
+        public int ChuongID { get; set; }
 
         [Required(ErrorMessage = "Noi dung is required")]
         public string NoiDung { get; set; }
@@ -23,8 +23,8 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "UserID is required")]
         public Guid UserID { get; set; }
 
-        [Required(ErrorMessage = "TruyenID is required")]
-        public int TruyenID { get; set; }
+        [Required(ErrorMessage = "ChuongID is required")]
+        public int ChuongID { get; set; }
 
         [Required(ErrorMessage = "Noi dung is required")]
         public string NoiDung { get; set; }

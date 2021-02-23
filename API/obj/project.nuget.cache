@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "lxU5noFFugy2C+fSpsHGTlGEuA0kcmZsKgvlGVMBtk7dDxkRNq3R3hYEa0Bbb5yjOogvMSNpU/QmCzdNDVV2Ew==",
+  "dgSpecHash": "vGxxWxecK9G0Ic2zKMdXpZFkuK960CDVJin268dxIhdpVmp4AxpS/ZH05YSznvB3s8m69okSRtTmm5EuDeC7og==",
   "success": true,
   "projectFilePath": "F:\\Du-An\\Net\\Core\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DELL\\.nuget\\packages\\automapper\\10.1.0\\automapper.10.1.0.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.0\\automapper.extensions.microsoft.dependencyinjection.8.1.0.nupkg.sha512",
+    "C:\\Users\\DELL\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.8\\microsoft.aspnetcore.authentication.jwtbearer.3.1.8.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.2\\microsoft.aspnetcore.http.features.5.0.2.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\3.1.9\\microsoft.aspnetcore.jsonpatch.3.1.9.nupkg.sha512",

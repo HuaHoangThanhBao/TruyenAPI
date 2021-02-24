@@ -14,17 +14,6 @@ namespace API
 {
     public static class ServiceExtensions
     {
-        public static void ConfigureCors(this IServiceCollection services)
-        {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-            });
-        }
-
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
         {
             var connectionString = config["ConnectionStrings:default"];
@@ -41,8 +30,15 @@ namespace API
             services.AddControllers().AddNewtonsoftJson(o => o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
-        public static void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(this IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowOrigin",
+                    builder => builder.WithOrigins("http://localhost:4000")
+                                .WithMethods("GET").WithMethods("POST").WithMethods("PUT").WithMethods("DELETE"));
+            });
+
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

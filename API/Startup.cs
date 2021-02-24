@@ -29,7 +29,7 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureCors();
+            services.ConfigureServices();
             services.ConfigureSqlContext(Configuration);
             services.ConfigureLoop();
             services.ConfigureRepositoryWrapper();
@@ -57,20 +57,16 @@ namespace API
                 });
             }
 
-            //Tat Cors de bên khac co the get api ve (Tam thoi enable de test)
-            // app.UseCors(x => x
-            //.AllowAnyOrigin()
-            //.AllowAnyMethod()
-            //.AllowAnyHeader());
-            //
-
             app.ConfigureCustomExceptionMiddleware();
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AllowOrigin");
+
             app.UseRouting();
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

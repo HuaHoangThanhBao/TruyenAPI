@@ -14,8 +14,16 @@ namespace CoreLibrary
         {
         }
 
+        public DbSet<LoginModel> LoginModels { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //modelBuilder.Entity<LoginModel>().HasData(new LoginModel
+            //{
+            //    Id = 1,
+            //    UserName = "johndoe",
+            //    Password = "def@123"
+            //});
             //modelBuilder.ApplyConfiguration(new TruyenConfiguration());
             //modelBuilder.ApplyConfiguration(new TheLoaiConfiguration());
             //modelBuilder.ApplyConfiguration(new TacGiaConfiguration());

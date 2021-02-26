@@ -16,32 +16,45 @@ namespace API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        // GET api/values
-        [HttpPost, Route("login")]
-        public IActionResult Login([FromBody] LoginModel user)
+        readonly RepositoryContext _context;
+        readonly ITokenService tokenService;
+
+        public AuthController(RepositoryContext context, ITokenService tokenService)
         {
-            if (user == null)
+            this._context = context ?? throw new ArgumentNullException(nameof(context));
+            this.tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+        }
+
+
+        [HttpPost, Route("login")]
+        public IActionResult Login([FromBody] LoginModel loginModel)
+        {
+            if (loginModel == null)
             {
                 return BadRequest("Invalid client request");
             }
-            if (user.UserName == "bao" && user.Password == "123")
-            {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var tokeOptions = new JwtSecurityToken(
-                    issuer: "http://localhost:5000",
-                    audience: "http://localhost:5000",
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(5),
-                    signingCredentials: signinCredentials
-                );
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-                return Ok(new { Token = tokenString });
-            }
-            else
+            var user = _context.LoginModels
+                .FirstOrDefault(u => (u.UserName == loginModel.UserName) &&
+                                        (u.Password == loginModel.Password));
+            if (user == null)
             {
                 return Unauthorized();
             }
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, loginModel.UserName),
+                new Claim(ClaimTypes.Role, "Manager")
+            };
+            var accessToken = tokenService.GenerateAccessToken(claims);
+            var refreshToken = tokenService.GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(5);
+            _context.SaveChanges();
+            return Ok(new
+            {
+                Token = accessToken,
+                RefreshToken = refreshToken
+            });
         }
     }
 }

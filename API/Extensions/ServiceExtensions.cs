@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using API.Service;
 
 namespace API
 {
@@ -57,6 +58,8 @@ namespace API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
                 };
             });
+
+            services.AddTransient<ITokenService, TokenService>();
             services.AddControllers();
         }
     }

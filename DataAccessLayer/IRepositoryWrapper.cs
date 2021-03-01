@@ -11,6 +11,7 @@
         IUserRepository User { get; }
         ITheoDoiRepository TheoDoi { get; }
         IBinhLuanRepository BinhLuan { get; }
+        IAuthRepository Authenticate { get; }
         void Save();
     }
 }

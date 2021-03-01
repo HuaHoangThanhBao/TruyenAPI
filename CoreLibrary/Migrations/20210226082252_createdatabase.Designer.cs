@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoreLibrary.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20210218070906_createdatabase")]
+    [Migration("20210226082252_createdatabase")]
     partial class createdatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,25 +77,25 @@ namespace CoreLibrary.Migrations
                     b.ToTable("chuong");
                 });
 
-            modelBuilder.Entity("CoreLibrary.Models.NoiDungTruyen", b =>
+            modelBuilder.Entity("CoreLibrary.Models.NoiDungChuong", b =>
                 {
-                    b.Property<int>("NoiDungTruyenID")
+                    b.Property<int>("NoiDungChuongID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ChuongID")
+                        .HasColumnType("int");
 
                     b.Property<string>("HinhAnh")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TruyenID")
-                        .HasColumnType("int");
+                    b.HasKey("NoiDungChuongID");
 
-                    b.HasKey("NoiDungTruyenID");
+                    b.HasIndex("ChuongID");
 
-                    b.HasIndex("TruyenID");
-
-                    b.ToTable("noi_dung_truyen");
+                    b.ToTable("noi_dung_chuong");
                 });
 
             modelBuilder.Entity("CoreLibrary.Models.PhuLuc", b =>
@@ -262,11 +262,11 @@ namespace CoreLibrary.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CoreLibrary.Models.NoiDungTruyen", b =>
+            modelBuilder.Entity("CoreLibrary.Models.NoiDungChuong", b =>
                 {
-                    b.HasOne("CoreLibrary.Models.Truyen", "Truyen")
-                        .WithMany("NoiDungTruyens")
-                        .HasForeignKey("TruyenID")
+                    b.HasOne("CoreLibrary.Models.Chuong", "Chuong")
+                        .WithMany("NoiDungChuongs")
+                        .HasForeignKey("ChuongID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

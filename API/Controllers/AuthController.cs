@@ -6,6 +6,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using CoreLibrary;
+using CoreLibrary.Models;
+using DataAccessLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -16,45 +18,40 @@ namespace API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        readonly RepositoryContext _context;
-        readonly ITokenService tokenService;
+        private IRepositoryWrapper _repository;
 
-        public AuthController(RepositoryContext context, ITokenService tokenService)
+        public AuthController(IRepositoryWrapper repository)
         {
-            this._context = context ?? throw new ArgumentNullException(nameof(context));
-            this.tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+            _repository = repository;
         }
 
-
         [HttpPost, Route("login")]
-        public IActionResult Login([FromBody] LoginModel loginModel)
+        public IActionResult Login([FromBody] LoginModel user)
         {
-            if (loginModel == null)
-            {
-                return BadRequest("Invalid client request");
-            }
-            var user = _context.LoginModels
-                .FirstOrDefault(u => (u.UserName == loginModel.UserName) &&
-                                        (u.Password == loginModel.Password));
             if (user == null)
             {
-                return Unauthorized();
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin user trống" });
             }
-            var claims = new List<Claim>
+
+            var loginResult = _repository.Authenticate.LogIn(user.UserName, user.Password);
+            if (loginResult.StatusCode == ResponseCode.Success)
             {
-                new Claim(ClaimTypes.Name, loginModel.UserName),
-                new Claim(ClaimTypes.Role, "Manager")
-            };
-            var accessToken = tokenService.GenerateAccessToken(claims);
-            var refreshToken = tokenService.GenerateRefreshToken();
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(5);
-            _context.SaveChanges();
-            return Ok(new
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
+                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                var tokeOptions = new JwtSecurityToken(
+                    issuer: "http://localhost:50504",
+                    audience: "http://localhost:50504",
+                    claims: new List<Claim>(),
+                    expires: DateTime.Now.AddMinutes(5),
+                    signingCredentials: signinCredentials
+                );
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+                return Ok(new { Token = tokenString });
+            }
+            else
             {
-                Token = accessToken,
-                RefreshToken = refreshToken
-            });
+                return Unauthorized(loginResult);
+            }
         }
     }
 }

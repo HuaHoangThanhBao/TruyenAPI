@@ -15,6 +15,7 @@ namespace Repository
         private IUserRepository _user;
         private ITheoDoiRepository _theoDoi;
         private IBinhLuanRepository _binhLuan;
+        private IAuthRepository _auth;
         public ITacGiaRepository TacGia
         {
             get
@@ -112,6 +113,17 @@ namespace Repository
                     _binhLuan = new BinhLuanRepository(_repoContext);
                 }
                 return _binhLuan;
+            }
+        }
+        public IAuthRepository Authenticate
+        {
+            get
+            {
+                if (_auth == null)
+                {
+                    _auth = new AuthRepository(_repoContext);
+                }
+                return _auth;
             }
         }
         public RepositoryWrapper(RepositoryContext repositoryContext)

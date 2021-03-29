@@ -29,6 +29,7 @@ namespace Repository
         {
             foreach (var phuLuc in phuLucs)
             {
+                /*Bắt lỗi [ID]*/
                 var truyenRepo = new TruyenRepository(_context);
                 var theLoaiRepo = new TheLoaiRepository(_context);
 
@@ -47,10 +48,10 @@ namespace Repository
                     {
                         StatusCode = ResponseCode.Error,
                         Message = "ID thể loại không tồn tại",
-                        Value = phuLuc.TruyenID.ToString()
+                        Value = phuLuc.TheLoaiID.ToString()
                     };
                 }
-
+                /*End*/
 
                 Create(phuLuc);
             }
@@ -61,6 +62,7 @@ namespace Repository
         //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
         public ResponseDetails UpdatePhuLuc(PhuLuc phuLuc)
         {
+            /*Bắt lỗi [ID]*/
             var truyenRepo = new TruyenRepository(_context);
             var theLoaiRepo = new TheLoaiRepository(_context);
 
@@ -79,9 +81,10 @@ namespace Repository
                 {
                     StatusCode = ResponseCode.Error,
                     Message = "ID thể loại không tồn tại",
-                    Value = phuLuc.TruyenID.ToString()
+                    Value = phuLuc.TheLoaiID.ToString()
                 };
             }
+            /*End*/
 
             Update(phuLuc);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa phụ lục thành công" };

@@ -100,10 +100,10 @@ namespace API.Controllers
                     var fullPath = Path.Combine(pathToSave, fileName);
                     //var dbPath = Path.Combine(folderName, fileName);
 
-                    var noiDungChuongEntity = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(model.NoiDungChuongID, model.ChuongID);
+                    var noiDungChuongEntity = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(model.NoiDungChuongID);
                     if (noiDungChuongEntity == null)
                     {
-                        return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "TruyenID hoặc NoiDungID không tồn tại" });
+                        return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "NoiDungChuongID không tồn tại" });
                     }
                     noiDungChuongEntity.HinhAnh = fileName;
 
@@ -132,22 +132,17 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePhuLuc(int id)
+        public async Task<IActionResult> DeleteNoiDungChuong(int id)
         {
             try
             {
-                var phuLuc = await _repository.PhuLuc.GetPhuLucByIdAsync(id);
-                if (phuLuc == null)
+                var noiDungChuong = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(id);
+                if (noiDungChuong == null)
                 {
-                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID phụ lục không tồn tại" });
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID Nội dung chương không tồn tại" });
                 }
 
-                //if (_repository.Account.AccountsByOwner(id).Any())
-                //{
-                //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
-                //}
-
-                ResponseDetails response = _repository.PhuLuc.DeletePhuLuc(phuLuc);
+                ResponseDetails response = _repository.NoiDungChuong.DeleteNoiDungChuong(noiDungChuong);
 
                 if (response.StatusCode == ResponseCode.Success)
                     _repository.Save();
@@ -156,7 +151,7 @@ namespace API.Controllers
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeletePhuLuc" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteNoiDungChuong" });
             }
         }
     }

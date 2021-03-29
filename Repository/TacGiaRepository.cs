@@ -24,6 +24,17 @@ namespace Repository
         {
             foreach (var tacGia in tacGias)
             {
+                /*Bắt lỗi [Tên tác giả]*/
+                if(tacGia.TenTacGia == "" || tacGia.TenTacGia == null)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Tên tác giả không được để trống",
+                        Value = tacGia.TenTacGia
+                    };
+                }
+
                 if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia)).Any())
                 {
                     return new ResponseDetails()
@@ -33,6 +44,7 @@ namespace Repository
                         Value = tacGia.TenTacGia
                     };
                 }
+                /*End*/
 
                 Create(tacGia);
             }
@@ -43,6 +55,17 @@ namespace Repository
         //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateTacGia(TacGia tacGia)
         {
+            /*Bắt lỗi [Tên tác giả]*/
+            if (tacGia.TenTacGia == "" || tacGia.TenTacGia == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên tác giả không được để trống",
+                    Value = tacGia.TenTacGia
+                };
+            }
+
             if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia)).Any())
             {
                 return new ResponseDetails()
@@ -52,7 +75,8 @@ namespace Repository
                     Value = tacGia.TenTacGia
                 };
             }
-            
+            /*End*/
+
             Update(tacGia);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa tác giả thành công" };
         }
@@ -60,6 +84,7 @@ namespace Repository
         //Xóa logic
         public ResponseDetails DeleteTacGia(TacGia tacGia)
         {
+            //Kiểm tra [id tác giả] hiện tại có nằm trong [truyện] không? Nếu không thì cho phép xóa
             var truyenRepo = new TruyenRepository(_context);
             if (!truyenRepo.FindByCondition(t => t.TacGiaID.Equals(tacGia.TacGiaID) && !t.TinhTrang).Any())
             {

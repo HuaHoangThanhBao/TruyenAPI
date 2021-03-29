@@ -21,6 +21,17 @@ namespace Repository
         {
             foreach (var theLoai in theLoais)
             {
+                /*Bắt lỗi [Tên thể loại]*/
+                if (theLoai.TenTheLoai == "" || theLoai.TenTheLoai == null)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Tên thể loại không được để trống",
+                        Value = theLoai.TenTheLoai
+                    };
+                }
+
                 if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai)).Any())
                 {
                     return new ResponseDetails()
@@ -30,6 +41,7 @@ namespace Repository
                         Value = theLoai.TenTheLoai
                     };
                 }
+                /*End*/
 
                 Create(theLoai);
             }
@@ -40,6 +52,17 @@ namespace Repository
         //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateTheLoai(TheLoai theLoai)
         {
+            /*Bắt lỗi [Tên thể loại]*/
+            if (theLoai.TenTheLoai == "" || theLoai.TenTheLoai == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên thể loại không được để trống",
+                    Value = theLoai.TenTheLoai
+                };
+            }
+
             if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai)).Any())
             {
                 return new ResponseDetails()
@@ -49,6 +72,7 @@ namespace Repository
                     Value = theLoai.TenTheLoai
                 };
             }
+            /*End*/
 
             Update(theLoai);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa thể loại thành công" };

@@ -11,15 +11,61 @@ namespace Repository
 {
     public class BinhLuanRepository : RepositoryBase<BinhLuan>, IBinhLuanRepository
     {
+        private RepositoryContext _context;
         public BinhLuanRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
         {
+            _context = repositoryContext;
         }
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: !null = TenBinhLuan bị trùng, null: thêm thành công
         public ResponseDetails CreateBinhLuan(BinhLuan binhLuan)
         {
+            /*Bắt lỗi [ID]*/
+            var userRepo = new UserRepository(_context);
+            var chuongRepo = new ChuongRepository(_context);
+            if(!userRepo.FindByCondition(t => t.UserID == binhLuan.UserID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID User không tồn tại",
+                    Value = binhLuan.UserID.ToString()
+                };
+            }
+
+            if (!chuongRepo.FindByCondition(t => t.ChuongID == binhLuan.ChuongID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID Chương không tồn tại",
+                    Value = binhLuan.ChuongID.ToString()
+                };
+            }
+            /*End*/
+
+            if(binhLuan.NoiDung == "" || binhLuan.NoiDung == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Nội dung chương không được để trống",
+                    Value = binhLuan.NoiDung.ToString()
+                };
+            }
+
+            if (binhLuan.NgayBL == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Ngày bình luận không được để trống",
+                    Value = binhLuan.NgayBL.ToString()
+                };
+            }
+
             Create(binhLuan);
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
@@ -28,6 +74,50 @@ namespace Repository
         //KQ: false: TenBinhLuan bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateBinhLuan(BinhLuan binhLuan)
         {
+            /*Bắt lỗi [ID]*/
+            var userRepo = new UserRepository(_context);
+            var chuongRepo = new ChuongRepository(_context);
+            if (!userRepo.FindByCondition(t => t.UserID == binhLuan.UserID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID User không tồn tại",
+                    Value = binhLuan.UserID.ToString()
+                };
+            }
+
+            if (!chuongRepo.FindByCondition(t => t.ChuongID == binhLuan.ChuongID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID Chương không tồn tại",
+                    Value = binhLuan.ChuongID.ToString()
+                };
+            }
+            /*End*/
+
+            if (binhLuan.NoiDung == "" || binhLuan.NoiDung == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Nội dung chương không được để trống",
+                    Value = binhLuan.NoiDung.ToString()
+                };
+            }
+
+            if (binhLuan.NgayBL == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Ngày bình luận không được để trống",
+                    Value = binhLuan.BinhLuanID.ToString()
+                };
+            }
+
             Update(binhLuan);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa bình luận thành công" };
         }

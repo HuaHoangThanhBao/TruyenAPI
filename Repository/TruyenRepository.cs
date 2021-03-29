@@ -23,17 +23,7 @@ namespace Repository
         {
             foreach (var truyen in truyens)
             {
-                if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Tên truyện bị trùng",
-                        Value = truyen.TenTruyen
-                    };
-                }
-
-
+                /*Bắt lỗi [ID]*/
                 var tacGiaRepo = new TacGiaRepository(_context);
                 if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
                 {
@@ -44,7 +34,43 @@ namespace Repository
                         Value = truyen.TacGiaID.ToString()
                     };
                 }
+                /*End*/
 
+                /*Bắt lỗi [Tên truyện]*/
+                if (truyen.TenTruyen == "" || truyen.TenTruyen == null)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Tên truyện không được để trống",
+                        Value = truyen.TenTruyen
+                    };
+                }
+
+                if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Tên truyện bị trùng",
+                        Value = truyen.TenTruyen
+                    };
+                }
+                /*End*/
+
+                /*Bắt lỗi [Mô tả]*/
+                if(truyen.MoTa == "" || truyen.MoTa == null)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Mô tả không được để trống",
+                        Value = truyen.TenTruyen
+                    };
+                }
+                /*End*/
+
+                //Tạo dữ liệu nhưng chưa add vào CSDL
                 Create(truyen);
             }
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
@@ -54,15 +80,7 @@ namespace Repository
         //KQ: false: TenTruyen bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateTruyen(Truyen truyen)
         {
-            if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Tên truyện bị trùng"
-                };
-            }
-
+            /*Bắt lỗi [ID]*/
             var tacGiaRepo = new TacGiaRepository(_context);
             if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
             {
@@ -73,7 +91,42 @@ namespace Repository
                     Value = truyen.TacGiaID.ToString()
                 };
             }
+            /*End*/
 
+            /*Bắt lỗi [Tên truyện]*/
+            if (truyen.TenTruyen == "" || truyen.TenTruyen == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên truyện không được để trống",
+                    Value = truyen.TenTruyen
+                };
+            }
+
+            if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên truyện bị trùng"
+                };
+            }
+            /*End*/
+
+            /*Bắt lỗi [Mô tả]*/
+            if (truyen.MoTa == "" || truyen.MoTa == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Mô tả không được để trống",
+                    Value = truyen.TenTruyen
+                };
+            }
+            /*End*/
+
+            //Tạo bản ghi mới nhưng chưa update vào CSDL
             Update(truyen);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa truyện thành công" };
         }
@@ -81,6 +134,7 @@ namespace Repository
         //Xóa logic
         public ResponseDetails DeleteTruyen(Truyen truyen)
         {
+            //Tạo bản ghi mới nhưng chưa update vào CSDL
             truyen.TinhTrang = true;
             Update(truyen);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa truyện thành công" };

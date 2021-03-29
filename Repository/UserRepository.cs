@@ -20,6 +20,26 @@ namespace Repository
         //KQ: !null = TenUser bị trùng, null: thêm thành công
         public ResponseDetails CreateUser(User user)
         {
+            if (user.TenUser == "" || user.TenUser == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên user không được để trống",
+                    Value = user.TenUser.ToString()
+                };
+            }
+
+            if (user.Password == "" || user.Password == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Password không được để trống",
+                    Value = user.Password.ToString()
+                };
+            }
+
             Create(user);
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
@@ -28,6 +48,26 @@ namespace Repository
         //KQ: false: TenUser bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateUser(User user)
         {
+            if (user.TenUser == "" || user.TenUser == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên user không được để trống",
+                    Value = user.TenUser.ToString()
+                };
+            }
+
+            if (user.Password == "" || user.Password == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Password không được để trống",
+                    Value = user.Password.ToString()
+                };
+            }
+
             Update(user);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa user thành công" };
         }

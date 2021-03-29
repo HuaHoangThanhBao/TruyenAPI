@@ -11,24 +11,68 @@ namespace Repository
 {
     public class TheoDoiRepository : RepositoryBase<TheoDoi>, ITheoDoiRepository
     {
+        private RepositoryContext _context;
         public TheoDoiRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
         {
+            _context = repositoryContext;
         }
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: !null = TenTheoDoi bị trùng, null: thêm thành công
-        public ResponseDetails CreateTheoDoi(TheoDoi TheoDoi)
+        public ResponseDetails CreateTheoDoi(TheoDoi theoDoi)
         {
-            Create(TheoDoi);
+            var userRepo = new UserRepository(_context);
+            var truyenRepo = new TruyenRepository(_context);
+            if (!userRepo.FindByCondition(t => t.UserID == theoDoi.UserID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID User không tồn tại",
+                    Value = theoDoi.UserID.ToString()
+                };
+            }
+            if (!truyenRepo.FindByCondition(t => t.TruyenID == theoDoi.TruyenID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID Truyện không tồn tại",
+                    Value = theoDoi.TruyenID.ToString()
+                };
+            }
+
+            Create(theoDoi);
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
 
         //Kiểm tra object truyền vào có tên trùng trong database không
         //KQ: false: TenTheoDoi bị trùng, true: cập nhật thành công
-        public ResponseDetails UpdateTheoDoi(TheoDoi TheoDoi)
+        public ResponseDetails UpdateTheoDoi(TheoDoi theoDoi)
         {
-            Update(TheoDoi);
+            var userRepo = new UserRepository(_context);
+            var truyenRepo = new TruyenRepository(_context);
+            if (!userRepo.FindByCondition(t => t.UserID == theoDoi.UserID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID User không tồn tại",
+                    Value = theoDoi.UserID.ToString()
+                };
+            }
+            if (!truyenRepo.FindByCondition(t => t.TruyenID == theoDoi.TruyenID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID Truyện không tồn tại",
+                    Value = theoDoi.TruyenID.ToString()
+                };
+            }
+
+            Update(theoDoi);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa TheoDoi thành công" };
         }
 

@@ -7,9 +7,9 @@ namespace DataAccessLayer
     public interface INoiDungChuongRepository
     {
         Task<IEnumerable<NoiDungChuong>> GetAllNoiDungChuongsAsync();
-        Task<NoiDungChuong> GetNoiDungChuongByChuongIdAsync(int noiDungId, int chuongId);
+        Task<NoiDungChuong> GetNoiDungChuongByChuongIdAsync(int chuongId);
         ResponseDetails CreateNoiDungChuong(NoiDungChuong noiDungChuong);
         ResponseDetails UpdateNoiDungChuong(NoiDungChuong noiDungChuong);
-        ResponseDetails DeleteNoiDungChuong(int chuongId);
+        ResponseDetails DeleteNoiDungChuong(NoiDungChuong noiDungChuong);
     }
 }

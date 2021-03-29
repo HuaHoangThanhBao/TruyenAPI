@@ -31,5 +31,7 @@ namespace CoreLibrary.Models
         public DateTime ThoiGianCapNhat { get; set; }
 
         public int LuotXem { get; set; }
+
+        public int TrangThai { get; set; }
     }
 }

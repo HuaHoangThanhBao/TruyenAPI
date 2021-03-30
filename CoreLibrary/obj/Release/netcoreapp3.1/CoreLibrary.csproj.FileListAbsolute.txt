@@ -9,3 +9,4 @@ F:\Du-An\Net\Core\CoreLibrary\obj\Release\netcoreapp3.1\CoreLibrary.csproj.CoreC
 F:\Du-An\Net\Core\CoreLibrary\obj\Release\netcoreapp3.1\CoreLibrary.dll
 F:\Du-An\Net\Core\CoreLibrary\obj\Release\netcoreapp3.1\CoreLibrary.pdb
 F:\Du-An\Net\Core\CoreLibrary\obj\Release\netcoreapp3.1\CoreLibrary.genruntimeconfig.cache
+F:\Du-An\Net\Core\CoreLibrary\obj\Release\netcoreapp3.1\CoreLibrary.csprojAssemblyReference.cache

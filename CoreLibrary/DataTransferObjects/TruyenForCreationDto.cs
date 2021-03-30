@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -20,6 +21,8 @@ namespace CoreLibrary.DataTransferObjects
 
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }
+
+        public IFormFile HinhAnh { get; set; }
     }
 
     public class TruyenForUpdateDto
@@ -38,5 +41,7 @@ namespace CoreLibrary.DataTransferObjects
 
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }
+
+        public IFormFile HinhAnh { get; set; }
     }
 }

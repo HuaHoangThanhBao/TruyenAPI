@@ -5,6 +5,8 @@ using DataAccessLayer;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using System.Net.Http.Headers;
 
 namespace API.Controllers
 {
@@ -83,7 +85,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTruyen([FromBody] IEnumerable<TruyenForCreationDto> truyen)
+        public IActionResult CreateTruyen([FromForm] TruyenForCreationDto truyen)
         {
             try
             {
@@ -97,18 +99,43 @@ namespace API.Controllers
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
-                var truyenEntity = _mapper.Map<IEnumerable<Truyen>>(truyen);
-
-                var response = _repository.Truyen.CreateTruyen(truyenEntity);
-                if (response.StatusCode == ResponseCode.Success)
+                if (truyen.HinhAnh == null)
                 {
-                    _repository.Save();
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "File hình ảnh bị trống" });
                 }
-                else return BadRequest(response);
 
-                var createdTruyen= _mapper.Map<IEnumerable<TruyenDto>>(truyenEntity);
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (truyen.HinhAnh.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(truyen.HinhAnh.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    //var dbPath = Path.Combine(folderName, fileName);
 
-                return Ok(createdTruyen);
+                    var truyenParse = new Truyen() { 
+                        TacGiaID = truyen.TacGiaID,
+                        TenTruyen = truyen.TenTruyen, 
+                        MoTa = truyen.MoTa,
+                        HinhAnh = fileName
+                    };
+
+                    var truyenEntity = _mapper.Map<Truyen>(truyenParse);
+
+                    var response = _repository.Truyen.CreateTruyen(truyenParse);
+                    if (response.StatusCode == ResponseCode.Success)
+                    {
+                        _repository.Save();
+                    }
+                    else return BadRequest(response);
+
+                    var createdTruyen = _mapper.Map<TruyenDto>(truyenEntity);
+
+                    return Ok(createdTruyen);
+                }
+                else
+                {
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "File hình ảnh bị trống" });
+                }
             }
             catch
             {
@@ -117,7 +144,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTruyen(int id, [FromBody] TruyenForUpdateDto truyen)
+        public async Task<IActionResult> UpdateTruyen(int id, [FromForm] TruyenForUpdateDto truyen)
         {
             try
             {
@@ -137,17 +164,32 @@ namespace API.Controllers
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Truyện không tồn tại" });
                 }
 
-                _mapper.Map(truyen, truyenEntity);
-
-                ResponseDetails response = _repository.Truyen.UpdateTruyen(truyenEntity);
-
-                if (response.StatusCode == ResponseCode.Success)
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (truyen.HinhAnh.Length > 0)
                 {
-                    _repository.Save();
-                }
-                else return BadRequest(response);
+                    var fileName = ContentDispositionHeaderValue.Parse(truyen.HinhAnh.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    //var dbPath = Path.Combine(folderName, fileName);
 
-                return Ok(response);
+                    _mapper.Map(truyen, truyenEntity);
+
+                    truyenEntity.HinhAnh = fileName;
+
+                    ResponseDetails response = _repository.Truyen.UpdateTruyen(truyenEntity);
+
+                    if (response.StatusCode == ResponseCode.Success)
+                    {
+                        _repository.Save();
+                    }
+                    else return BadRequest(response);
+
+                    return Ok(response);
+                }
+                else
+                {
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "File hình ảnh bị trống" });
+                }
             }
             catch
             {
@@ -165,11 +207,6 @@ namespace API.Controllers
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID truyện không tồn tại" });
                 }
-
-                //if (_repository.Account.AccountsByOwner(id).Any())
-                //{
-                //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
-                //}
 
                 ResponseDetails response = _repository.Truyen.DeleteTruyen(truyen);
 

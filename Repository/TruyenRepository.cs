@@ -19,60 +19,58 @@ namespace Repository
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: !null = TenTruyen bị trùng, null: thêm thành công
-        public ResponseDetails CreateTruyen(IEnumerable<Truyen> truyens)
+        public ResponseDetails CreateTruyen(Truyen truyen)
         {
-            foreach (var truyen in truyens)
+            /*Bắt lỗi [ID]*/
+            var tacGiaRepo = new TacGiaRepository(_context);
+            if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
             {
-                /*Bắt lỗi [ID]*/
-                var tacGiaRepo = new TacGiaRepository(_context);
-                if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
+                return new ResponseDetails()
                 {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "ID tác giả không tồn tại",
-                        Value = truyen.TacGiaID.ToString()
-                    };
-                }
-                /*End*/
-
-                /*Bắt lỗi [Tên truyện]*/
-                if (truyen.TenTruyen == "" || truyen.TenTruyen == null)
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Tên truyện không được để trống",
-                        Value = truyen.TenTruyen
-                    };
-                }
-
-                if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Tên truyện bị trùng",
-                        Value = truyen.TenTruyen
-                    };
-                }
-                /*End*/
-
-                /*Bắt lỗi [Mô tả]*/
-                if(truyen.MoTa == "" || truyen.MoTa == null)
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Mô tả không được để trống",
-                        Value = truyen.TenTruyen
-                    };
-                }
-                /*End*/
-
-                //Tạo dữ liệu nhưng chưa add vào CSDL
-                Create(truyen);
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID tác giả không tồn tại",
+                    Value = truyen.TacGiaID.ToString()
+                };
             }
+            /*End*/
+
+            /*Bắt lỗi [Tên truyện]*/
+            if (truyen.TenTruyen == "" || truyen.TenTruyen == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên truyện không được để trống",
+                    Value = truyen.TenTruyen
+                };
+            }
+
+            if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên truyện bị trùng",
+                    Value = truyen.TenTruyen
+                };
+            }
+            /*End*/
+
+            /*Bắt lỗi [Mô tả]*/
+            if (truyen.MoTa == "" || truyen.MoTa == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Mô tả không được để trống",
+                    Value = truyen.TenTruyen
+                };
+            }
+            /*End*/
+
+            //Tạo dữ liệu nhưng chưa add vào CSDL
+            Create(truyen);
+
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
 

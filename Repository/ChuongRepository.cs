@@ -48,7 +48,7 @@ namespace Repository
                     };
                 }
 
-                if (FindByCondition(t => t.TenChuong.Equals(chuong.TenChuong)).Any())
+                if (FindByCondition(t => t.TenChuong.Equals(chuong.TenChuong) && t.TruyenID.Equals(chuong.TruyenID)).Any())
                 {
                     return new ResponseDetails()
                     {
@@ -108,7 +108,7 @@ namespace Repository
                 };
             }
 
-            if (FindByCondition(t => t.TenChuong.Equals(chuong.TenChuong)).Any())
+            if (FindByCondition(t => t.TenChuong.Equals(chuong.TenChuong) && t.TruyenID.Equals(chuong.TruyenID)).Any())
             {
                 return new ResponseDetails()
                 {

@@ -18,8 +18,8 @@ namespace Entities.Configuration
             builder.Property(s => s.MoTa)
                 .IsRequired();
 
-            builder.Property(s => s.LuotXem)
-                .HasDefaultValue(0);
+            //builder.Property(s => s.LuotXem)
+            //    .HasDefaultValue(0);
             builder.Property(s => s.TinhTrang)
                 .HasDefaultValue(false);
 

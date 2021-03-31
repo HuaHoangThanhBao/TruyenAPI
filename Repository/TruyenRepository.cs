@@ -143,7 +143,7 @@ namespace Repository
         {
             return await FindAll()
                 .Where(ow => !ow.TinhTrang)
-                .OrderBy(ow => ow.TenTruyen)
+                .OrderBy(ow => ow.TruyenID)
                 .ToListAsync();
         }
 

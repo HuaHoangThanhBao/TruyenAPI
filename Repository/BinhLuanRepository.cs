@@ -133,6 +133,9 @@ namespace Repository
         public async Task<IEnumerable<BinhLuan>> GetAllBinhLuansAsync()
         {
             return await FindAll()
+                .Include(ac => ac.Chuong)
+                    .ThenInclude(ac => ac.Truyen)
+                .Include(m => m.User)
                 .OrderBy(ow => ow.BinhLuanID)
                 .ToListAsync();
         }

@@ -27,9 +27,9 @@ namespace API.Controllers
             try
             {
                 var binhLuans = await _repository.BinhLuan.GetAllBinhLuansAsync();
-                var binhLuansResult = _mapper.Map<IEnumerable<BinhLuanDto>>(binhLuans);
+                //var binhLuansResult = _mapper.Map<IEnumerable<BinhLuanDto>>(binhLuans);
 
-                return Ok(binhLuansResult);
+                return Ok(binhLuans);
             }
             catch
             {

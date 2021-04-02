@@ -110,5 +110,13 @@ namespace Repository
             return await FindByCondition(phuLuc => phuLuc.PhuLucID.Equals(phuLucId))
                     .FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<PhuLuc>> GetPhuLucByTruyenIdAsync(int truyenId)
+        {
+            return await FindAll()
+                .Where(m => m.TruyenID == truyenId)
+                .Include(ac => ac.TheLoai)
+                .ToListAsync();
+        }
     }
 }

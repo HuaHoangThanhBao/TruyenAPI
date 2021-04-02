@@ -9,6 +9,7 @@ namespace DataAccessLayer
         IEnumerable<PhuLuc> TheLoaisInPhuLuc(int theLoaiId);
         Task<IEnumerable<PhuLuc>> GetAllPhuLucsAsync();
         Task<PhuLuc> GetPhuLucByIdAsync(int phuLucId);
+        Task<IEnumerable<PhuLuc>> GetPhuLucByTruyenIdAsync(int truyenId);
         ResponseDetails CreatePhuLuc(IEnumerable<PhuLuc> phuLucs);
         ResponseDetails UpdatePhuLuc(PhuLuc phuLuc);
         ResponseDetails DeletePhuLuc(PhuLuc phuLuc);

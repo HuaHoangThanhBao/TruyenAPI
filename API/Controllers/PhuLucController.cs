@@ -38,19 +38,19 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}", Name = "PhuLucById")]
-        public async Task<IActionResult> GetPhuLucById(int id)
+        public async Task<IActionResult> GetPhuLucByTruyenId(int id)
         {
             try
             {
-                var phuLuc = await _repository.PhuLuc.GetPhuLucByIdAsync(id);
+                var phuLuc = await _repository.PhuLuc.GetPhuLucByTruyenIdAsync(id);
                 if (phuLuc == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Phụ lục không tồn tại" });
                 }
                 else
                 {
-                    var phuLucResult = _mapper.Map<PhuLucDto>(phuLuc);
-                    return Ok(phuLucResult);
+                    //var phuLucResult = _mapper.Map<PhuLucDto>(phuLuc);
+                    return Ok(phuLuc);
                 }
             }
             catch

@@ -18,6 +18,8 @@ namespace CoreLibrary.Models
         [StringLength(50, ErrorMessage = "Ten user can't be longer than 50 characters")]
         public string TenUser { get; set; }
 
+        public int Quyen { get; set; }
+
         [Required(ErrorMessage = "Password is required")]
         [StringLength(30, ErrorMessage = "Password can't be longer than 50 characters")]
         public string Password { get; set; }

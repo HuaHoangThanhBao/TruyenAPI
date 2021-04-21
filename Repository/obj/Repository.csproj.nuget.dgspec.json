@@ -1,20 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Du-An\\Net\\Core\\Repository\\Repository.csproj": {}
+    "D:\\GitLab\\TruyenAPI\\Repository\\Repository.csproj": {}
   },
   "projects": {
-    "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj": {
+    "D:\\GitLab\\TruyenAPI\\CoreLibrary\\CoreLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj",
+        "projectUniqueName": "D:\\GitLab\\TruyenAPI\\CoreLibrary\\CoreLibrary.csproj",
         "projectName": "CoreLibrary",
-        "projectPath": "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj",
-        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "F:\\Du-An\\Net\\Core\\CoreLibrary\\obj\\",
+        "projectPath": "D:\\GitLab\\TruyenAPI\\CoreLibrary\\CoreLibrary.csproj",
+        "packagesPath": "C:\\Users\\SeverTora\\.nuget\\packages\\",
+        "outputPath": "D:\\GitLab\\TruyenAPI\\CoreLibrary\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\SeverTora\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,6 +31,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -37,6 +43,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
@@ -71,32 +78,31 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.2, 3.1.2]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj": {
+    "D:\\GitLab\\TruyenAPI\\DataAccessLayer\\DataAccessLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj",
+        "projectUniqueName": "D:\\GitLab\\TruyenAPI\\DataAccessLayer\\DataAccessLayer.csproj",
         "projectName": "DataAccessLayer",
-        "projectPath": "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj",
-        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "F:\\Du-An\\Net\\Core\\DataAccessLayer\\obj\\",
+        "projectPath": "D:\\GitLab\\TruyenAPI\\DataAccessLayer\\DataAccessLayer.csproj",
+        "packagesPath": "C:\\Users\\SeverTora\\.nuget\\packages\\",
+        "outputPath": "D:\\GitLab\\TruyenAPI\\DataAccessLayer\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\SeverTora\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -108,9 +114,10 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj": {
-                "projectPath": "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj"
+              "D:\\GitLab\\TruyenAPI\\CoreLibrary\\CoreLibrary.csproj": {
+                "projectPath": "D:\\GitLab\\TruyenAPI\\CoreLibrary\\CoreLibrary.csproj"
               }
             }
           }
@@ -123,6 +130,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "imports": [
             "net461",
             "net462",
@@ -133,32 +141,31 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.2, 3.1.2]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\Du-An\\Net\\Core\\Repository\\Repository.csproj": {
+    "D:\\GitLab\\TruyenAPI\\Repository\\Repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Du-An\\Net\\Core\\Repository\\Repository.csproj",
+        "projectUniqueName": "D:\\GitLab\\TruyenAPI\\Repository\\Repository.csproj",
         "projectName": "Repository",
-        "projectPath": "F:\\Du-An\\Net\\Core\\Repository\\Repository.csproj",
-        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "F:\\Du-An\\Net\\Core\\Repository\\obj\\",
+        "projectPath": "D:\\GitLab\\TruyenAPI\\Repository\\Repository.csproj",
+        "packagesPath": "C:\\Users\\SeverTora\\.nuget\\packages\\",
+        "outputPath": "D:\\GitLab\\TruyenAPI\\Repository\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\SeverTora\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -170,12 +177,13 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj": {
-                "projectPath": "F:\\Du-An\\Net\\Core\\CoreLibrary\\CoreLibrary.csproj"
+              "D:\\GitLab\\TruyenAPI\\CoreLibrary\\CoreLibrary.csproj": {
+                "projectPath": "D:\\GitLab\\TruyenAPI\\CoreLibrary\\CoreLibrary.csproj"
               },
-              "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj": {
-                "projectPath": "F:\\Du-An\\Net\\Core\\DataAccessLayer\\DataAccessLayer.csproj"
+              "D:\\GitLab\\TruyenAPI\\DataAccessLayer\\DataAccessLayer.csproj": {
+                "projectPath": "D:\\GitLab\\TruyenAPI\\DataAccessLayer\\DataAccessLayer.csproj"
               }
             }
           }
@@ -188,6 +196,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "imports": [
             "net461",
             "net462",
@@ -198,18 +207,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.2, 3.1.2]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

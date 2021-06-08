@@ -8,7 +8,7 @@ namespace DataAccessLayer
     {
         Task<IEnumerable<NoiDungChuong>> GetAllNoiDungChuongsAsync();
         Task<NoiDungChuong> GetNoiDungChuongByChuongIdAsync(int chuongId);
-        ResponseDetails CreateNoiDungChuong(NoiDungChuong noiDungChuong);
+        ResponseDetails CreateNoiDungChuong(IEnumerable<NoiDungChuong> noiDungChuong);
         ResponseDetails UpdateNoiDungChuong(NoiDungChuong noiDungChuong);
         ResponseDetails DeleteNoiDungChuong(NoiDungChuong noiDungChuong);
     }

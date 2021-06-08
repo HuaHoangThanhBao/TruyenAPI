@@ -50,8 +50,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    //var theLoaiResult = _mapper.Map<TacGiaDto>(theLoai); Sai đối tượng map
-                    var theLoaiResult = _mapper.Map<TheLoaiDto>(theLoai);
+                    var theLoaiResult = _mapper.Map<TacGiaDto>(theLoai);
                     return Ok(theLoaiResult);
                 }
             }

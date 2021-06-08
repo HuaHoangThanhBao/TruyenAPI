@@ -22,7 +22,8 @@ namespace CoreLibrary.DataTransferObjects
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }
 
-        public IFormFile HinhAnh { get; set; }
+        [Required(ErrorMessage = "Hinh anh is required")]
+        public string HinhAnh { get; set; }
     }
 
     public class TruyenForUpdateDto
@@ -42,6 +43,7 @@ namespace CoreLibrary.DataTransferObjects
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }
 
-        public IFormFile HinhAnh { get; set; }
+        [Required(ErrorMessage = "Hinh anh is required")]
+        public string HinhAnh { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace DataAccessLayer
         Task<IEnumerable<Truyen>> GetAllTruyensAsync();
         Task<Truyen> GetTruyenByIdAsync(int truyenId);
         Task<Truyen> GetTruyenByDetailAsync(int truyenId);
-        ResponseDetails CreateTruyen(Truyen truyen);
+        ResponseDetails CreateTruyen(IEnumerable<Truyen> truyens);
         ResponseDetails UpdateTruyen(Truyen truyen);
         ResponseDetails DeleteTruyen(Truyen truyen);
     }

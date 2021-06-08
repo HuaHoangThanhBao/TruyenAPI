@@ -20,37 +20,41 @@ namespace Repository
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: false = TruyenID hoặc TheLoaiID không tồn tại, true: thêm thành công
-        public ResponseDetails CreateNoiDungChuong(NoiDungChuong nd)
+        public ResponseDetails CreateNoiDungChuong(IEnumerable<NoiDungChuong> noiDungChuongs)
         {
-            /*Bắt lỗi [ID]*/
             var truyenRepo = new TruyenRepository(_context);
-            if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(nd.ChuongID)).Any())
+
+            foreach (var nd in noiDungChuongs)
             {
-                return new ResponseDetails()
+                /*Bắt lỗi [ID]*/
+                if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(nd.ChuongID)).Any())
                 {
-                    StatusCode = ResponseCode.Error,
-                    Message = "ID chương không tồn tại",
-                    Value = nd.ChuongID.ToString()
-                };
-            }
-            /*End*/
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "ID chương không tồn tại",
+                        Value = nd.ChuongID.ToString()
+                    };
+                }
+                /*End*/
 
-            /*Bắt lỗi [Tên hình ảnh]*/
-            if (FindByCondition(t => t.HinhAnh.Equals(nd.HinhAnh) && t.ChuongID.Equals(nd.ChuongID)).Any())
-            {
-                return new ResponseDetails()
+                /*Bắt lỗi [Tên hình ảnh]*/
+                if (FindByCondition(t => t.HinhAnh.Equals(nd.HinhAnh) && t.ChuongID.Equals(nd.ChuongID)).Any())
                 {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Chương đã tồn tại hình ảnh này",
-                    Value = nd.HinhAnh
-                };
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Chương đã tồn tại hình ảnh này",
+                        Value = nd.HinhAnh
+                    };
+                }
+                /*End*/
+
+                //Tạo dữ liệu nhưng chưa add vào CSDL
+                Create(nd);
             }
-            /*End*/
 
-            //Tạo dữ liệu nhưng chưa add vào CSDL
-            Create(nd);
-
-            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Thêm nội dung chương thành công", Value = nd.HinhAnh };
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Thêm nội dung chương thành công"};
         }
 
         //Kiểm tra object truyền vào có tên trùng trong database không
@@ -84,6 +88,7 @@ namespace Repository
 
             //Tạo bản ghi mới nhưng chưa update vào CSDL
             Update(nd);
+
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa nội dung chương thành công" };
         }
 

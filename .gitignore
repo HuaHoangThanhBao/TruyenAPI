@@ -363,3 +363,4 @@ FodyWeavers.xsd
 /CoreLibrary/Migrations
 /.vs
 .vs/*
+/API/Resources/Images

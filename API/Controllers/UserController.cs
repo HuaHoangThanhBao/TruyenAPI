@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Extensions;
 using AutoMapper;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
@@ -22,13 +23,19 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllUsers(string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var users = await _repository.User.GetAllUsersAsync();
                 var usersResult = _mapper.Map<IEnumerable<UserDto>>(users);
+
 
                 return Ok(usersResult);
             }
@@ -38,11 +45,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "UserById")]
-        public async Task<IActionResult> GetUserById(Guid id)
+        [HttpGet("{id}/{key}", Name = "UserById")]
+        public async Task<IActionResult> GetUserById(Guid id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var user = await _repository.User.GetUserByIdAsync(id);
                 if (user == null)
                 {
@@ -60,11 +72,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/details")]
-        public async Task<IActionResult> GetUserByDetails(Guid id)
+        [HttpGet("{id}/{key}/details")]
+        public async Task<IActionResult> GetUserByDetails(Guid id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var user = await _repository.User.GetUserByDetailAsync(id);
 
                 if (user == null)
@@ -83,11 +100,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] UserForCreationDto user)
+        [HttpPost("{key}")]
+        public IActionResult CreateUser(string key, [FromBody] UserForCreationDto user)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (user == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -117,11 +139,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserForUpdateDto user)
+        [HttpPut("{id}/{key}")]
+        public async Task<IActionResult> UpdateUser(Guid id, string key, [FromBody] UserForUpdateDto user)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (user == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -156,21 +183,21 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        [HttpDelete("{id}/{key}")]
+        public async Task<IActionResult> DeleteUser(Guid id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var user = await _repository.User.GetUserByIdAsync(id);
                 if (user == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID truyện không tồn tại" });
                 }
-
-                //if (_repository.Account.AccountsByOwner(id).Any())
-                //{
-                //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
-                //}
 
                 ResponseDetails response = _repository.User.DeleteUser(user);
 

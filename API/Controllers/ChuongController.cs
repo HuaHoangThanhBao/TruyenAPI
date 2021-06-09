@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Extensions;
 using AutoMapper;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
@@ -21,11 +22,16 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllChuongs()
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllChuongs(string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var chuongs = await _repository.Chuong.GetAllChuongsAsync();
                 var chuongsResult = _mapper.Map<IEnumerable<ChuongDto>>(chuongs);
 
@@ -37,11 +43,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "ChuongById")]
-        public async Task<IActionResult> GetChuongById(int id)
+        [HttpGet("{id}/{key}", Name = "ChuongById")]
+        public async Task<IActionResult> GetChuongById(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var chuong = await _repository.Chuong.GetChuongByIdAsync(id);
                 if (chuong == null)
                 {
@@ -59,11 +70,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/details")]
-        public async Task<IActionResult> GetChuongByDetails(int id)
+        [HttpGet("{id}/{key}/details")]
+        public async Task<IActionResult> GetChuongByDetails(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var chuong = await _repository.Chuong.GetChuongByDetailAsync(id);
 
                 if (chuong == null)
@@ -82,11 +98,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateChuong([FromBody] IEnumerable<ChuongForCreationDto> chuong)
+        [HttpPost("{key}")]
+        public IActionResult CreateChuong(string key, [FromBody] IEnumerable<ChuongForCreationDto> chuong)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (chuong == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -116,11 +137,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateChuong(int id, [FromBody] ChuongForUpdateDto chuong)
+        [HttpPut("{id}/{key}")]
+        public async Task<IActionResult> UpdateChuong(int id, string key, [FromBody] ChuongForUpdateDto chuong)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (chuong == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -155,18 +181,23 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteChuong(int id)
+        [HttpDelete("{id}/{key}")]
+        public async Task<IActionResult> DeleteChuong(int id, string key)
         {
             try
             {
-                var Chuong = await _repository.Chuong.GetChuongByIdAsync(id);
-                if (Chuong == null)
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var chuong = await _repository.Chuong.GetChuongByIdAsync(id);
+                if (chuong == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID truyện không tồn tại" });
                 }
 
-                ResponseDetails response = _repository.Chuong.DeleteChuong(Chuong);
+                ResponseDetails response = _repository.Chuong.DeleteChuong(chuong);
 
                 if (response.StatusCode == ResponseCode.Success)
                     _repository.Save();

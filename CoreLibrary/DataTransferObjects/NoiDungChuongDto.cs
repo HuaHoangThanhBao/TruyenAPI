@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CoreLibrary.DataTransferObjects
+﻿namespace CoreLibrary.DataTransferObjects
 {
     public class NoiDungChuongDto
     {

@@ -21,7 +21,6 @@ namespace CoreLibrary.Models
         public int Quyen { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
-        [StringLength(30, ErrorMessage = "Password can't be longer than 50 characters")]
         public string Password { get; set; }
 
         [DefaultValue(false)]

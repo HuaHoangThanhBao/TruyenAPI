@@ -18,7 +18,7 @@ namespace Repository
         public ResponseDetails LogIn(string username, string password)
         {
             var userRepo = new UserRepository(_context);
-            if(!userRepo.FindByCondition(m => m.TenUser.Equals(username) && m.Password.Equals(password)).Any())
+            if(!userRepo.FindByCondition(m => m.TenUser.Equals(username)).Any())
             {
                 return new ResponseDetails()
                 {
@@ -26,6 +26,19 @@ namespace Repository
                     Message = "User không tồn tại",
                     Value = username
                 };
+            }
+            else
+            {
+                var user = userRepo.FindByCondition(m => m.TenUser == username).First();
+                if(!BCrypt.Net.BCrypt.Verify(password, user.Password))
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Mật khẩu không khớp",
+                        Value = username
+                    };
+                }
             }
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Đăng nhập thành công" };
         }

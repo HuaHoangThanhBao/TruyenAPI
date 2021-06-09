@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Extensions;
 using AutoMapper;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
@@ -21,15 +22,20 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllBinhLuans()
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllBinhLuans(string key)
         {
             try
             {
-                var binhLuans = await _repository.BinhLuan.GetAllBinhLuansAsync();
-                //var binhLuansResult = _mapper.Map<IEnumerable<BinhLuanDto>>(binhLuans);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
 
-                return Ok(binhLuans);
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var binhLuans = await _repository.BinhLuan.GetAllBinhLuansAsync();
+                var binhLuansResult = _mapper.Map<IEnumerable<BinhLuanDto>>(binhLuans);
+
+                return Ok(binhLuansResult);
             }
             catch
             {
@@ -37,11 +43,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "BinhLuanById")]
-        public async Task<IActionResult> GetBinhLuanById(int id)
+        [HttpGet("{id}/{key}", Name = "BinhLuanById")]
+        public async Task<IActionResult> GetBinhLuanById(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var binhLuan = await _repository.BinhLuan.GetBinhLuanByIdAsync(id);
                 if (binhLuan == null)
                 {
@@ -59,11 +70,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/details")]
-        public async Task<IActionResult> GetBinhLuanByDetails(int id)
+        [HttpGet("{id}/{key}/details")]
+        public async Task<IActionResult> GetBinhLuanByDetails(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var binhLuan = await _repository.BinhLuan.GetBinhLuanByDetailAsync(id);
 
                 if (binhLuan == null)
@@ -78,15 +94,20 @@ namespace API.Controllers
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTacGiaByDetails" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetBinhLuanByDetails" });
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateBinhLuan([FromBody] BinhLuanForCreationDto binhLuan)
+        [HttpPost("{key}")]
+        public IActionResult CreateBinhLuan(string key, [FromBody] BinhLuanForCreationDto binhLuan)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (binhLuan == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -116,11 +137,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBinhLuan(int id, [FromBody] BinhLuanForUpdateDto binhLuan)
+        [HttpPut("{id}/{key}")]
+        public async Task<IActionResult> UpdateBinhLuan(int id, string key, [FromBody] BinhLuanForUpdateDto binhLuan)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (binhLuan == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -155,21 +181,21 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBinhLuan(int id)
+        [HttpDelete("{id}/{key}")]
+        public async Task<IActionResult> DeleteBinhLuan(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var binhLuan = await _repository.BinhLuan.GetBinhLuanByIdAsync(id);
                 if (binhLuan == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID Bình luận không tồn tại" });
                 }
-
-                //if (_repository.Account.AccountsByOwner(id).Any())
-                //{
-                //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
-                //}
 
                 ResponseDetails response = _repository.BinhLuan.DeleteBinhLuan(binhLuan);
 

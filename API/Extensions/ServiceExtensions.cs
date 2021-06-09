@@ -4,11 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Repository;
-using System;
-using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using API.Extensions;
 
 namespace API
 {
@@ -32,10 +31,16 @@ namespace API
 
         public static void ConfigureServices(this IServiceCollection services)
         {
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowOrigin",
+            //        builder => builder.WithOrigins("http://localhost:4000")
+            //                    .WithMethods("GET").WithMethods("POST").WithMethods("PUT").WithMethods("DELETE"));
+            //});
+
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowOrigin",
-                    builder => builder.WithOrigins("http://localhost:4000")
+                options.AddPolicy("AllowOrigin", builder => builder.AllowAnyOrigin()
                                 .WithMethods("GET").WithMethods("POST").WithMethods("PUT").WithMethods("DELETE"));
             });
 
@@ -52,9 +57,9 @@ namespace API
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = "http://localhost:50504",
-                    ValidAudience = "http://localhost:50504",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
+                    //ValidIssuer = "http://localhost:50504",
+                    //ValidAudience = "http://localhost:50504",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(APICredentialAuth.GetJWTKey().Value))
                 };
             });
             services.AddControllers();

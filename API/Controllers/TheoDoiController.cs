@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using DataAccessLayer;
 using CoreLibrary.DataTransferObjects;
 using Microsoft.AspNetCore.Mvc;
 using CoreLibrary.Models;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -22,11 +22,16 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllTheoDois()
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllTheoDois(string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var theoDois = await _repository.TheoDoi.GetAllTheoDoisAsync();
                 var theoDoisResult = _mapper.Map<IEnumerable<TheoDoiDto>>(theoDois);
 
@@ -38,11 +43,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "TheoDoiById")]
-        public async Task<IActionResult> GetTheoDoiById(int id)
+        [HttpGet("{id}/{key}", Name = "TheoDoiById")]
+        public async Task<IActionResult> GetTheoDoiById(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var theoDoi = await _repository.TheoDoi.GetTheoDoiByIdAsync(id);
                 if (theoDoi == null)
                 {
@@ -60,11 +70,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateTheoDoi([FromBody] TheoDoiForCreationDto theoDoi)
+        [HttpPost("{key}")]
+        public IActionResult CreateTheoDoi(string key, [FromBody] TheoDoiForCreationDto theoDoi)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (theoDoi == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -94,11 +109,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTheoDoi(int id, [FromBody] TheoDoiForUpdateDto theoDoi)
+        [HttpPut("{id}/{key}")]
+        public async Task<IActionResult> UpdateTheoDoi(int id, string key, [FromBody] TheoDoiForUpdateDto theoDoi)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (theoDoi == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -133,21 +153,21 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTheoDoi(int id)
+        [HttpDelete("{id}/{key}")]
+        public async Task<IActionResult> DeleteTheoDoi(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var theoDoi = await _repository.TheoDoi.GetTheoDoiByIdAsync(id);
                 if (theoDoi == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID TheoDoi không tồn tại" });
                 }
-
-                //if (_repository.Account.AccountsByOwner(id).Any())
-                //{
-                //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
-                //}
 
                 ResponseDetails response = _repository.TheoDoi.DeleteTheoDoi(theoDoi);
 

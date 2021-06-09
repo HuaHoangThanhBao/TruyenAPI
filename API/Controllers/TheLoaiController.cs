@@ -6,6 +6,7 @@ using DataAccessLayer;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -22,11 +23,16 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllTheLoais()
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllTheLoais(string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var theLoais = await _repository.TheLoai.GetAllTheLoaisAsync();
                 var theLoaisResult = _mapper.Map<IEnumerable<TheLoaiDto>>(theLoais);
 
@@ -38,11 +44,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "TheLoaiById")]
-        public async Task<IActionResult> GetTheLoaiById(int id)
+        [HttpGet("{id}/{key}", Name = "TheLoaiById")]
+        public async Task<IActionResult> GetTheLoaiById(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var theLoai = await _repository.TheLoai.GetTheLoaiByIdAsync(id);
                 if (theLoai == null)
                 {
@@ -50,21 +61,26 @@ namespace API.Controllers
                 }
                 else
                 {
-                    var theLoaiResult = _mapper.Map<TacGiaDto>(theLoai);
+                    var theLoaiResult = _mapper.Map<TheLoaiDto>(theLoai);
                     return Ok(theLoaiResult);
                 }
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTruyen" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTheLoaiById" });
             }
         }
 
-        [HttpGet("{id}/the-loai-details")]
-        public async Task<IActionResult> GetTheLoaiByDetails(int id)
+        [HttpGet("{id}/{key}/details")]
+        public async Task<IActionResult> GetTheLoaiByDetails(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var theLoai = await _repository.TheLoai.GetTheLoaiByDetailAsync(id);
 
                 if (theLoai == null)
@@ -83,11 +99,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateTheLoai([FromBody] IEnumerable<TheLoaiForCreationDto> theLoai)
+        [HttpPost("{key}")]
+        public IActionResult CreateTheLoai(string key, [FromBody] IEnumerable<TheLoaiForCreationDto> theLoai)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (theLoai == null)
                 {
                     return BadRequest("TheLoai object is null");
@@ -117,11 +138,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTheLoai(int id, [FromBody] TheLoaiForUpdateDto theLoai)
+        [HttpPut("{id}/{key}")]
+        public async Task<IActionResult> UpdateTheLoai(int id, string key, [FromBody] TheLoaiForUpdateDto theLoai)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (theLoai == null)
                 {
                     return BadRequest("TheLoai object is null");
@@ -156,11 +182,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTheLoai(int id)
+        [HttpDelete("{id}/{key}")]
+        public async Task<IActionResult> DeleteTheLoai(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var theLoai = await _repository.TheLoai.GetTheLoaiByIdAsync(id);
                 if (theLoai == null)
                 {

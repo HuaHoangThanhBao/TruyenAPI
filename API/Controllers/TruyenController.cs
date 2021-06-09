@@ -5,8 +5,7 @@ using DataAccessLayer;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Net.Http.Headers;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -23,11 +22,16 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllTruyens()
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllTruyens(string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var truyens = await _repository.Truyen.GetAllTruyensAsync();
                 var truyensResult = _mapper.Map<IEnumerable<TruyenDto>>(truyens);
 
@@ -39,11 +43,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "TruyenById")]
-        public async Task<IActionResult> GetTruyenById(int id)
+        [HttpGet("{id}/{key}", Name = "TruyenById")]
+        public async Task<IActionResult> GetTruyenById(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var truyen = await _repository.Truyen.GetTruyenByIdAsync(id);
                 if (truyen == null)
                 {
@@ -61,11 +70,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/details")]
-        public async Task<IActionResult> GetTruyenByDetails(int id)
+        [HttpGet("{id}/{key}/details")]
+        public async Task<IActionResult> GetTruyenByDetails(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var truyen = await _repository.Truyen.GetTruyenByDetailAsync(id);
 
                 if (truyen == null)
@@ -84,11 +98,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateTruyen([FromBody] IEnumerable<TruyenForCreationDto> truyen)
+        [HttpPost("{key}")]
+        public IActionResult CreateTruyen(string key, [FromBody] IEnumerable<TruyenForCreationDto> truyen)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (truyen == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -118,11 +137,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTruyen(int id, [FromBody] TruyenForUpdateDto truyen)
+        [HttpPut("{id}/{key}")]
+        public async Task<IActionResult> UpdateTruyen(int id, string key, [FromBody] TruyenForUpdateDto truyen)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (truyen == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -157,11 +181,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTruyen(int id)
+        [HttpDelete("{id}/{key}")]
+        public async Task<IActionResult> DeleteTruyen(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var truyen = await _repository.Truyen.GetTruyenByIdAsync(id);
                 if (truyen == null)
                 {

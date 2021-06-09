@@ -5,6 +5,7 @@ using DataAccessLayer;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -21,11 +22,16 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllTacGias()
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllTacGias(string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var tacGias = await _repository.TacGia.GetAllTacGiasAsync();
                 var tacGiasResult = _mapper.Map<IEnumerable<TacGiaDto>>(tacGias);
 
@@ -37,11 +43,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "TacGiaById")]
-        public async Task<IActionResult> GetTacGiaById(int id)
+        [HttpGet("{id}/{key}", Name = "TacGiaById")]
+        public async Task<IActionResult> GetTacGiaById(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
                 if (tacGia == null)
                 {
@@ -58,35 +69,45 @@ namespace API.Controllers
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTacGiaById" });
             }
         }
-        
-        //[HttpGet("{id}/account")]
-        //public async Task<IActionResult> GetTacGiaByDetails(Guid id)
-        //{
-        //    try
-        //    {
-        //        var tacGia = await _repository.TacGia.GetTacGiaByDetailAsync(id);
 
-        //        if(tacGia == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            var ownerResult = _mapper.Map<TacGiaDto>(tacGia);
-        //            return Ok(ownerResult);
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        throw new Exception("Exception occured when implement GetTacGiaByDetails function");
-        //    }
-        //}
-
-        [HttpPost]
-        public IActionResult CreateTacGia([FromBody] IEnumerable<TacGiaForCreationDto> tacGia)
+        [HttpGet("{id}/{keys}/details")]
+        public async Task<IActionResult> GetTacGiaByDetails(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var tacGia = await _repository.TacGia.GetTacGiaByDetailAsync(id);
+
+                if (tacGia == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var ownerResult = _mapper.Map<TacGiaDto>(tacGia);
+                    return Ok(ownerResult);
+                }
+            }
+            catch
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTacGiaByDetails" });
+            }
+        }
+
+        [HttpPost("{key}")]
+        public IActionResult CreateTacGia(string key, [FromBody] IEnumerable<TacGiaForCreationDto> tacGia)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (tacGia == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -116,11 +137,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTacGia(int id, [FromBody]TacGiaForUpdateDto tacGia)
+        [HttpPut("{id}/{key}")]
+        public async Task<IActionResult> UpdateTacGia(int id, string key, [FromBody]TacGiaForUpdateDto tacGia)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (tacGia == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -155,21 +181,21 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTacGia(int id)
+        [HttpDelete("{id}/{key}")]
+        public async Task<IActionResult> DeleteTacGia(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var tacGia = await _repository.TacGia.GetTacGiaByIdAsync(id);
                 if (tacGia == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID tác giả không tồn tại" });
                 }
-
-                //if (_repository.Account.AccountsByOwner(id).Any())
-                //{
-                //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
-                //}
 
                 ResponseDetails response = _repository.TacGia.DeleteTacGia(tacGia);
 

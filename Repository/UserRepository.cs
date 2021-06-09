@@ -40,6 +40,9 @@ namespace Repository
                 };
             }
 
+            string passHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            user.Password = passHash;
+
             Create(user);
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
@@ -67,6 +70,9 @@ namespace Repository
                     Value = user.Password.ToString()
                 };
             }
+
+            string passHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            user.Password = passHash;
 
             Update(user);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa user thành công" };

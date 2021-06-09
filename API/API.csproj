@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Resources\Keys\credential.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.51.0.2335" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
@@ -15,6 +20,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="MimeKit" Version="2.12.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +31,10 @@
 
   <ItemGroup>
     <Folder Include="Resources\Images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Resources\Keys\credential.json" />
   </ItemGroup>
 
 

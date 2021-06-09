@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CoreLibrary.DataTransferObjects
 {
     public class TruyenForCreationDto
     {
+        [Required(ErrorMessage = "TacGiaID is required")]
         public int TacGiaID { get; set; }
 
         [Required(ErrorMessage = "Ten truyen is required")]
@@ -28,6 +27,7 @@ namespace CoreLibrary.DataTransferObjects
 
     public class TruyenForUpdateDto
     {
+        [Required(ErrorMessage = "TacGiaID is required")]
         public int TacGiaID { get; set; }
 
         [Required(ErrorMessage = "Ten truyen is required")]

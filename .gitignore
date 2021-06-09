@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /.vs
 .vs/*
 /API/Resources/Images
+/API/Resources/Keys

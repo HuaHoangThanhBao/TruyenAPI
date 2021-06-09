@@ -227,8 +227,7 @@ namespace CoreLibrary.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quyen")
                         .HasColumnType("int");

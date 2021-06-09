@@ -5,6 +5,7 @@ using DataAccessLayer;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -21,11 +22,16 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllPhuLucs()
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllPhuLucs(string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var phuLucs = await _repository.PhuLuc.GetAllPhuLucsAsync();
                 var phuLucsResult = _mapper.Map<IEnumerable<PhuLucDto>>(phuLucs);
 
@@ -37,11 +43,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "PhuLucById")]
-        public async Task<IActionResult> GetPhuLucByTruyenId(int id)
+        [HttpGet("{id}/{key}", Name = "PhuLucById")]
+        public async Task<IActionResult> GetPhuLucByTruyenId(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var phuLuc = await _repository.PhuLuc.GetPhuLucByTruyenIdAsync(id);
                 if (phuLuc == null)
                 {
@@ -59,34 +70,16 @@ namespace API.Controllers
             }
         }
 
-        //[HttpGet("{id}/account")]
-        //public async Task<IActionResult> GetTacGiaByDetails(Guid id)
-        //{
-        //    try
-        //    {
-        //        var tacGia = await _repository.TacGia.GetTacGiaByDetailAsync(id);
-
-        //        if(tacGia == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            var ownerResult = _mapper.Map<TacGiaDto>(tacGia);
-        //            return Ok(ownerResult);
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        throw new Exception("Exception occured when implement GetTacGiaByDetails function");
-        //    }
-        //}
-
-        [HttpPost]
-        public IActionResult CreatePhuLuc([FromBody] IEnumerable<PhuLucForCreationDto> phuLuc)
+        [HttpPost("{key}")]
+        public IActionResult CreatePhuLuc(string key, [FromBody] IEnumerable<PhuLucForCreationDto> phuLuc)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (phuLuc == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -116,11 +109,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePhuLuc(int id, [FromBody] PhuLucForUpdateDto phuLuc)
+        [HttpPut("{id}/{key}")]
+        public async Task<IActionResult> UpdatePhuLuc(int id, string key, [FromBody] PhuLucForUpdateDto phuLuc)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (phuLuc == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });

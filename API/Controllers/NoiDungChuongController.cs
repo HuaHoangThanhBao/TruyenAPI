@@ -1,7 +1,5 @@
 ﻿using DataAccessLayer;
 using System.Collections.Generic;
-using System.IO;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AutoMapper;
 using CoreLibrary.DataTransferObjects;
@@ -24,11 +22,16 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllNoiDungChuongs()
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllNoiDungChuongs(string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var noiDungChuongs = await _repository.NoiDungChuong.GetAllNoiDungChuongsAsync();
                 var noiDungChuongsResult = _mapper.Map<IEnumerable<NoiDungChuongDto>>(noiDungChuongs);
 
@@ -40,11 +43,43 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateNoiDungChuong([FromBody] IEnumerable<NoiDungChuongForCreationDto> noiDungChuong)
+        [HttpGet("{id}/{key}", Name = "NoiDungChuongById")]
+        public async Task<IActionResult> GetNoiDungChuongById(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var noiDungChuong = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(id);
+                if (noiDungChuong == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var noiDungChuongResult = _mapper.Map<NoiDungChuongDto>(noiDungChuong);
+                    return Ok(noiDungChuongResult);
+                }
+            }
+            catch
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTheLoaiById" });
+            }
+        }
+
+        [HttpPost("{key}")]
+        public IActionResult CreateNoiDungChuong(string key, [FromBody] IEnumerable<NoiDungChuongForCreationDto> noiDungChuong)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (noiDungChuong == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -74,11 +109,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut/*("{id}")*/]
-        public async Task<IActionResult> UpdateNoiDungChuong([FromBody] NoiDungChuongForUpdateDto noiDungChuong)
+        [HttpPut("{id}/{key}")]
+        public async Task<IActionResult> UpdateNoiDungChuong(int id, string key, [FromBody] NoiDungChuongForUpdateDto noiDungChuong)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 if (noiDungChuong == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
@@ -89,7 +129,7 @@ namespace API.Controllers
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
-                var noiDungChuongEntity = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(noiDungChuong.NoiDungChuongID);
+                var noiDungChuongEntity = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(id);
                 if (noiDungChuongEntity == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Nội dung chương không tồn tại" });
@@ -113,11 +153,16 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteNoiDungChuong(int id)
+        [HttpDelete("{id}/{key}")]
+        public async Task<IActionResult> DeleteNoiDungChuong(int id, string key)
         {
             try
             {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
                 var noiDungChuong = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(id);
                 if (noiDungChuong == null)
                 {

@@ -2,7 +2,7 @@
 using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Repository.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +22,18 @@ namespace Repository
         //KQ: !null = TenBinhLuan bị trùng, null: thêm thành công
         public ResponseDetails CreateBinhLuan(BinhLuan binhLuan)
         {
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(binhLuan.NoiDung))
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Không được chứa ký tự đặc biệt",
+                    Value = binhLuan.NoiDung.ToString()
+                };
+            }
+            /*End*/
+
             /*Bắt lỗi [ID]*/
             var userRepo = new UserRepository(_context);
             var chuongRepo = new ChuongRepository(_context);
@@ -74,6 +86,18 @@ namespace Repository
         //KQ: false: TenBinhLuan bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateBinhLuan(BinhLuan binhLuan)
         {
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(binhLuan.NoiDung))
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Không được chứa ký tự đặc biệt",
+                    Value = binhLuan.NoiDung.ToString()
+                };
+            }
+            /*End*/
+
             /*Bắt lỗi [ID]*/
             var userRepo = new UserRepository(_context);
             var chuongRepo = new ChuongRepository(_context);

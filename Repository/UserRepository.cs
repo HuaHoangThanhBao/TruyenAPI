@@ -1,4 +1,5 @@
-﻿using CoreLibrary;
+﻿using Repository.Extensions;
+using CoreLibrary;
 using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,30 @@ namespace Repository
         //KQ: !null = TenUser bị trùng, null: thêm thành công
         public ResponseDetails CreateUser(User user)
         {
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(user.TenUser))
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Không được chứa ký tự đặc biệt",
+                    Value = user.TenUser.ToString()
+                };
+            }
+            /*End*/
+
+            /*Bắt lỗi [TenUser]*/
+            if (FindByCondition(t => t.TenUser.Equals(user.TenUser)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên user bị trùng",
+                    Value = user.TenUser.ToString()
+                };
+            }
+            /*End*/
+
             if (user.TenUser == "" || user.TenUser == null)
             {
                 return new ResponseDetails()
@@ -51,6 +76,30 @@ namespace Repository
         //KQ: false: TenUser bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateUser(User user)
         {
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(user.TenUser))
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Không được chứa ký tự đặc biệt",
+                    Value = user.TenUser.ToString()
+                };
+            }
+            /*End*/
+
+            /*Bắt lỗi [TenUser]*/
+            if (FindByCondition(t => t.TenUser.Equals(user.TenUser)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên user bị trùng",
+                    Value = user.TenUser.ToString()
+                };
+            }
+            /*End*/
+
             if (user.TenUser == "" || user.TenUser == null)
             {
                 return new ResponseDetails()

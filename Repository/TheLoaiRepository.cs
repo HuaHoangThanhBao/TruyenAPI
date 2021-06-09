@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Repository.Extensions;
 
 namespace Repository
 {
@@ -21,6 +22,18 @@ namespace Repository
         {
             foreach (var theLoai in theLoais)
             {
+                /*Bắt lỗi ký tự đặc biệt*/
+                if (ValidationExtensions.isSpecialChar(theLoai.TenTheLoai))
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Không được chứa ký tự đặc biệt",
+                        Value = theLoai.TenTheLoai.ToString()
+                    };
+                }
+                /*End*/
+
                 /*Bắt lỗi [Tên thể loại]*/
                 if (theLoai.TenTheLoai == "" || theLoai.TenTheLoai == null)
                 {
@@ -52,6 +65,18 @@ namespace Repository
         //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateTheLoai(TheLoai theLoai)
         {
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(theLoai.TenTheLoai))
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Không được chứa ký tự đặc biệt",
+                    Value = theLoai.TenTheLoai.ToString()
+                };
+            }
+            /*End*/
+
             /*Bắt lỗi [Tên thể loại]*/
             if (theLoai.TenTheLoai == "" || theLoai.TenTheLoai == null)
             {

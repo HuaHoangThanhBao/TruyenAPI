@@ -2,7 +2,7 @@
 using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Repository.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,6 +24,18 @@ namespace Repository
         {
             foreach (var chuong in chuongs)
             {
+                /*Bắt lỗi ký tự đặc biệt*/
+                if (ValidationExtensions.isSpecialChar(chuong.TenChuong))
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Không được chứa ký tự đặc biệt",
+                        Value = chuong.TenChuong.ToString()
+                    };
+                }
+                /*End*/
+
                 /*Bắt lỗi [ID]*/
                 var truyenRepo = new TruyenRepository(_context);
                 if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(chuong.TruyenID)).Any())
@@ -84,6 +96,18 @@ namespace Repository
         //KQ: false: TenChuong bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateChuong(Chuong chuong)
         {
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(chuong.TenChuong))
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Không được chứa ký tự đặc biệt",
+                    Value = chuong.TenChuong.ToString()
+                };
+            }
+            /*End*/
+
             /*Bắt lỗi [ID]*/
             var truyenRepo = new TruyenRepository(_context);
             if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(chuong.TruyenID)).Any())

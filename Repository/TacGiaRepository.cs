@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Repository.Extensions;
 
 namespace Repository
 {
@@ -24,8 +25,20 @@ namespace Repository
         {
             foreach (var tacGia in tacGias)
             {
+                /*Bắt lỗi ký tự đặc biệt*/
+                if (ValidationExtensions.isSpecialChar(tacGia.TenTacGia))
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Không được chứa ký tự đặc biệt",
+                        Value = tacGia.TenTacGia.ToString()
+                    };
+                }
+                /*End*/
+
                 /*Bắt lỗi [Tên tác giả]*/
-                if(tacGia.TenTacGia == "" || tacGia.TenTacGia == null)
+                if (tacGia.TenTacGia == "" || tacGia.TenTacGia == null)
                 {
                     return new ResponseDetails()
                     {
@@ -55,6 +68,18 @@ namespace Repository
         //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateTacGia(TacGia tacGia)
         {
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(tacGia.TenTacGia))
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Không được chứa ký tự đặc biệt",
+                    Value = tacGia.TenTacGia.ToString()
+                };
+            }
+            /*End*/
+
             /*Bắt lỗi [Tên tác giả]*/
             if (tacGia.TenTacGia == "" || tacGia.TenTacGia == null)
             {

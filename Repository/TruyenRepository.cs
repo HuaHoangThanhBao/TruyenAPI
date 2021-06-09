@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Repository.Extensions;
 
 namespace Repository
 {
@@ -25,6 +26,28 @@ namespace Repository
 
             foreach (var truyen in truyens)
             {
+                /*Bắt lỗi ký tự đặc biệt*/
+                if(ValidationExtensions.isSpecialChar(truyen.TenTruyen))
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Không được chứa ký tự đặc biệt",
+                        Value = truyen.TenTruyen.ToString()
+                    };
+                }
+
+                if (ValidationExtensions.isSpecialChar(truyen.MoTa))
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Không được chứa ký tự đặc biệt",
+                        Value = truyen.MoTa.ToString()
+                    };
+                }
+                /*End*/
+
                 /*Bắt lỗi [ID]*/
                 if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
                 {
@@ -101,6 +124,28 @@ namespace Repository
         //KQ: false: TenTruyen bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateTruyen(Truyen truyen)
         {
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(truyen.TenTruyen))
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Không được chứa ký tự đặc biệt",
+                    Value = truyen.TenTruyen.ToString()
+                };
+            }
+
+            if (ValidationExtensions.isSpecialChar(truyen.MoTa))
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Không được chứa ký tự đặc biệt",
+                    Value = truyen.MoTa.ToString()
+                };
+            }
+            /*End*/
+
             /*Bắt lỗi [ID]*/
             var tacGiaRepo = new TacGiaRepository(_context);
             if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())

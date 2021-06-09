@@ -363,4 +363,4 @@ FodyWeavers.xsd
 /CoreLibrary/Migrations
 /.vs
 .vs/*
-/API/Resources/Keys/*
+/API/Resources/Keys

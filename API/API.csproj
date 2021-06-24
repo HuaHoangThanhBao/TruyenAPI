@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Resources\Keys\credential.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.51.0.2335" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
@@ -27,14 +23,6 @@
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
     <ProjectReference Include="..\Repository\Repository.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resources\Images\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Resources\Keys\credential.json" />
   </ItemGroup>
 
 

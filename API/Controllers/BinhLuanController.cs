@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using API.Extensions;
 using AutoMapper;
 using CoreLibrary.DataTransferObjects;
+using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -207,6 +209,89 @@ namespace API.Controllers
             catch
             {
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteBinhLuan" });
+            }
+        }
+
+
+        [HttpGet]
+        public IActionResult GetBinhLuanForPagination([FromQuery] BinhLuanParameters binhLuanParameters)
+        {
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(binhLuanParameters.APIKey);
+            if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+
+            if (binhLuanParameters.LastestUpdate)
+            {
+                var binhLuans = _repository.BinhLuan.GetBinhLuanLastestForPagination(binhLuanParameters);
+
+                var metadata = new
+                {
+                    binhLuans.TotalCount,
+                    binhLuans.PageSize,
+                    binhLuans.CurrentPage,
+                    binhLuans.TotalPages,
+                    binhLuans.HasNext,
+                    binhLuans.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(binhLuans);
+            }
+            else if (binhLuanParameters.Sorting && binhLuanParameters.TruyenID > 0)
+            {
+                var binhLuans = _repository.BinhLuan.GetBinhLuanOfTruyenForPagination(binhLuanParameters.TruyenID, binhLuanParameters);
+
+                var metadata = new
+                {
+                    binhLuans.TotalCount,
+                    binhLuans.PageSize,
+                    binhLuans.CurrentPage,
+                    binhLuans.TotalPages,
+                    binhLuans.HasNext,
+                    binhLuans.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(binhLuans);
+            }
+            else if (binhLuanParameters.Sorting && binhLuanParameters.ChuongID > 0)
+            {
+                var binhLuans = _repository.BinhLuan.GetBinhLuanOfChuongForPagination(binhLuanParameters.ChuongID, binhLuanParameters);
+
+                var metadata = new
+                {
+                    binhLuans.TotalCount,
+                    binhLuans.PageSize,
+                    binhLuans.CurrentPage,
+                    binhLuans.TotalPages,
+                    binhLuans.HasNext,
+                    binhLuans.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(binhLuans);
+            }
+            else
+            {
+                if (binhLuanParameters.GetAll)
+                {
+                    var binhLuans = _repository.BinhLuan.GetBinhLuanForPagination(binhLuanParameters);
+
+                    var metadata = new
+                    {
+                        binhLuans.TotalCount,
+                        binhLuans.PageSize,
+                        binhLuans.CurrentPage,
+                        binhLuans.TotalPages,
+                        binhLuans.HasNext,
+                        binhLuans.HasPrevious
+                    };
+
+                    Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                    return Ok(binhLuans);
+                }
+                else return BadRequest("wrong request to get binhluan pagination");
             }
         }
     }

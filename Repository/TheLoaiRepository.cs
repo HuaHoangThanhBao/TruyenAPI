@@ -20,6 +20,21 @@ namespace Repository
         //KQ: !null = TenTacGia bị trùng, null: thêm thành công
         public ResponseDetails CreateTheLoai(IEnumerable<TheLoai> theLoais)
         {
+            /*Kiểm tra xem chuỗi json nhập vào có bị trùng tên thể loại không*/
+            foreach (var dup in theLoais.GroupBy(p => p.TenTheLoai))
+            {
+                if (dup.Count() - 1 > 0)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Chuỗi json nhập vào bị trùng tên thể loại",
+                        Value = dup.Key.ToString()
+                    };
+                }
+            }
+            /*End*/
+
             foreach (var theLoai in theLoais)
             {
                 /*Bắt lỗi ký tự đặc biệt*/

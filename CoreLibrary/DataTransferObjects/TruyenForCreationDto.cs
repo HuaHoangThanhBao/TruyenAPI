@@ -9,7 +9,6 @@ namespace CoreLibrary.DataTransferObjects
         public int TacGiaID { get; set; }
 
         [Required(ErrorMessage = "Ten truyen is required")]
-        [StringLength(50, ErrorMessage = "Ten truyen can't be longer than 50 characters")]
         public string TenTruyen { get; set; }
 
         [Required(ErrorMessage = "Mo ta is required")]
@@ -31,7 +30,6 @@ namespace CoreLibrary.DataTransferObjects
         public int TacGiaID { get; set; }
 
         [Required(ErrorMessage = "Ten truyen is required")]
-        [StringLength(50, ErrorMessage = "Ten truyen can't be longer than 50 characters")]
         public string TenTruyen { get; set; }
 
         [Required(ErrorMessage = "Mo ta is required")]

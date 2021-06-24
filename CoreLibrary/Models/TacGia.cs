@@ -15,7 +15,6 @@ namespace CoreLibrary.Models
         public int TacGiaID { get; set; }
         
         [Required(ErrorMessage = "Ten tac gia is required")]
-        [StringLength(50, ErrorMessage = "Ten tac gia can't be longer than 50 characters")]
         public string TenTacGia { get; set; }
         
         [DefaultValue(false)]

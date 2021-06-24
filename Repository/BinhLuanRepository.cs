@@ -1,4 +1,5 @@
 ﻿using CoreLibrary;
+using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
@@ -176,6 +177,53 @@ namespace Repository
                 .Include(ac => ac.Chuong)
                 .Include(ac => ac.User)
                 .FirstOrDefaultAsync();
+        }
+
+
+        public PagedList<BinhLuan> GetBinhLuanForPagination(BinhLuanParameters binhLuanParameters)
+        {
+            return PagedList<BinhLuan>.ToPagedList(FindAll().Include(m => m.User).Include(m => m.Chuong).OrderByDescending(on => on.NgayBL),
+                binhLuanParameters.PageNumber,
+                binhLuanParameters.PageSize);
+        }
+
+        public PagedList<BinhLuan> GetBinhLuanLastestForPagination(BinhLuanParameters binhLuanParameters)
+        {
+            return PagedList<BinhLuan>.ToPagedList(FindAll().Include(m => m.User).Include(m => m.Chuong).OrderByDescending(on => on.NgayBL).Take(10),
+                binhLuanParameters.PageNumber,
+                binhLuanParameters.PageSize);
+        }
+
+        public PagedList<BinhLuan> GetBinhLuanOfTruyenForPagination(int truyenID, BinhLuanParameters binhLuanParameters)
+        {
+            var chuongs = (from m in _context.Chuongs
+                           where m.TruyenID == truyenID
+                           select m);
+
+            return PagedList<BinhLuan>.ToPagedList(
+
+                (from m in _context.BinhLuans
+                 join n in chuongs
+                 on m.ChuongID equals n.ChuongID
+                 select m).Include(m => m.User).Include(m => m.Chuong).Distinct().Take(10).OrderByDescending(m => m.NgayBL)
+                
+                 ,
+                binhLuanParameters.PageNumber,
+                binhLuanParameters.PageSize);
+        }
+
+        public PagedList<BinhLuan> GetBinhLuanOfChuongForPagination(int chuongID, BinhLuanParameters binhLuanParameters)
+        {
+
+            return PagedList<BinhLuan>.ToPagedList(
+
+                (from m in _context.BinhLuans
+                 where m.ChuongID == chuongID
+                 select m).Include(m => m.User).Include(m => m.Chuong).Distinct().OrderByDescending(m => m.NgayBL)
+
+                 ,
+                binhLuanParameters.PageNumber,
+                binhLuanParameters.PageSize);
         }
     }
 }

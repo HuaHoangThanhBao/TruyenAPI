@@ -51,6 +51,15 @@ namespace Repository
                         Value = phuLuc.TheLoaiID.ToString()
                     };
                 }
+                if (FindByCondition(m => m.TheLoaiID == phuLuc.TheLoaiID && m.TruyenID == phuLuc.TruyenID).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Truyện này đã tồn tại thể loại này",
+                        Value = "ID truyện: " + phuLuc.TruyenID + "/ ID thể loại: " + phuLuc.TheLoaiID.ToString()
+                    };
+                }
                 /*End*/
 
                 Create(phuLuc);
@@ -82,6 +91,15 @@ namespace Repository
                     StatusCode = ResponseCode.Error,
                     Message = "ID thể loại không tồn tại",
                     Value = phuLuc.TheLoaiID.ToString()
+                };
+            }
+            if (FindByCondition(m => m.TheLoaiID == phuLuc.TheLoaiID && m.TruyenID == phuLuc.TruyenID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Truyện này đã tồn tại thể loại này",
+                    Value = "ID truyện: " + phuLuc.TruyenID + "/ ID thể loại: " + phuLuc.TheLoaiID.ToString()
                 };
             }
             /*End*/

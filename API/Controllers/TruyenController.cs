@@ -6,6 +6,8 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
+using Newtonsoft.Json;
+using CoreLibrary.Helpers;
 
 namespace API.Controllers
 {
@@ -207,6 +209,105 @@ namespace API.Controllers
             catch
             {
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTruyen" });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetTruyenForPagination([FromQuery] TruyenParameters truyenParameters)
+        {
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(truyenParameters.APIKey);
+            if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+
+            if (truyenParameters.LastestUpdate)
+            {
+                var truyens = _repository.Truyen.GetTruyenLastestUpdateForPagination(truyenParameters);
+
+                var metadata = new
+                {
+                    truyens.TotalCount,
+                    truyens.PageSize,
+                    truyens.CurrentPage,
+                    truyens.TotalPages,
+                    truyens.HasNext,
+                    truyens.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(truyens);
+            }
+            else if (truyenParameters.TopView)
+            {
+                var truyens = _repository.Truyen.GetTopViewForPagination(truyenParameters);
+
+                var metadata = new
+                {
+                    truyens.TotalCount,
+                    truyens.PageSize,
+                    truyens.CurrentPage,
+                    truyens.TotalPages,
+                    truyens.HasNext,
+                    truyens.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(truyens);
+            }
+            else if (truyenParameters.Sorting && truyenParameters.TheLoaiID > 0)
+            {
+                var truyens = _repository.Truyen.GetTruyenOfTheLoaiForPagination(truyenParameters.TheLoaiID, truyenParameters);
+
+                var metadata = new
+                {
+                    truyens.TotalCount,
+                    truyens.PageSize,
+                    truyens.CurrentPage,
+                    truyens.TotalPages,
+                    truyens.HasNext,
+                    truyens.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(truyens);
+            }
+            else if (truyenParameters.Sorting && truyenParameters.UserID != null)
+            {
+                var truyens = _repository.Truyen.GetTruyenOfTheoDoiForPagination(truyenParameters.UserID, truyenParameters);
+
+                var metadata = new
+                {
+                    truyens.TotalCount,
+                    truyens.PageSize,
+                    truyens.CurrentPage,
+                    truyens.TotalPages,
+                    truyens.HasNext,
+                    truyens.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(truyens);
+            }
+            else
+            {
+                if (truyenParameters.GetAll)
+                {
+                    var truyens = _repository.Truyen.GetTruyenForPagination(truyenParameters);
+
+                    var metadata = new
+                    {
+                        truyens.TotalCount,
+                        truyens.PageSize,
+                        truyens.CurrentPage,
+                        truyens.TotalPages,
+                        truyens.HasNext,
+                        truyens.HasPrevious
+                    };
+
+                    Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                    return Ok(truyens);
+                }
+                else return BadRequest("wrong request to get truyen pagination");
             }
         }
     }

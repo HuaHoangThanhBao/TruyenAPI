@@ -23,6 +23,21 @@ namespace Repository
         //KQ: !null = TenTacGia bị trùng, null: thêm thành công
         public ResponseDetails CreateTacGia(IEnumerable<TacGia> tacGias)
         {
+            /*Kiểm tra xem chuỗi json nhập vào có bị trùng tên tác giả không*/
+            foreach (var dup in tacGias.GroupBy(p => p.TenTacGia))
+            {
+                if (dup.Count() - 1 > 0)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Chuỗi json nhập vào bị trùng tên tác giả",
+                        Value = dup.Key.ToString()
+                    };
+                }
+            }
+            /*End*/
+
             foreach (var tacGia in tacGias)
             {
                 /*Bắt lỗi ký tự đặc biệt*/

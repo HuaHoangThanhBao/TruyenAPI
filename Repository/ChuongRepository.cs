@@ -22,20 +22,23 @@ namespace Repository
         //KQ: !null = TenChuong bị trùng, null: thêm thành công
         public ResponseDetails CreateChuong(IEnumerable<Chuong> chuongs)
         {
-            foreach (var chuong in chuongs)
+            /*Kiểm tra xem chuỗi json nhập vào có bị trùng tên chương không*/
+            foreach (var dup in chuongs.GroupBy(p => p.TenChuong))
             {
-                /*Bắt lỗi ký tự đặc biệt*/
-                if (ValidationExtensions.isSpecialChar(chuong.TenChuong))
+                if (dup.Count() - 1 > 0)
                 {
                     return new ResponseDetails()
                     {
                         StatusCode = ResponseCode.Error,
-                        Message = "Không được chứa ký tự đặc biệt",
-                        Value = chuong.TenChuong.ToString()
+                        Message = "Chuỗi json nhập vào bị trùng tên chương",
+                        Value = dup.Key.ToString()
                     };
                 }
-                /*End*/
+            }
+            /*End*/
 
+            foreach (var chuong in chuongs)
+            {
                 /*Bắt lỗi [ID]*/
                 var truyenRepo = new TruyenRepository(_context);
                 if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(chuong.TruyenID)).Any())
@@ -96,18 +99,6 @@ namespace Repository
         //KQ: false: TenChuong bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateChuong(Chuong chuong)
         {
-            /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(chuong.TenChuong))
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Không được chứa ký tự đặc biệt",
-                    Value = chuong.TenChuong.ToString()
-                };
-            }
-            /*End*/
-
             /*Bắt lỗi [ID]*/
             var truyenRepo = new TruyenRepository(_context);
             if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(chuong.TruyenID)).Any())

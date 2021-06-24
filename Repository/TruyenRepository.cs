@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Repository.Extensions;
+using CoreLibrary.Helpers;
+using System;
 
 namespace Repository
 {
@@ -22,32 +24,25 @@ namespace Repository
         //KQ: !null = TenTruyen bị trùng, null: thêm thành công
         public ResponseDetails CreateTruyen(IEnumerable<Truyen> truyens)
         {
+            /*Kiểm tra xem chuỗi json nhập vào có bị trùng tên truyện không*/
+            foreach (var dup in truyens.GroupBy(p => p.TenTruyen))
+            {
+                if(dup.Count() - 1 > 0)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Chuỗi json nhập vào bị trùng tên truyện",
+                        Value = dup.Key.ToString()
+                    };
+                }
+            }
+            /*End*/
+
             var tacGiaRepo = new TacGiaRepository(_context);
 
             foreach (var truyen in truyens)
             {
-                /*Bắt lỗi ký tự đặc biệt*/
-                if(ValidationExtensions.isSpecialChar(truyen.TenTruyen))
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Không được chứa ký tự đặc biệt",
-                        Value = truyen.TenTruyen.ToString()
-                    };
-                }
-
-                if (ValidationExtensions.isSpecialChar(truyen.MoTa))
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Không được chứa ký tự đặc biệt",
-                        Value = truyen.MoTa.ToString()
-                    };
-                }
-                /*End*/
-
                 /*Bắt lỗi [ID]*/
                 if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
                 {
@@ -124,28 +119,6 @@ namespace Repository
         //KQ: false: TenTruyen bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateTruyen(Truyen truyen)
         {
-            /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(truyen.TenTruyen))
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Không được chứa ký tự đặc biệt",
-                    Value = truyen.TenTruyen.ToString()
-                };
-            }
-
-            if (ValidationExtensions.isSpecialChar(truyen.MoTa))
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Không được chứa ký tự đặc biệt",
-                    Value = truyen.MoTa.ToString()
-                };
-            }
-            /*End*/
-
             /*Bắt lỗi [ID]*/
             var tacGiaRepo = new TacGiaRepository(_context);
             if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
@@ -218,12 +191,13 @@ namespace Repository
         public async Task<Truyen> GetTruyenByIdAsync(int truyenId)
         {
             return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId))
+                    .Where(m => !m.TinhTrang)
                     .FirstOrDefaultAsync();
         }
 
         public async Task<Truyen> GetTruyenByDetailAsync(int truyenId)
         {
-            return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId))
+            return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId)).Where(m => !m.TinhTrang)
                 .Include(a => a.TacGia)
                 .Include(a => a.Chuongs)
                     .ThenInclude(a => a.BinhLuans)
@@ -233,6 +207,81 @@ namespace Repository
                 .Include(a => a.TheoDois)
                     .ThenInclude(b => b.User)
                 .FirstOrDefaultAsync();
+        }
+
+        public PagedList<Truyen> GetTruyenForPagination(TruyenParameters truyenParameters)
+        {
+            return PagedList<Truyen>.ToPagedList(FindAll().Include(m => m.Chuongs).Where(m => !m.TinhTrang).OrderBy(on => on.TenTruyen),
+                truyenParameters.PageNumber,
+                truyenParameters.PageSize);
+        }
+
+        public PagedList<Truyen> GetTruyenLastestUpdateForPagination(TruyenParameters truyenParameters)
+        {
+            var chuongs = (from m in _context.Chuongs
+                           orderby m.ThoiGianCapNhat descending
+                           select m);
+
+            return PagedList<Truyen>.ToPagedList(
+
+                (from m in _context.Truyens
+                 join n in chuongs
+                 on m.TruyenID equals n.TruyenID
+                 where !m.TinhTrang
+                 select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
+
+                ,
+                truyenParameters.PageNumber,
+                truyenParameters.PageSize);
+        }
+
+        public PagedList<Truyen> GetTruyenOfTheLoaiForPagination(int theLoaiID, TruyenParameters truyenParameters)
+        {
+            return PagedList<Truyen>.ToPagedList(
+
+                (from m in _context.Truyens
+                 join n in _context.PhuLucs
+                 on m.TruyenID equals n.TruyenID
+                 where n.TheLoaiID == theLoaiID && !m.TinhTrang
+                 select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
+
+                ,
+                truyenParameters.PageNumber,
+                truyenParameters.PageSize);
+        }
+
+        public PagedList<Truyen> GetTruyenOfTheoDoiForPagination(Guid userID, TruyenParameters truyenParameters)
+        {
+            return PagedList<Truyen>.ToPagedList(
+
+                (from m in _context.Truyens
+                 join n in _context.TheoDois
+                 on m.TruyenID equals n.TruyenID
+                 where n.UserID == userID && !m.TinhTrang
+                 select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
+
+                ,
+                truyenParameters.PageNumber,
+                truyenParameters.PageSize);
+        }
+
+        public PagedList<Truyen> GetTopViewForPagination(TruyenParameters truyenParameters)
+        {
+            var topViews = (from m in _context.Chuongs
+                           orderby m.LuotXem descending
+                           select m).Take(5);
+
+            return PagedList<Truyen>.ToPagedList(
+
+                (from m in _context.Truyens
+                 join n in topViews
+                 on m.TruyenID equals n.TruyenID
+                 where n.LuotXem > 0 && !m.TinhTrang
+                 select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
+
+                ,
+                truyenParameters.PageNumber,
+                truyenParameters.PageSize);
         }
     }
 }

@@ -106,7 +106,7 @@ namespace Repository
                 };
             }
 
-            if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia)).Any())
+            if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia) && t.TacGiaID != tacGia.TacGiaID).Any())
             {
                 return new ResponseDetails()
                 {

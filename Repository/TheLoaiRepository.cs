@@ -103,7 +103,7 @@ namespace Repository
                 };
             }
 
-            if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai)).Any())
+            if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai) && t.TheLoaiID != theLoai.TheLoaiID).Any())
             {
                 return new ResponseDetails()
                 {

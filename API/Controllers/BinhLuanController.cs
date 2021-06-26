@@ -212,7 +212,6 @@ namespace API.Controllers
             }
         }
 
-
         [HttpGet]
         public IActionResult GetBinhLuanForPagination([FromQuery] BinhLuanParameters binhLuanParameters)
         {

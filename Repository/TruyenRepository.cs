@@ -143,7 +143,7 @@ namespace Repository
                 };
             }
 
-            if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
+            if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen) && t.TruyenID != truyen.TruyenID).Any())
             {
                 return new ResponseDetails()
                 {
@@ -224,11 +224,7 @@ namespace Repository
 
             return PagedList<Truyen>.ToPagedList(
 
-                (from m in _context.Truyens
-                 join n in chuongs
-                 on m.TruyenID equals n.TruyenID
-                 where !m.TinhTrang
-                 select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
+               _context.Truyens.OrderByDescending(user => user.Chuongs.Max(d => d.ThoiGianCapNhat)).Include(m => m.Chuongs)
 
                 ,
                 truyenParameters.PageNumber,
@@ -267,17 +263,9 @@ namespace Repository
 
         public PagedList<Truyen> GetTopViewForPagination(TruyenParameters truyenParameters)
         {
-            var topViews = (from m in _context.Chuongs
-                           orderby m.LuotXem descending
-                           select m).Take(5);
-
             return PagedList<Truyen>.ToPagedList(
 
-                (from m in _context.Truyens
-                 join n in topViews
-                 on m.TruyenID equals n.TruyenID
-                 where n.LuotXem > 0 && !m.TinhTrang
-                 select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
+               _context.Truyens.OrderByDescending(user => user.Chuongs.Sum(d => d.LuotXem)).Take(5).Include(m => m.Chuongs)
 
                 ,
                 truyenParameters.PageNumber,

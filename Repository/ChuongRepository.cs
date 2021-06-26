@@ -123,7 +123,9 @@ namespace Repository
                 };
             }
 
-            if (FindByCondition(t => t.TenChuong.Equals(chuong.TenChuong) && t.TruyenID.Equals(chuong.TruyenID)).Any())
+            if (FindByCondition(t => t.TenChuong.Equals(chuong.TenChuong) 
+                                && t.TruyenID.Equals(chuong.TruyenID)
+                                && t.ChuongID != chuong.ChuongID).Any())
             {
                 return new ResponseDetails()
                 {

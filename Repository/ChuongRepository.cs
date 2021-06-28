@@ -3,6 +3,7 @@ using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Repository.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -88,6 +89,9 @@ namespace Repository
 
                 //Mặc định khi thêm chương thì chương đó sẽ ở trạng thái chờ duyệt (=-1)
                 chuong.TrangThai = -1;
+                chuong.ThoiGianCapNhat = DateTime.Now;
+                Random r = new Random();
+                chuong.LuotXem = r.Next(5000, 15000);
 
                 //Tạo dữ liệu nhưng chưa add vào CSDL
                 Create(chuong);
@@ -167,7 +171,7 @@ namespace Repository
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa chương thành công" };
         }
 
-        //Lấy danh sách các tác giả không bị xóa
+        //Lấy danh sách các chương không bị xóa
         public async Task<IEnumerable<Chuong>> GetAllChuongsAsync()
         {
             return await FindAll()

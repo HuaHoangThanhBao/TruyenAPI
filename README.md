@@ -4,6 +4,12 @@ Rest API was built with ASP.NET Core 3.0 with CRUD operations for a reading book
 It is using Repository pattern to design architecture and communicating with database by
 ORM model.
 
+## Set-up
+
+1. Open your project -> Change your server name in appsetting.json -> Open Window console
+2. Typing 'Add-migration create-database' command to create Migrations folder.
+3. Typing 'Update-database' to create database in SQL Server.
+
 ## API (HTTP request)
 
 Note:
@@ -155,8 +161,11 @@ Method: PUT
 URL: hostUrl/api/truyen/{key}
 JSON:
 {
-    "TenTheLoai": string,
-    "TinhTrang": boolean
+    "TacGiaID": number,
+    "TenTruyen": string,
+    "MoTa": string,
+    "TinhTrang": boolean,
+    "HinhAnh": imageURL
 }
 
 ````
@@ -270,5 +279,221 @@ JSON:
 Method: DELETE
 
 URL: url/api/chuong/{id}/{key}
+
+````
+
+#### NoiDungChuong table
+
+````console
+
+Method: POST
+
+URL: hostUrl/api/noidungchuong/{key}
+JSON:
+[
+  {
+     "ChuongID": number,
+     "HinhAnh": imageURL
+  }
+  ,...
+]
+
+````
+
+````console
+
+Method: GET
+
+[1] - URL: hostUrl/api/noidungchuong/{key}
+
+[2] - URL: hostUrl/api/noidungchuong/{id}/{key}
+
+[3] - URL: hostUrl/api/noidungchuong/{id}/{key}/details
+
+````
+
+````console
+
+Method: PUT
+
+URL: hostUrl/api/noidungchuong/{key}
+JSON:
+{
+   "ChuongID": number,
+   "HinhAnh": imageURL
+}
+
+````
+
+````console
+
+Method: DELETE
+
+URL: url/api/noidungchuong/{id}/{key}
+
+````
+
+#### User table
+
+````console
+
+Method: POST
+
+URL: hostUrl/api/user/{key}
+JSON:
+{
+    "TenUser": string,
+    "Password": string
+}
+
+````
+
+````console
+
+Method: GET
+
+[1] - URL: hostUrl/api/user/{key}
+
+[2] - URL: hostUrl/api/user/{id}/{key}
+
+[3] - URL: hostUrl/api/user/{id}/{key}/details
+
+````
+
+````console
+
+Method: PUT
+
+URL: hostUrl/api/user/{key}
+JSON:
+{
+    "TenUser": string,
+    "Quyen": number,
+    "Password": string
+}
+
+````
+
+````console
+
+Method: DELETE
+
+URL: url/api/user/{id}/{key}
+
+````
+
+#### TheoDoi table
+
+````console
+
+Method: POST
+
+URL: hostUrl/api/theodoi/{key}
+JSON:
+{
+    "TruyenID": string,
+    "Quyen": number,
+    "UserID": string
+}
+
+````
+
+````console
+
+Method: GET
+
+[1] - URL: hostUrl/api/theodoi/{key}
+
+[2] - URL: hostUrl/api/theodoi/{id}/{key}
+
+[3] - URL: hostUrl/api/theodoi/{id}/{key}/details
+
+````
+
+````console
+
+Method: PUT
+
+URL: hostUrl/api/theodoi/{key}
+JSON:
+{
+    "TruyenID": string,
+    "UserID": string
+}
+
+````
+
+````console
+
+Method: DELETE
+
+URL: url/api/theodoi/{id}/{key}
+
+````
+
+#### BinhLuan table
+
+````console
+
+Method: POST
+
+URL: hostUrl/api/binhluan/{key}
+JSON:
+{
+    "UserID": string,
+    "ChuongID": number,
+    "NoiDung": string,
+    "NgayBL": datetime
+}
+
+````
+
+````console
+
+Method: GET
+
+[1] - URL: hostUrl/api/binhluan/{key}
+
+[2] - URL: hostUrl/api/binhluan/{id}/{key}
+
+[3] - URL: hostUrl/api/binhluan/{id}/{key}/details
+
+````
+
+````console
+
+Method: PUT
+
+URL: hostUrl/api/binhluan/{key}
+JSON:
+{
+    "UserID": string,
+    "ChuongID": number,
+    "NoiDung": string,
+    "NgayBL": datetime
+}
+
+````
+
+````console
+
+Method: DELETE
+
+URL: url/api/binhluan/{id}/{key}
+
+````
+
+#### JWT For Login
+
+````console
+
+Method: POST
+
+URL: hostUrl/api/auth/{key}/login
+JSON:
+{
+    "TenUser": string,
+    "Password": string
+}
 
 ````

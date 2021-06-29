@@ -497,3 +497,39 @@ JSON:
 }
 
 ````
+
+#### Pagination
+
+1. Truyen table
+
+````console
+
+Method: GET
+
+[Get records]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&getAll=true
+
+[Get lastest updates]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&lastestUpdate=true
+
+[Get top views]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&topView=true
+
+[Get truyen of theloai]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&sorting=true&theloaiID={id}
+
+[Get truyen of theodoi]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&sorting=true&userID={id}
+
+````
+
+2. BinhLuan table
+
+````console
+
+Method: GET
+
+[Get records]: hostUrl/api/binhluan?pageNumber={number}&pageSize={number}&apiKey={key}&getAll=true
+
+[Get lastest updates]: hostUrl/api/binhluan?pageNumber={number}&pageSize={number}&apiKey={key}&lastestUpdate=true
+
+[Get top 10 lastest updates]: hostUrl/api/binhluan?pageNumber={number}&pageSize={number}&apiKey={key}&sorting=true&truyenID={id}
+
+[Get binhluan of chuong]: hostUrl/api/binhluan?pageNumber={number}&pageSize={number}&apiKey={key}&sorting=true&chuongID={id}
+
+````

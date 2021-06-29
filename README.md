@@ -10,9 +10,8 @@ Note:
 1. [1] - Get all records
 2. [2] - Get only one record.
 3. [3] - Get record with foreign key.
-
-{id}: Id of record which you want to get.
-{key}: API key.
+4. {id}: Id of record which you want to get.
+5. {key}: API key.
 
 #### TacGia table
 
@@ -26,11 +25,8 @@ JSON:
   {
     "TenTacGia": "",
     "TinhTrang": boolean
-  },
-  {
-    "TenTacGia": "",
-    "TinhTrang": boolean
   }
+  ,...
 ]
 
 ````
@@ -65,5 +61,56 @@ JSON:
 Method: DELETE
 
 URL: url/api/tacgia/{id}/{key}
+
+````
+
+#### TheLoai table
+
+````console
+
+Method: POST
+
+URL: hostUrl/api/theloai/{key}
+JSON:
+[
+  {
+    "TenTheLoai": "",
+    "TinhTrang": boolean
+  }
+  ,...
+]
+
+````
+
+````console
+
+Method: GET
+
+[1] - URL: hostUrl/api/theloai/{key}
+
+[2] - URL: hostUrl/api/theloai/{id}/{key}
+
+[3] - URL: hostUrl/api/theloai/{id}/{key}/details
+
+````
+
+````console
+
+Method: PUT
+
+URL: hostUrl/api/theloai/{key}
+JSON:
+{
+    "TenTheLoai": "",
+    "TinhTrang": boolean
+}
+
+````
+
+````console
+
+Method: DELETE
+
+URL: url/api/theloai/{id}/{key}
 
 ````

@@ -7,6 +7,7 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
@@ -23,6 +24,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllTheLoais(string key)
         {
@@ -44,6 +46,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "TheLoaiById")]
         public async Task<IActionResult> GetTheLoaiById(int id, string key)
         {
@@ -71,6 +74,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}/details")]
         public async Task<IActionResult> GetTheLoaiByDetails(int id, string key)
         {

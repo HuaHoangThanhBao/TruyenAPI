@@ -6,6 +6,7 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
@@ -22,6 +23,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllPhuLucs(string key)
         {
@@ -43,6 +45,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "PhuLucById")]
         public async Task<IActionResult> GetPhuLucByTruyenId(int id, string key)
         {

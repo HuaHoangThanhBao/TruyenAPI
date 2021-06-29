@@ -6,6 +6,7 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -24,6 +25,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllBinhLuans(string key)
         {
@@ -45,6 +47,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "BinhLuanById")]
         public async Task<IActionResult> GetBinhLuanById(int id, string key)
         {
@@ -72,6 +75,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}/details")]
         public async Task<IActionResult> GetBinhLuanByDetails(int id, string key)
         {
@@ -212,6 +216,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowHeader")]
         [HttpGet]
         public IActionResult GetBinhLuanForPagination([FromQuery] BinhLuanParameters binhLuanParameters)
         {

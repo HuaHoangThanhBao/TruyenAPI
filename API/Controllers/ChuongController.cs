@@ -5,6 +5,7 @@ using AutoMapper;
 using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using DataAccessLayer;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -22,6 +23,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllChuongs(string key)
         {
@@ -43,6 +45,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "ChuongById")]
         public async Task<IActionResult> GetChuongById(int id, string key)
         {
@@ -70,6 +73,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}/details")]
         public async Task<IActionResult> GetChuongByDetails(int id, string key)
         {

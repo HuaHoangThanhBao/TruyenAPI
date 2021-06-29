@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
 using Newtonsoft.Json;
 using CoreLibrary.Helpers;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
@@ -24,6 +25,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllTruyens(string key)
         {
@@ -45,6 +47,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "TruyenById")]
         public async Task<IActionResult> GetTruyenById(int id, string key)
         {
@@ -72,6 +75,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}/details")]
         public async Task<IActionResult> GetTruyenByDetails(int id, string key)
         {
@@ -212,6 +216,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowHeader")]
         [HttpGet]
         public IActionResult GetTruyenForPagination([FromQuery] TruyenParameters truyenParameters)
         {

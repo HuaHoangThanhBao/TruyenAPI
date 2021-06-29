@@ -6,6 +6,7 @@ using CoreLibrary.DataTransferObjects;
 using Microsoft.AspNetCore.Mvc;
 using CoreLibrary.Models;
 using API.Extensions;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
@@ -22,6 +23,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllTheoDois(string key)
         {
@@ -43,6 +45,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "TheoDoiById")]
         public async Task<IActionResult> GetTheoDoiById(int id, string key)
         {

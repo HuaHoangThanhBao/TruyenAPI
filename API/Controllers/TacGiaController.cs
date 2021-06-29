@@ -6,6 +6,7 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
@@ -22,6 +23,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllTacGias(string key)
         {
@@ -43,6 +45,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "TacGiaById")]
         public async Task<IActionResult> GetTacGiaById(int id, string key)
         {
@@ -70,6 +73,7 @@ namespace API.Controllers
             }
         }
 
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{keys}/details")]
         public async Task<IActionResult> GetTacGiaByDetails(int id, string key)
         {

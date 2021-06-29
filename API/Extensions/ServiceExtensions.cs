@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using API.Extensions;
+using Microsoft.Net.Http.Headers;
 
 namespace API
 {
@@ -40,8 +41,11 @@ namespace API
 
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowOrigin", builder => builder.AllowAnyOrigin()
-                                .WithMethods("GET").WithMethods("POST").WithMethods("PUT").WithMethods("DELETE"));
+                options.AddPolicy("AllowOrigin", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
+                options.AddPolicy("AllowHeader", builder => builder.WithOrigins("http://localhost:4000")
+                .WithHeaders(HeaderNames.ContentType, HeaderNames.Accept).WithMethods("GET")
+                .WithExposedHeaders("X-Pagination"));
             });
 
             services.AddAuthentication(opt =>

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -24,7 +25,6 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllUsers(string key)
         {
@@ -47,7 +47,6 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "UserById")]
         public async Task<IActionResult> GetUserById(Guid id, string key)
         {
@@ -75,7 +74,6 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}/details")]
         public async Task<IActionResult> GetUserByDetails(Guid id, string key)
         {

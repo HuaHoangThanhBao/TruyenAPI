@@ -180,42 +180,43 @@ namespace Repository
         }
 
 
-        public PagedList<BinhLuan> GetBinhLuanForPagination(BinhLuanParameters binhLuanParameters)
+        public async Task<PagedList<BinhLuan>> GetBinhLuanForPagination(BinhLuanParameters binhLuanParameters)
         {
-            return PagedList<BinhLuan>.ToPagedList(FindAll().Include(m => m.User).Include(m => m.Chuong).OrderByDescending(on => on.NgayBL),
+            return await PagedList<BinhLuan>.ToPagedList(FindAll().Include(m => m.User).Include(m => m.Chuong).OrderByDescending(on => on.NgayBL),
                 binhLuanParameters.PageNumber,
                 binhLuanParameters.PageSize);
         }
 
-        public PagedList<BinhLuan> GetBinhLuanLastestForPagination(BinhLuanParameters binhLuanParameters)
+        public async Task<PagedList<BinhLuan>> GetBinhLuanLastestForPagination(BinhLuanParameters binhLuanParameters)
         {
-            return PagedList<BinhLuan>.ToPagedList(FindAll().Include(m => m.User).Include(m => m.Chuong).OrderByDescending(on => on.NgayBL).Take(10),
+            return await PagedList<BinhLuan>.ToPagedList(FindAll().Include(m => m.User).Include(m => m.Chuong)
+                .ThenInclude(m => m.Truyen).OrderByDescending(on => on.NgayBL).Take(binhLuanParameters.PageSize),
                 binhLuanParameters.PageNumber,
                 binhLuanParameters.PageSize);
         }
 
-        public PagedList<BinhLuan> GetBinhLuanOfTruyenForPagination(int truyenID, BinhLuanParameters binhLuanParameters)
+        public async Task<PagedList<BinhLuan>> GetBinhLuanOfTruyenForPagination(int truyenID, BinhLuanParameters binhLuanParameters)
         {
             var chuongs = (from m in _context.Chuongs
                            where m.TruyenID == truyenID
                            select m);
 
-            return PagedList<BinhLuan>.ToPagedList(
+            return await PagedList<BinhLuan>.ToPagedList(
 
                 (from m in _context.BinhLuans
                  join n in chuongs
                  on m.ChuongID equals n.ChuongID
-                 select m).Include(m => m.User).Include(m => m.Chuong).Take(10).OrderByDescending(m => m.NgayBL)
+                 select m).Include(m => m.User).Include(m => m.Chuong).Take(binhLuanParameters.PageSize).OrderByDescending(m => m.NgayBL)
                 
                  ,
                 binhLuanParameters.PageNumber,
                 binhLuanParameters.PageSize);
         }
 
-        public PagedList<BinhLuan> GetBinhLuanOfChuongForPagination(int chuongID, BinhLuanParameters binhLuanParameters)
+        public async Task<PagedList<BinhLuan>> GetBinhLuanOfChuongForPagination(int chuongID, BinhLuanParameters binhLuanParameters)
         {
 
-            return PagedList<BinhLuan>.ToPagedList(
+            return await PagedList<BinhLuan>.ToPagedList(
 
                 (from m in _context.BinhLuans
                  where m.ChuongID == chuongID

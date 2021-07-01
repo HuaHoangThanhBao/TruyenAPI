@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class TacGiaController : ControllerBase
@@ -23,7 +24,6 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllTacGias(string key)
         {
@@ -45,7 +45,6 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "TacGiaById")]
         public async Task<IActionResult> GetTacGiaById(int id, string key)
         {
@@ -73,7 +72,6 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{keys}/details")]
         public async Task<IActionResult> GetTacGiaByDetails(int id, string key)
         {

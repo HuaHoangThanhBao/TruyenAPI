@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 
 namespace API.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class BinhLuanController : ControllerBase
@@ -25,7 +26,6 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllBinhLuans(string key)
         {
@@ -47,7 +47,6 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "BinhLuanById")]
         public async Task<IActionResult> GetBinhLuanById(int id, string key)
         {
@@ -75,7 +74,6 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}/details")]
         public async Task<IActionResult> GetBinhLuanByDetails(int id, string key)
         {
@@ -216,9 +214,8 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowHeader")]
         [HttpGet]
-        public IActionResult GetBinhLuanForPagination([FromQuery] BinhLuanParameters binhLuanParameters)
+        public async Task<IActionResult> GetBinhLuanForPagination([FromQuery] BinhLuanParameters binhLuanParameters)
         {
             var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(binhLuanParameters.APIKey);
             if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
@@ -227,7 +224,7 @@ namespace API.Controllers
 
             if (binhLuanParameters.LastestUpdate)
             {
-                var binhLuans = _repository.BinhLuan.GetBinhLuanLastestForPagination(binhLuanParameters);
+                var binhLuans = await _repository.BinhLuan.GetBinhLuanLastestForPagination(binhLuanParameters);
 
                 var metadata = new
                 {
@@ -244,7 +241,7 @@ namespace API.Controllers
             }
             else if (binhLuanParameters.Sorting && binhLuanParameters.TruyenID > 0)
             {
-                var binhLuans = _repository.BinhLuan.GetBinhLuanOfTruyenForPagination(binhLuanParameters.TruyenID, binhLuanParameters);
+                var binhLuans = await _repository.BinhLuan.GetBinhLuanOfTruyenForPagination(binhLuanParameters.TruyenID, binhLuanParameters);
 
                 var metadata = new
                 {
@@ -261,7 +258,7 @@ namespace API.Controllers
             }
             else if (binhLuanParameters.Sorting && binhLuanParameters.ChuongID > 0)
             {
-                var binhLuans = _repository.BinhLuan.GetBinhLuanOfChuongForPagination(binhLuanParameters.ChuongID, binhLuanParameters);
+                var binhLuans = await _repository.BinhLuan.GetBinhLuanOfChuongForPagination(binhLuanParameters.ChuongID, binhLuanParameters);
 
                 var metadata = new
                 {
@@ -280,7 +277,7 @@ namespace API.Controllers
             {
                 if (binhLuanParameters.GetAll)
                 {
-                    var binhLuans = _repository.BinhLuan.GetBinhLuanForPagination(binhLuanParameters);
+                    var binhLuans = await _repository.BinhLuan.GetBinhLuanForPagination(binhLuanParameters);
 
                     var metadata = new
                     {

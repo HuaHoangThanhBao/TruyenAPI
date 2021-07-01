@@ -41,11 +41,8 @@ namespace API
 
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowOrigin", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-
-                options.AddPolicy("AllowHeader", builder => builder.WithOrigins("http://localhost:4000")
-                .WithHeaders(HeaderNames.ContentType, HeaderNames.Accept).WithMethods("GET")
-                .WithExposedHeaders("X-Pagination"));
+                options.AddPolicy("AllowOrigin", builder => builder.AllowAnyOrigin()
+                .AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("X-Pagination"));
             });
 
             services.AddAuthentication(opt =>

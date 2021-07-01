@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class NoiDungChuongController : ControllerBase
@@ -23,7 +24,6 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllNoiDungChuongs(string key)
         {
@@ -45,7 +45,6 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "NoiDungChuongById")]
         public async Task<IActionResult> GetNoiDungChuongById(int id, string key)
         {

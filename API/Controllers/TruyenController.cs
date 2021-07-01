@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class TruyenController : ControllerBase
@@ -25,7 +26,6 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{key}")]
         public async Task<IActionResult> GetAllTruyens(string key)
         {
@@ -47,7 +47,6 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}", Name = "TruyenById")]
         public async Task<IActionResult> GetTruyenById(int id, string key)
         {
@@ -75,7 +74,6 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowOrigin")]
         [HttpGet("{id}/{key}/details")]
         public async Task<IActionResult> GetTruyenByDetails(int id, string key)
         {
@@ -216,9 +214,8 @@ namespace API.Controllers
             }
         }
 
-        [EnableCors("AllowHeader")]
         [HttpGet]
-        public IActionResult GetTruyenForPagination([FromQuery] TruyenParameters truyenParameters)
+        public async Task<IActionResult> GetTruyenForPagination([FromQuery] TruyenParameters truyenParameters)
         {
             var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(truyenParameters.APIKey);
             if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
@@ -227,7 +224,7 @@ namespace API.Controllers
 
             if (truyenParameters.LastestUpdate)
             {
-                var truyens = _repository.Truyen.GetTruyenLastestUpdateForPagination(truyenParameters);
+                var truyens = await _repository.Truyen.GetTruyenLastestUpdateForPagination(truyenParameters);
 
                 var metadata = new
                 {
@@ -244,7 +241,7 @@ namespace API.Controllers
             }
             else if (truyenParameters.TopView)
             {
-                var truyens = _repository.Truyen.GetTopViewForPagination(truyenParameters);
+                var truyens = await _repository.Truyen.GetTopViewForPagination(truyenParameters);
 
                 var metadata = new
                 {
@@ -261,7 +258,7 @@ namespace API.Controllers
             }
             else if (truyenParameters.Sorting && truyenParameters.TheLoaiID > 0)
             {
-                var truyens = _repository.Truyen.GetTruyenOfTheLoaiForPagination(truyenParameters.TheLoaiID, truyenParameters);
+                var truyens = await _repository.Truyen.GetTruyenOfTheLoaiForPagination(truyenParameters.TheLoaiID, truyenParameters);
 
                 var metadata = new
                 {
@@ -278,7 +275,7 @@ namespace API.Controllers
             }
             else if (truyenParameters.Sorting && truyenParameters.UserID != null)
             {
-                var truyens = _repository.Truyen.GetTruyenOfTheoDoiForPagination(truyenParameters.UserID, truyenParameters);
+                var truyens = await _repository.Truyen.GetTruyenOfTheoDoiForPagination(truyenParameters.UserID, truyenParameters);
 
                 var metadata = new
                 {
@@ -297,7 +294,7 @@ namespace API.Controllers
             {
                 if (truyenParameters.GetAll)
                 {
-                    var truyens = _repository.Truyen.GetTruyenForPagination(truyenParameters);
+                    var truyens = await _repository.Truyen.GetTruyenForPagination(truyenParameters);
 
                     var metadata = new
                     {

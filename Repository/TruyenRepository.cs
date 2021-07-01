@@ -209,20 +209,21 @@ namespace Repository
                 .FirstOrDefaultAsync();
         }
 
-        public PagedList<Truyen> GetTruyenForPagination(TruyenParameters truyenParameters)
+        public async Task<PagedList<Truyen>> GetTruyenForPagination(TruyenParameters truyenParameters)
         {
-            return PagedList<Truyen>.ToPagedList(FindAll().Include(m => m.Chuongs).Where(m => !m.TinhTrang).OrderBy(on => on.TenTruyen),
+            return await PagedList<Truyen>.ToPagedList(FindAll().Include(m => m.Chuongs).Where(m => !m.TinhTrang)
+                .OrderBy(on => on.TenTruyen),
                 truyenParameters.PageNumber,
                 truyenParameters.PageSize);
         }
 
-        public PagedList<Truyen> GetTruyenLastestUpdateForPagination(TruyenParameters truyenParameters)
+        public async Task<PagedList<Truyen>> GetTruyenLastestUpdateForPagination(TruyenParameters truyenParameters)
         {
             var chuongs = (from m in _context.Chuongs
                            orderby m.ThoiGianCapNhat descending
                            select m);
 
-            return PagedList<Truyen>.ToPagedList(
+            return await PagedList<Truyen>.ToPagedList(
 
                _context.Truyens.OrderByDescending(user => user.Chuongs.Max(d => d.ThoiGianCapNhat)).Include(m => m.Chuongs)
 
@@ -231,9 +232,9 @@ namespace Repository
                 truyenParameters.PageSize);
         }
 
-        public PagedList<Truyen> GetTruyenOfTheLoaiForPagination(int theLoaiID, TruyenParameters truyenParameters)
+        public async Task<PagedList<Truyen>> GetTruyenOfTheLoaiForPagination(int theLoaiID, TruyenParameters truyenParameters)
         {
-            return PagedList<Truyen>.ToPagedList(
+            return await PagedList<Truyen>.ToPagedList(
 
                 (from m in _context.Truyens
                  join n in _context.PhuLucs
@@ -246,9 +247,9 @@ namespace Repository
                 truyenParameters.PageSize);
         }
 
-        public PagedList<Truyen> GetTruyenOfTheoDoiForPagination(Guid userID, TruyenParameters truyenParameters)
+        public async Task<PagedList<Truyen>> GetTruyenOfTheoDoiForPagination(Guid userID, TruyenParameters truyenParameters)
         {
-            return PagedList<Truyen>.ToPagedList(
+            return await PagedList<Truyen>.ToPagedList(
 
                 (from m in _context.Truyens
                  join n in _context.TheoDois
@@ -261,11 +262,12 @@ namespace Repository
                 truyenParameters.PageSize);
         }
 
-        public PagedList<Truyen> GetTopViewForPagination(TruyenParameters truyenParameters)
+        public async Task<PagedList<Truyen>> GetTopViewForPagination(TruyenParameters truyenParameters)
         {
-            return PagedList<Truyen>.ToPagedList(
+            return await PagedList<Truyen>.ToPagedList(
 
-               _context.Truyens.OrderByDescending(user => user.Chuongs.Sum(d => d.LuotXem)).Take(5).Include(m => m.Chuongs)
+               _context.Truyens.OrderByDescending(user => user.Chuongs.Sum(d => d.LuotXem))
+               .Take(truyenParameters.PageSize).Include(m => m.Chuongs)
 
                 ,
                 truyenParameters.PageNumber,

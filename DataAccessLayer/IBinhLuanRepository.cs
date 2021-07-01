@@ -7,10 +7,10 @@ namespace DataAccessLayer
 {
     public interface IBinhLuanRepository
     {
-        PagedList<BinhLuan> GetBinhLuanForPagination(BinhLuanParameters binhLuanParameters);
-        PagedList<BinhLuan> GetBinhLuanLastestForPagination(BinhLuanParameters binhLuanParameters);
-        PagedList<BinhLuan> GetBinhLuanOfTruyenForPagination(int truyenID, BinhLuanParameters binhLuanParameters);
-        PagedList<BinhLuan> GetBinhLuanOfChuongForPagination(int chuongID, BinhLuanParameters binhLuanParameters);
+        Task<PagedList<BinhLuan>> GetBinhLuanForPagination(BinhLuanParameters binhLuanParameters);
+        Task<PagedList<BinhLuan>> GetBinhLuanLastestForPagination(BinhLuanParameters binhLuanParameters);
+        Task<PagedList<BinhLuan>> GetBinhLuanOfTruyenForPagination(int truyenID, BinhLuanParameters binhLuanParameters);
+        Task<PagedList<BinhLuan>> GetBinhLuanOfChuongForPagination(int chuongID, BinhLuanParameters binhLuanParameters);
 
         Task<IEnumerable<BinhLuan>> GetAllBinhLuansAsync();
         Task<BinhLuan> GetBinhLuanByIdAsync(int binhLuanId);

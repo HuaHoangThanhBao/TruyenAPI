@@ -12,6 +12,21 @@ ORM model.
 
 ## API (HTTP request)
 
+Http-Headers:
+Each request must be attached with HttpHeaders and we need declare APIKey inside HttpHeaders. Because of security, 
+APIKey would not be in Git.
+
+Example:
+
+````console
+
+headers: {
+  "Content-Type": "application/json",
+  "Api-Key": environment.apiKey
+}
+
+````
+
 Note:
 1. [1] - Get all records
 2. [2] - Get only one record.

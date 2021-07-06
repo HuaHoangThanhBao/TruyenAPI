@@ -6,7 +6,7 @@ ORM model.
 
 ## Set-up
 
-1. Open your project -> Change your server name in appsetting.json -> Open Window console
+1. Open your project -> Change your server name in appsetting.Body (Json) -> Open Window console
 2. Typing 'Add-migration create-database' command to create Migrations folder.
 3. Typing 'Update-database' to create database in SQL Server.
 
@@ -25,8 +25,8 @@ Note:
 
 Method: POST
 
-URL: hostUrl/api/tacgia/{key}
-JSON:
+Request: host/api/tacgia
+Body (Json):
 [
   {
     "TenTacGia": string,
@@ -41,11 +41,11 @@ JSON:
 
 Method: GET
 
-[1] - URL: hostUrl/api/tacgia/{key}
+[1] - Request: host/api/tacgia
 
-[2] - URL: hostUrl/api/tacgia/{id}/{key}
+[2] - Request: host/api/tacgia/{id}
 
-[3] - URL: hostUrl/api/tacgia/{id}/{key}/details
+[3] - Request: host/api/tacgia/{id}/details
 
 ````
 
@@ -53,8 +53,8 @@ Method: GET
 
 Method: PUT
 
-URL: hostUrl/api/tacgia/{key}
-JSON:
+Request: host/api/tacgia
+Body (Json):
 {
     "TenTacGia": string,
     "TinhTrang": boolean
@@ -66,7 +66,7 @@ JSON:
 
 Method: DELETE
 
-URL: url/api/tacgia/{id}/{key}
+Request: Request/api/tacgia/{id}
 
 ````
 
@@ -76,8 +76,8 @@ URL: url/api/tacgia/{id}/{key}
 
 Method: POST
 
-URL: hostUrl/api/theloai/{key}
-JSON:
+Request: host/api/theloai
+Body (Json):
 [
   {
     "TenTheLoai": string,
@@ -92,11 +92,11 @@ JSON:
 
 Method: GET
 
-[1] - URL: hostUrl/api/theloai/{key}
+[1] - Request: host/api/theloai
 
-[2] - URL: hostUrl/api/theloai/{id}/{key}
+[2] - Request: host/api/theloai/{id}
 
-[3] - URL: hostUrl/api/theloai/{id}/{key}/details
+[3] - Request: host/api/theloai/{id}/details
 
 ````
 
@@ -104,8 +104,8 @@ Method: GET
 
 Method: PUT
 
-URL: hostUrl/api/theloai/{key}
-JSON:
+Request: host/api/theloai
+Body (Json):
 {
     "TenTheLoai": string,
     "TinhTrang": boolean
@@ -117,7 +117,7 @@ JSON:
 
 Method: DELETE
 
-URL: url/api/theloai/{id}/{key}
+Request: Request/api/theloai/{id}
 
 ````
 
@@ -127,15 +127,15 @@ URL: url/api/theloai/{id}/{key}
 
 Method: POST
 
-URL: hostUrl/api/truyen/{key}
-JSON:
+Request: host/api/truyen
+Body (Json):
 [
   {
     "TacGiaID": number,
     "TenTruyen": string,
     "MoTa": string,
     "TinhTrang": boolean,
-    "HinhAnh": imageURL
+    "HinhAnh": imageRequest
   }
   ,...
 ]
@@ -146,11 +146,11 @@ JSON:
 
 Method: GET
 
-[1] - URL: hostUrl/api/truyen/{key}
+[1] - Request: host/api/truyen
 
-[2] - URL: hostUrl/api/truyen/{id}/{key}
+[2] - Request: host/api/truyen/{id}
 
-[3] - URL: hostUrl/api/truyen/{id}/{key}/details
+[3] - Request: host/api/truyen/{id}/details
 
 ````
 
@@ -158,14 +158,14 @@ Method: GET
 
 Method: PUT
 
-URL: hostUrl/api/truyen/{key}
-JSON:
+Request: host/api/truyen
+Body (Json):
 {
     "TacGiaID": number,
     "TenTruyen": string,
     "MoTa": string,
     "TinhTrang": boolean,
-    "HinhAnh": imageURL
+    "HinhAnh": imageRequest
 }
 
 ````
@@ -174,7 +174,7 @@ JSON:
 
 Method: DELETE
 
-URL: url/api/truyen/{id}/{key}
+Request: Request/api/truyen/{id}
 
 ````
 
@@ -184,8 +184,8 @@ URL: url/api/truyen/{id}/{key}
 
 Method: POST
 
-URL: hostUrl/api/phuluc/{key}
-JSON:
+Request: host/api/phuluc
+Body (Json):
 [
   {
     "TruyenID": number,
@@ -200,9 +200,9 @@ JSON:
 
 Method: GET
 
-[1] - URL: hostUrl/api/phuluc{key}
+[1] - Request: host/api/phuluc
 
-[2] - URL: hostUrl/api/phuluc/{id}/{key}
+[2] - Request: host/api/phuluc/{id}
 
 ````
 
@@ -210,8 +210,8 @@ Method: GET
 
 Method: PUT
 
-URL: hostUrl/api/phuluc/{key}
-JSON:
+Request: host/api/phuluc
+Body (Json):
 {
     "TruyenID": number,
     "TheLoaiID": number
@@ -223,7 +223,7 @@ JSON:
 
 Method: DELETE
 
-URL: url/api/phuluc/{id}/{key}
+Request: Request/api/phuluc/{id}
 
 ````
 
@@ -233,8 +233,8 @@ URL: url/api/phuluc/{id}/{key}
 
 Method: POST
 
-URL: hostUrl/api/chuong/{key}
-JSON:
+Request: host/api/chuong
+Body (Json):
 [
   {
     "TruyenID": number,
@@ -251,11 +251,11 @@ JSON:
 
 Method: GET
 
-[1] - URL: hostUrl/api/chuong/{key}
+[1] - Request: host/api/chuong
 
-[2] - URL: hostUrl/api/chuong/{id}/{key}
+[2] - Request: host/api/chuong/{id}
 
-[3] - URL: hostUrl/api/chuong/{id}/{key}/details
+[3] - Request: host/api/chuong/{id}/details
 
 ````
 
@@ -263,8 +263,8 @@ Method: GET
 
 Method: PUT
 
-URL: hostUrl/api/chuong/{key}
-JSON:
+Request: host/api/chuong
+Body (Json):
 {
    "TruyenID": number,
    "TenChuong": string,
@@ -278,7 +278,7 @@ JSON:
 
 Method: DELETE
 
-URL: url/api/chuong/{id}/{key}
+Request: Request/api/chuong/{id}
 
 ````
 
@@ -288,12 +288,12 @@ URL: url/api/chuong/{id}/{key}
 
 Method: POST
 
-URL: hostUrl/api/noidungchuong/{key}
-JSON:
+Request: host/api/noidungchuong
+Body (Json):
 [
   {
      "ChuongID": number,
-     "HinhAnh": imageURL
+     "HinhAnh": imageRequest
   }
   ,...
 ]
@@ -304,11 +304,11 @@ JSON:
 
 Method: GET
 
-[1] - URL: hostUrl/api/noidungchuong/{key}
+[1] - Request: host/api/noidungchuong
 
-[2] - URL: hostUrl/api/noidungchuong/{id}/{key}
+[2] - Request: host/api/noidungchuong/{id}
 
-[3] - URL: hostUrl/api/noidungchuong/{id}/{key}/details
+[3] - Request: host/api/noidungchuong/{id}/details
 
 ````
 
@@ -316,11 +316,11 @@ Method: GET
 
 Method: PUT
 
-URL: hostUrl/api/noidungchuong/{key}
-JSON:
+Request: host/api/noidungchuong
+Body (Json):
 {
    "ChuongID": number,
-   "HinhAnh": imageURL
+   "HinhAnh": imageRequest
 }
 
 ````
@@ -329,7 +329,7 @@ JSON:
 
 Method: DELETE
 
-URL: url/api/noidungchuong/{id}/{key}
+Request: Request/api/noidungchuong/{id}
 
 ````
 
@@ -339,8 +339,8 @@ URL: url/api/noidungchuong/{id}/{key}
 
 Method: POST
 
-URL: hostUrl/api/user/{key}
-JSON:
+Request: host/api/user
+Body (Json):
 {
     "TenUser": string,
     "Password": string
@@ -352,11 +352,11 @@ JSON:
 
 Method: GET
 
-[1] - URL: hostUrl/api/user/{key}
+[1] - Request: host/api/user
 
-[2] - URL: hostUrl/api/user/{id}/{key}
+[2] - Request: host/api/user/{id}
 
-[3] - URL: hostUrl/api/user/{id}/{key}/details
+[3] - Request: host/api/user/{id}/details
 
 ````
 
@@ -364,8 +364,8 @@ Method: GET
 
 Method: PUT
 
-URL: hostUrl/api/user/{key}
-JSON:
+Request: host/api/user
+Body (Json):
 {
     "TenUser": string,
     "Quyen": number,
@@ -378,7 +378,7 @@ JSON:
 
 Method: DELETE
 
-URL: url/api/user/{id}/{key}
+Request: Request/api/user/{id}
 
 ````
 
@@ -388,8 +388,8 @@ URL: url/api/user/{id}/{key}
 
 Method: POST
 
-URL: hostUrl/api/theodoi/{key}
-JSON:
+Request: host/api/theodoi
+Body (Json):
 {
     "TruyenID": string,
     "Quyen": number,
@@ -402,11 +402,11 @@ JSON:
 
 Method: GET
 
-[1] - URL: hostUrl/api/theodoi/{key}
+[1] - Request: host/api/theodoi
 
-[2] - URL: hostUrl/api/theodoi/{id}/{key}
+[2] - Request: host/api/theodoi/{id}
 
-[3] - URL: hostUrl/api/theodoi/{id}/{key}/details
+[3] - Request: host/api/theodoi/{id}/details
 
 ````
 
@@ -414,8 +414,8 @@ Method: GET
 
 Method: PUT
 
-URL: hostUrl/api/theodoi/{key}
-JSON:
+Request: host/api/theodoi
+Body (Json):
 {
     "TruyenID": string,
     "UserID": string
@@ -427,7 +427,7 @@ JSON:
 
 Method: DELETE
 
-URL: url/api/theodoi/{id}/{key}
+Request: Request/api/theodoi/{id}
 
 ````
 
@@ -437,8 +437,8 @@ URL: url/api/theodoi/{id}/{key}
 
 Method: POST
 
-URL: hostUrl/api/binhluan/{key}
-JSON:
+Request: host/api/binhluan
+Body (Json):
 {
     "UserID": string,
     "ChuongID": number,
@@ -452,11 +452,11 @@ JSON:
 
 Method: GET
 
-[1] - URL: hostUrl/api/binhluan/{key}
+[1] - Request: host/api/binhluan
 
-[2] - URL: hostUrl/api/binhluan/{id}/{key}
+[2] - Request: host/api/binhluan/{id}
 
-[3] - URL: hostUrl/api/binhluan/{id}/{key}/details
+[3] - Request: host/api/binhluan/{id}/details
 
 ````
 
@@ -464,8 +464,8 @@ Method: GET
 
 Method: PUT
 
-URL: hostUrl/api/binhluan/{key}
-JSON:
+Request: host/api/binhluan
+Body (Json):
 {
     "UserID": string,
     "ChuongID": number,
@@ -479,7 +479,7 @@ JSON:
 
 Method: DELETE
 
-URL: url/api/binhluan/{id}/{key}
+Request: Request/api/binhluan/{id}
 
 ````
 
@@ -489,8 +489,8 @@ URL: url/api/binhluan/{id}/{key}
 
 Method: POST
 
-URL: hostUrl/api/auth/{key}/login
-JSON:
+Request: host/api/auth/login
+Body (Json):
 {
     "TenUser": string,
     "Password": string
@@ -506,15 +506,15 @@ JSON:
 
 Method: GET
 
-[Get records]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&getAll=true
+[Get records]: host/api/truyen?pageNumber={number}&pageSize={number}&getAll=true
 
-[Get lastest updates]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&lastestUpdate=true
+[Get lastest updates]: host/api/truyen?pageNumber={number}&pageSize={number}&lastestUpdate=true
 
-[Get top views]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&topView=true
+[Get top views]: host/api/truyen?pageNumber={number}&pageSize={number}&topView=true
 
-[Get truyen of theloai]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&sorting=true&theloaiID={id}
+[Get truyen of theloai]: host/api/truyen?pageNumber={number}&pageSize={number}&sorting=true&theloaiID={id}
 
-[Get truyen of theodoi]: hostUrl/api/truyen?pageNumber={number}&pageSize={number}&apiKey={key}&sorting=true&userID={id}
+[Get truyen of theodoi]: host/api/truyen?pageNumber={number}&pageSize={number}&sorting=true&userID={id}
 
 ````
 
@@ -524,12 +524,12 @@ Method: GET
 
 Method: GET
 
-[Get records]: hostUrl/api/binhluan?pageNumber={number}&pageSize={number}&apiKey={key}&getAll=true
+[Get records]: host/api/binhluan?pageNumber={number}&pageSize={number}&getAll=true
 
-[Get lastest updates]: hostUrl/api/binhluan?pageNumber={number}&pageSize={number}&apiKey={key}&lastestUpdate=true
+[Get lastest updates]: host/api/binhluan?pageNumber={number}&pageSize={number}&lastestUpdate=true
 
-[Get top 10 lastest updates]: hostUrl/api/binhluan?pageNumber={number}&pageSize={number}&apiKey={key}&sorting=true&truyenID={id}
+[Get top 10 lastest updates]: host/api/binhluan?pageNumber={number}&pageSize={number}&sorting=true&truyenID={id}
 
-[Get binhluan of chuong]: hostUrl/api/binhluan?pageNumber={number}&pageSize={number}&apiKey={key}&sorting=true&chuongID={id}
+[Get binhluan of chuong]: host/api/binhluan?pageNumber={number}&pageSize={number}&sorting=true&chuongID={id}
 
 ````

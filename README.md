@@ -13,6 +13,7 @@ ORM model.
 ## API (HTTP request)
 
 Http-Headers:
+
 Each request must be attached with HttpHeaders and we need declare APIKey inside HttpHeaders. Because of security, 
 APIKey would not be in Git.
 
@@ -32,7 +33,6 @@ Note:
 2. [2] - Get only one record.
 3. [3] - Get record with foreign key.
 4. {id}: Id of record which you want to get.
-5. {key}: API key.
 
 #### TacGia table
 
@@ -521,7 +521,7 @@ Body (Json):
 
 Method: GET
 
-[Get records]: host/api/truyen?pageNumber={number}&pageSize={number}&getAll=true
+[Get all]: host/api/truyen?pageNumber={number}&pageSize={number}&getAll=true
 
 [Get lastest updates]: host/api/truyen?pageNumber={number}&pageSize={number}&lastestUpdate=true
 
@@ -539,7 +539,7 @@ Method: GET
 
 Method: GET
 
-[Get records]: host/api/binhluan?pageNumber={number}&pageSize={number}&getAll=true
+[Get all]: host/api/binhluan?pageNumber={number}&pageSize={number}&getAll=true
 
 [Get lastest updates]: host/api/binhluan?pageNumber={number}&pageSize={number}&lastestUpdate=true
 

@@ -1,4 +1,5 @@
 ﻿using CoreLibrary;
+using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
@@ -95,6 +96,21 @@ namespace Repository
         {
             return await FindByCondition(TheoDoi => TheoDoi.TheoDoiID.Equals(TheoDoiId))
                     .FirstOrDefaultAsync();
+        }
+
+        public async Task<PagedList<Truyen>> GetTruyenByTheoDoiForPagination(TheoDoiParameters theoDoiParameters)
+        {
+            return await PagedList<Truyen>.ToPagedList(
+                (from m in _context.Truyens
+                 join n in _context.TheoDois
+                 on m.TruyenID equals n.TruyenID
+                 join c in _context.Users
+                 on n.UserID equals c.UserID
+                 where c.TenUser == theoDoiParameters.TenUser && !m.TinhTrang
+                 select m).Include(m => m.Chuongs)
+                          .OrderBy(on => on.TruyenID),
+                theoDoiParameters.PageNumber,
+                theoDoiParameters.PageSize);
         }
     }
 }

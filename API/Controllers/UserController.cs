@@ -48,8 +48,8 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "UserById")]
-        public async Task<IActionResult> GetUserById(Guid id)
+        [HttpGet("{tenuser}", Name = "UserByName")]
+        public async Task<IActionResult> GetUserById(string tenUser)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace API.Controllers
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 
-                var user = await _repository.User.GetUserByIdAsync(id);
+                var user = await _repository.User.GetUserByNameAsync(tenUser);
                 if (user == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "User không tồn tại" });
@@ -75,8 +75,8 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/details")]
-        public async Task<IActionResult> GetUserByDetails(Guid id)
+        [HttpGet("{tenuser}/details")]
+        public async Task<IActionResult> GetUserByDetails(string tenUser)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace API.Controllers
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 
-                var user = await _repository.User.GetUserByDetailAsync(id);
+                var user = await _repository.User.GetUserByDetailAsync(tenUser);
 
                 if (user == null)
                 {
@@ -142,8 +142,8 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserForUpdateDto user)
+        [HttpPut("{tenuser}")]
+        public async Task<IActionResult> UpdateUser(string tenuser, [FromBody] UserForUpdateDto user)
         {
             try
             {
@@ -162,7 +162,7 @@ namespace API.Controllers
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
-                var userEntity = await _repository.User.GetUserByIdAsync(id);
+                var userEntity = await _repository.User.GetUserByNameAsync(tenuser);
                 if (userEntity == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "User không tồn tại" });
@@ -186,8 +186,8 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        [HttpDelete("{tenuser}")]
+        public async Task<IActionResult> DeleteUser(string tenuser)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace API.Controllers
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 
-                var user = await _repository.User.GetUserByIdAsync(id);
+                var user = await _repository.User.GetUserByNameAsync(tenuser);
                 if (user == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID truyện không tồn tại" });

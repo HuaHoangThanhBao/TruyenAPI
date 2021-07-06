@@ -214,7 +214,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("pagination")]
         public async Task<IActionResult> GetTruyenForPagination([FromQuery] TruyenParameters truyenParameters)
         {
             var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);

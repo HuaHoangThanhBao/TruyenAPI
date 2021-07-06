@@ -214,7 +214,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("pagination")]
         public async Task<IActionResult> GetBinhLuanForPagination([FromQuery] BinhLuanParameters binhLuanParameters)
         {
             var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);

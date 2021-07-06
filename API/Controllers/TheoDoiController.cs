@@ -8,6 +8,7 @@ using CoreLibrary.Models;
 using API.Extensions;
 using Microsoft.AspNetCore.Cors;
 using CoreLibrary.Helpers;
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -183,6 +184,34 @@ namespace API.Controllers
             {
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTheoDoi" });
             }
+        }
+
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetTruyenByTheoDoiForPagination([FromQuery] TheoDoiParameters theoDoiParameters)
+        {
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+            if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+
+            if (theoDoiParameters.GetAll)
+            {
+                var truyens = await _repository.TheoDoi.GetTruyenByTheoDoiForPagination(theoDoiParameters);
+
+                var metadata = new
+                {
+                    truyens.TotalCount,
+                    truyens.PageSize,
+                    truyens.CurrentPage,
+                    truyens.TotalPages,
+                    truyens.HasNext,
+                    truyens.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(truyens);
+            }
+            else return BadRequest("wrong request to get theo doi pagination");
         }
     }
 }

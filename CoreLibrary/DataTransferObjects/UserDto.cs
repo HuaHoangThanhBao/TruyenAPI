@@ -10,7 +10,7 @@ namespace CoreLibrary.DataTransferObjects
 
         public string TenUser { get; set; }
 
-        public string Password { get; set; }
+        //public string Password { get; set; }
 
         public bool TinhTrang { get; set; }
 

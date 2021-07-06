@@ -206,7 +206,7 @@ namespace Repository
                 (from m in _context.BinhLuans
                  join n in chuongs
                  on m.ChuongID equals n.ChuongID
-                 select m).Include(m => m.User).Include(m => m.Chuong).Take(binhLuanParameters.PageSize).OrderByDescending(m => m.NgayBL)
+                 select m).Include(m => m.User).Include(m => m.Chuong).ThenInclude(m => m.Truyen).Take(binhLuanParameters.PageSize).OrderByDescending(m => m.NgayBL)
                 
                  ,
                 binhLuanParameters.PageNumber,

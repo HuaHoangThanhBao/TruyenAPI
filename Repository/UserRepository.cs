@@ -144,15 +144,15 @@ namespace Repository
                 .ToListAsync();
         }
 
-        public async Task<User> GetUserByIdAsync(Guid userId)
+        public async Task<User> GetUserByNameAsync(string tenUser)
         {
-            return await FindByCondition(user => user.UserID.Equals(userId))
+            return await FindByCondition(user => user.TenUser.Equals(tenUser))
                     .FirstOrDefaultAsync();
         }
 
-        public async Task<User> GetUserByDetailAsync(Guid userId)
+        public async Task<User> GetUserByDetailAsync(string tenUser)
         {
-            return await FindByCondition(user => user.UserID.Equals(userId))
+            return await FindByCondition(user => user.TenUser.Equals(tenUser))
                 .Include(a => a.TheoDois)
                     .ThenInclude(b => b.Truyen)
                 .FirstOrDefaultAsync();

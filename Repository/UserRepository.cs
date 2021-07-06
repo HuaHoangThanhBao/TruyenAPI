@@ -135,7 +135,7 @@ namespace Repository
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa user thành công" };
         }
 
-        //Lấy danh sách các tác giả không bị xóa
+        //Lấy danh sách các user không bị xóa
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await FindAll()

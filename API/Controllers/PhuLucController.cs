@@ -7,6 +7,7 @@ using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
 using Microsoft.AspNetCore.Cors;
+using CoreLibrary.Helpers;
 
 namespace API.Controllers
 {
@@ -24,12 +25,12 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{key}")]
-        public async Task<IActionResult> GetAllPhuLucs(string key)
+        [HttpGet]
+        public async Task<IActionResult> GetAllPhuLucs()
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -45,12 +46,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/{key}", Name = "PhuLucById")]
-        public async Task<IActionResult> GetPhuLucByTruyenId(int id, string key)
+        [HttpGet("{id}", Name = "PhuLucById")]
+        public async Task<IActionResult> GetPhuLucByTruyenId(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -72,12 +73,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("{key}")]
-        public IActionResult CreatePhuLuc(string key, [FromBody] IEnumerable<PhuLucForCreationDto> phuLuc)
+        [HttpPost]
+        public IActionResult CreatePhuLuc([FromBody] IEnumerable<PhuLucForCreationDto> phuLuc)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -111,12 +112,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}/{key}")]
-        public async Task<IActionResult> UpdatePhuLuc(int id, string key, [FromBody] PhuLucForUpdateDto phuLuc)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePhuLuc(int id, [FromBody] PhuLucForUpdateDto phuLuc)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -154,7 +155,7 @@ namespace API.Controllers
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdatePhuLuc" });
             }
         }
-
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePhuLuc(int id)
         {

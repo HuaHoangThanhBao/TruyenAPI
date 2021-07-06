@@ -7,6 +7,7 @@ using CoreLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
 using Microsoft.AspNetCore.Cors;
+using CoreLibrary.Helpers;
 
 namespace API.Controllers
 {
@@ -24,12 +25,12 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{key}")]
-        public async Task<IActionResult> GetAllNoiDungChuongs(string key)
+        [HttpGet]
+        public async Task<IActionResult> GetAllNoiDungChuongs()
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -45,12 +46,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/{key}", Name = "NoiDungChuongById")]
-        public async Task<IActionResult> GetNoiDungChuongById(int id, string key)
+        [HttpGet("{id}", Name = "NoiDungChuongById")]
+        public async Task<IActionResult> GetNoiDungChuongById(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -72,12 +73,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("{key}")]
-        public IActionResult CreateNoiDungChuong(string key, [FromBody] IEnumerable<NoiDungChuongForCreationDto> noiDungChuong)
+        [HttpPost]
+        public IActionResult CreateNoiDungChuong([FromBody] IEnumerable<NoiDungChuongForCreationDto> noiDungChuong)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -111,12 +112,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}/{key}")]
-        public async Task<IActionResult> UpdateNoiDungChuong(int id, string key, [FromBody] NoiDungChuongForUpdateDto noiDungChuong)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateNoiDungChuong(int id, [FromBody] NoiDungChuongForUpdateDto noiDungChuong)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -155,12 +156,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}/{key}")]
-        public async Task<IActionResult> DeleteNoiDungChuong(int id, string key)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteNoiDungChuong(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });

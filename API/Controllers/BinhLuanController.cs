@@ -26,12 +26,12 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{key}")]
-        public async Task<IActionResult> GetAllBinhLuans(string key)
+        [HttpGet]
+        public async Task<IActionResult> GetAllBinhLuans()
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -47,12 +47,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/{key}", Name = "BinhLuanById")]
-        public async Task<IActionResult> GetBinhLuanById(int id, string key)
+        [HttpGet("{id}", Name = "BinhLuanById")]
+        public async Task<IActionResult> GetBinhLuanById(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -74,12 +74,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/{key}/details")]
-        public async Task<IActionResult> GetBinhLuanByDetails(int id, string key)
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetBinhLuanByDetails(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -102,12 +102,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("{key}")]
-        public IActionResult CreateBinhLuan(string key, [FromBody] BinhLuanForCreationDto binhLuan)
+        [HttpPost]
+        public IActionResult CreateBinhLuan([FromBody] BinhLuanForCreationDto binhLuan)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -141,12 +141,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}/{key}")]
-        public async Task<IActionResult> UpdateBinhLuan(int id, string key, [FromBody] BinhLuanForUpdateDto binhLuan)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBinhLuan(int id, [FromBody] BinhLuanForUpdateDto binhLuan)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -185,12 +185,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}/{key}")]
-        public async Task<IActionResult> DeleteBinhLuan(int id, string key)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBinhLuan(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -217,7 +217,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBinhLuanForPagination([FromQuery] BinhLuanParameters binhLuanParameters)
         {
-            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(binhLuanParameters.APIKey);
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
             if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 

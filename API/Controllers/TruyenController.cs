@@ -26,12 +26,12 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{key}")]
-        public async Task<IActionResult> GetAllTruyens(string key)
+        [HttpGet]
+        public async Task<IActionResult> GetAllTruyens()
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -47,12 +47,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/{key}", Name = "TruyenById")]
-        public async Task<IActionResult> GetTruyenById(int id, string key)
+        [HttpGet("{id}", Name = "TruyenById")]
+        public async Task<IActionResult> GetTruyenById(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -74,12 +74,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/{key}/details")]
-        public async Task<IActionResult> GetTruyenByDetails(int id, string key)
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetTruyenByDetails(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -102,12 +102,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("{key}")]
-        public IActionResult CreateTruyen(string key, [FromBody] IEnumerable<TruyenForCreationDto> truyen)
+        [HttpPost]
+        public IActionResult CreateTruyen([FromBody] IEnumerable<TruyenForCreationDto> truyen)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -141,12 +141,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}/{key}")]
-        public async Task<IActionResult> UpdateTruyen(int id, string key, [FromBody] TruyenForUpdateDto truyen)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTruyen(int id, [FromBody] TruyenForUpdateDto truyen)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -185,12 +185,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}/{key}")]
-        public async Task<IActionResult> DeleteTruyen(int id, string key)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTruyen(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -217,7 +217,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTruyenForPagination([FromQuery] TruyenParameters truyenParameters)
         {
-            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(truyenParameters.APIKey);
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
             if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 

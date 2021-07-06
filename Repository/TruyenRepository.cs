@@ -200,12 +200,12 @@ namespace Repository
             return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId)).Where(m => !m.TinhTrang)
                 .Include(a => a.TacGia)
                 .Include(a => a.Chuongs)
-                    .ThenInclude(a => a.BinhLuans)
-                    .ThenInclude(b => b.User)
-                .Include(a => a.PhuLucs)
-                    .ThenInclude(b => b.TheLoai)
-                .Include(a => a.TheoDois)
-                    .ThenInclude(b => b.User)
+                //    .ThenInclude(a => a.BinhLuans)
+                //    .ThenInclude(b => b.User)
+                //.Include(a => a.PhuLucs)
+                //    .ThenInclude(b => b.TheLoai)
+                //.Include(a => a.TheoDois)
+                //    .ThenInclude(b => b.User)
                 .FirstOrDefaultAsync();
         }
 

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using API.Extensions;
 using AutoMapper;
 using CoreLibrary.DataTransferObjects;
+using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.AspNetCore.Cors;
@@ -24,12 +25,12 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{key}")]
-        public async Task<IActionResult> GetAllChuongs(string key)
+        [HttpGet]
+        public async Task<IActionResult> GetAllChuongs()
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -45,12 +46,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/{key}", Name = "ChuongById")]
-        public async Task<IActionResult> GetChuongById(int id, string key)
+        [HttpGet("{id}", Name = "ChuongById")]
+        public async Task<IActionResult> GetChuongById(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -72,12 +73,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{id}/{key}/details")]
-        public async Task<IActionResult> GetChuongByDetails(int id, string key)
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetChuongByDetails(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -100,12 +101,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("{key}")]
-        public IActionResult CreateChuong(string key, [FromBody] IEnumerable<ChuongForCreationDto> chuong)
+        [HttpPost]
+        public IActionResult CreateChuong([FromBody] IEnumerable<ChuongForCreationDto> chuong)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -139,12 +140,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}/{key}")]
-        public async Task<IActionResult> UpdateChuong(int id, string key, [FromBody] ChuongForUpdateDto chuong)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateChuong(int id, [FromBody] ChuongForUpdateDto chuong)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
@@ -183,12 +184,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpDelete("{id}/{key}")]
-        public async Task<IActionResult> DeleteChuong(int id, string key)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteChuong(int id)
         {
             try
             {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(key);
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
 
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });

@@ -58,8 +58,8 @@ namespace API
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    //ValidIssuer = "http://localhost:50504",
-                    //ValidAudience = "http://localhost:50504",
+                    ValidIssuer = "http://localhost:4000",
+                    ValidAudience = "http://localhost:4000",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(APICredentialAuth.GetJWTKey().Value))
                 };
             });

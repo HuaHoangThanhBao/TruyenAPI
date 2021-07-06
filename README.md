@@ -521,15 +521,15 @@ Body (Json):
 
 Method: GET
 
-[Get all]: host/api/truyen?pageNumber={number}&pageSize={number}&getAll=true
+[Get all]: host/api/truyen/pagination?pageNumber={number}&pageSize={number}&getAll=true
 
-[Get lastest updates]: host/api/truyen?pageNumber={number}&pageSize={number}&lastestUpdate=true
+[Get lastest updates]: host/api/truyen/pagination?pageNumber={number}&pageSize={number}&lastestUpdate=true
 
-[Get top views]: host/api/truyen?pageNumber={number}&pageSize={number}&topView=true
+[Get top views]: host/api/truyen/pagination?pageNumber={number}&pageSize={number}&topView=true
 
-[Get truyen of theloai]: host/api/truyen?pageNumber={number}&pageSize={number}&sorting=true&theloaiID={id}
+[Get truyen of theloai]: host/api/truyen/pagination?pageNumber={number}&pageSize={number}&sorting=true&theloaiID={id}
 
-[Get truyen of theodoi]: host/api/truyen?pageNumber={number}&pageSize={number}&sorting=true&userID={id}
+[Get truyen of theodoi]: host/api/truyen/pagination?pageNumber={number}&pageSize={number}&sorting=true&userID={id}
 
 ````
 
@@ -539,12 +539,22 @@ Method: GET
 
 Method: GET
 
-[Get all]: host/api/binhluan?pageNumber={number}&pageSize={number}&getAll=true
+[Get all]: host/api/binhluan/pagination?pageNumber={number}&pageSize={number}&getAll=true
 
-[Get lastest updates]: host/api/binhluan?pageNumber={number}&pageSize={number}&lastestUpdate=true
+[Get lastest updates]: host/api/binhluan/pagination?pageNumber={number}&pageSize={number}&lastestUpdate=true
 
-[Get top 10 lastest updates]: host/api/binhluan?pageNumber={number}&pageSize={number}&sorting=true&truyenID={id}
+[Get top 10 lastest updates]: host/api/binhluan/pagination?pageNumber={number}&pageSize={number}&sorting=true&truyenID={id}
 
-[Get binhluan of chuong]: host/api/binhluan?pageNumber={number}&pageSize={number}&sorting=true&chuongID={id}
+[Get binhluan of chuong]: host/api/binhluan/pagination?pageNumber={number}&pageSize={number}&sorting=true&chuongID={id}
+
+````
+
+3. TheDoi table
+
+````console
+
+Method: GET
+
+[Get all]: host/api/theodoi/pagination?pageNumber={number}&pageSize={number}&getAll=true
 
 ````

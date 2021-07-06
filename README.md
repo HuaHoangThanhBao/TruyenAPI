@@ -549,7 +549,7 @@ Method: GET
 
 ````
 
-3. TheDoi table
+3. TheoDoi table
 
 ````console
 
@@ -558,3 +558,7 @@ Method: GET
 [Get all]: host/api/theodoi/pagination?pageNumber={number}&pageSize={number}&getAll=true
 
 ````
+
+## Further help
+
+To get more help, please contact via email: [huahoangthanhbao@gmail.com](huahoangthanhbao@gmail.com).

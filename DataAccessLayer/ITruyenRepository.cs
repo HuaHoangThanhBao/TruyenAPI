@@ -11,8 +11,9 @@ namespace DataAccessLayer
         Task<PagedList<Truyen>> GetTruyenForPagination(TruyenParameters truyenParameters);
         Task<PagedList<Truyen>> GetTruyenLastestUpdateForPagination(TruyenParameters truyenParameters);
         Task<PagedList<Truyen>> GetTruyenOfTheLoaiForPagination(int theLoaiID, TruyenParameters truyenParameters);
-        Task<PagedList<Truyen>> GetTruyenOfTheoDoiForPagination(Guid userID, TruyenParameters truyenParameters);
+        //Task<PagedList<Truyen>> GetTruyenOfTheoDoiForPagination(Guid userID, TruyenParameters truyenParameters);
         Task<PagedList<Truyen>> GetTopViewForPagination(TruyenParameters truyenParameters);
+        Task<IEnumerable<Truyen>> FindTruyenForPagination();
 
         Task<IEnumerable<Truyen>> GetAllTruyensAsync();
         Task<Truyen> GetTruyenByIdAsync(int truyenId);

@@ -9,6 +9,9 @@ using API.Extensions;
 using Newtonsoft.Json;
 using CoreLibrary.Helpers;
 using Microsoft.AspNetCore.Cors;
+using System.Text.RegularExpressions;
+using System.Text;
+using System.Linq;
 
 namespace API.Controllers
 {
@@ -273,22 +276,30 @@ namespace API.Controllers
                 Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
                 return Ok(truyens);
             }
-            else if (truyenParameters.Sorting && truyenParameters.UserID != null)
+            else if (truyenParameters.Sorting && truyenParameters.TenTruyen != null)
             {
-                var truyens = await _repository.Truyen.GetTruyenOfTheoDoiForPagination(truyenParameters.UserID, truyenParameters);
+                List<Truyen> truyenUnsigned = new List<Truyen>();
 
-                var metadata = new
+                var all = await _repository.Truyen.FindTruyenForPagination();
+
+                string unsignTenTruyen = "";
+                string unsignTruyenParam = ConvertToUnSign(truyenParameters.TenTruyen);
+
+                foreach (var item in all)
                 {
-                    truyens.TotalCount,
-                    truyens.PageSize,
-                    truyens.CurrentPage,
-                    truyens.TotalPages,
-                    truyens.HasNext,
-                    truyens.HasPrevious
-                };
-
-                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-                return Ok(truyens);
+                    unsignTenTruyen = ConvertToUnSign(item.TenTruyen);
+                    if (unsignTenTruyen.Contains(unsignTruyenParam))
+                    {
+                        truyenUnsigned.Add(new Truyen()
+                        {
+                            TruyenID = item.TruyenID,
+                            TenTruyen = item.TenTruyen,
+                            HinhAnh = item.HinhAnh
+                        });
+                    }
+                }
+                
+                return Ok(truyenUnsigned);
             }
             else
             {
@@ -311,6 +322,23 @@ namespace API.Controllers
                 }
                 else return BadRequest("wrong request to get truyen pagination");
             }
+        }
+
+        private string ConvertToUnSign(string input)
+        {
+            input = input.Trim();
+            for (int i = 0x20; i < 0x30; i++)
+            {
+                input = input.Replace(((char)i).ToString(), " ");
+            }
+            Regex regex = new Regex(@"\p{IsCombiningDiacriticalMarks}+");
+            string str = input.Normalize(NormalizationForm.FormD);
+            string str2 = regex.Replace(str, string.Empty).Replace('đ', 'd').Replace('Đ', 'D');
+            while (str2.IndexOf("?") >= 0)
+            {
+                str2 = str2.Remove(str2.IndexOf("?"), 1);
+            }
+            return str2;
         }
     }
 }

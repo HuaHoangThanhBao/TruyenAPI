@@ -5,7 +5,8 @@ namespace CoreLibrary.Helpers
     public class TruyenParameters: QueryStringParameters
     {
         public int TheLoaiID { get; set; }
-        public Guid UserID { get; set; }
+        //public Guid UserID { get; set; }
+        public string TenTruyen { get; set; }
 
         private bool _sorting;
         public bool Sorting

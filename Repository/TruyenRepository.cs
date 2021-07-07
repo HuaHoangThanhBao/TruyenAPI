@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Repository.Extensions;
 using CoreLibrary.Helpers;
 using System;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Repository
 {
@@ -247,20 +249,20 @@ namespace Repository
                 truyenParameters.PageSize);
         }
 
-        public async Task<PagedList<Truyen>> GetTruyenOfTheoDoiForPagination(Guid userID, TruyenParameters truyenParameters)
-        {
-            return await PagedList<Truyen>.ToPagedList(
+        //public async Task<PagedList<Truyen>> GetTruyenOfTheoDoiForPagination(Guid userID, TruyenParameters truyenParameters)
+        //{
+        //    return await PagedList<Truyen>.ToPagedList(
 
-                (from m in _context.Truyens
-                 join n in _context.TheoDois
-                 on m.TruyenID equals n.TruyenID
-                 where n.UserID == userID && !m.TinhTrang
-                 select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
+        //        (from m in _context.Truyens
+        //         join n in _context.TheoDois
+        //         on m.TruyenID equals n.TruyenID
+        //         where n.UserID == userID && !m.TinhTrang
+        //         select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
 
-                ,
-                truyenParameters.PageNumber,
-                truyenParameters.PageSize);
-        }
+        //        ,
+        //        truyenParameters.PageNumber,
+        //        truyenParameters.PageSize);
+        //}
 
         public async Task<PagedList<Truyen>> GetTopViewForPagination(TruyenParameters truyenParameters)
         {
@@ -272,6 +274,32 @@ namespace Repository
                 ,
                 truyenParameters.PageNumber,
                 truyenParameters.PageSize);
+        }
+
+        public async Task<IEnumerable<Truyen>> FindTruyenForPagination()
+        {
+            return await
+                FindAll()
+                .Where(ow => !ow.TinhTrang)
+                .OrderBy(on => on.TruyenID)
+                .ToListAsync();
+        }
+
+        private string ConvertToUnSign(string input)
+        {
+            input = input.Trim();
+            for (int i = 0x20; i < 0x30; i++)
+            {
+                input = input.Replace(((char)i).ToString(), " ");
+            }
+            Regex regex = new Regex(@"\p{IsCombiningDiacriticalMarks}+");
+            string str = input.Normalize(NormalizationForm.FormD);
+            string str2 = regex.Replace(str, string.Empty).Replace('đ', 'd').Replace('Đ', 'D');
+            while (str2.IndexOf("?") >= 0)
+            {
+                str2 = str2.Remove(str2.IndexOf("?"), 1);
+            }
+            return str2;
         }
     }
 }

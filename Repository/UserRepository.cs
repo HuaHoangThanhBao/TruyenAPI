@@ -18,40 +18,74 @@ namespace Repository
         }
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
-        //KQ: !null = TenUser bị trùng, null: thêm thành công
+        //KQ: !null = Username bị trùng, null: thêm thành công
         public ResponseDetails CreateUser(User user)
         {
             /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(user.TenUser))
+            if (ValidationExtensions.isSpecialChar(user.FirstName))
             {
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
-                    Message = "Không được chứa ký tự đặc biệt",
-                    Value = user.TenUser.ToString()
+                    Message = "Tên không được chứa ký tự đặc biệt",
+                    Value = user.FirstName.ToString()
                 };
             }
             /*End*/
 
-            /*Bắt lỗi [TenUser]*/
-            if (FindByCondition(t => t.TenUser.Equals(user.TenUser)).Any())
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(user.LastName))
             {
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
-                    Message = "Tên user bị trùng",
-                    Value = user.TenUser.ToString()
+                    Message = "Họ không được chứa ký tự đặc biệt",
+                    Value = user.LastName.ToString()
                 };
             }
             /*End*/
 
-            if (user.TenUser == "" || user.TenUser == null)
+            /*Bắt lỗi [Email]*/
+            if (FindByCondition(t => t.Email.Equals(user.Email)).Any())
             {
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
-                    Message = "Tên user không được để trống",
-                    Value = user.TenUser.ToString()
+                    Message = "Email bị trùng",
+                    Value = user.Email.ToString()
+                };
+            }
+            /*End*/
+
+            /*Bắt lỗi [Username]*/
+            if (FindByCondition(t => t.FirstName.Equals(user.FirstName) && t.LastName.Equals(user.LastName)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Họ tên bị trùng",
+                    Value = user.Username.ToString()
+                };
+            }
+            /*End*/
+
+            if (user.FirstName == "" || user.FirstName == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên không được để trống",
+                    Value = user.Username.ToString()
+                };
+            }
+
+            if (user.LastName == "" || user.LastName == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Họ được để trống",
+                    Value = user.Username.ToString()
                 };
             }
 
@@ -66,6 +100,7 @@ namespace Repository
             }
 
             string passHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            user.Username = user.LastName + user.FirstName;
             user.Password = passHash;
 
             Create(user);
@@ -73,40 +108,74 @@ namespace Repository
         }
 
         //Kiểm tra object truyền vào có tên trùng trong database không
-        //KQ: false: TenUser bị trùng, true: cập nhật thành công
+        //KQ: false: Username bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateUser(User user)
         {
             /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(user.TenUser))
+            if (ValidationExtensions.isSpecialChar(user.FirstName))
             {
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
-                    Message = "Không được chứa ký tự đặc biệt",
-                    Value = user.TenUser.ToString()
+                    Message = "Tên không được chứa ký tự đặc biệt",
+                    Value = user.FirstName.ToString()
                 };
             }
             /*End*/
 
-            /*Bắt lỗi [TenUser]*/
-            if (FindByCondition(t => t.TenUser.Equals(user.TenUser)).Any())
+            /*Bắt lỗi ký tự đặc biệt*/
+            if (ValidationExtensions.isSpecialChar(user.LastName))
             {
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
-                    Message = "Tên user bị trùng",
-                    Value = user.TenUser.ToString()
+                    Message = "Họ không được chứa ký tự đặc biệt",
+                    Value = user.LastName.ToString()
                 };
             }
             /*End*/
 
-            if (user.TenUser == "" || user.TenUser == null)
+            /*Bắt lỗi [Email]*/
+            if (FindByCondition(t => t.Email.Equals(user.Email) && t.UserID != user.UserID).Any())
             {
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
-                    Message = "Tên user không được để trống",
-                    Value = user.TenUser.ToString()
+                    Message = "Email bị trùng",
+                    Value = user.Email.ToString()
+                };
+            }
+            /*End*/
+
+            /*Bắt lỗi [Username]*/
+            if (FindByCondition(t => t.FirstName.Equals(user.FirstName) && t.LastName.Equals(user.LastName) && t.UserID != user.UserID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Họ tên bị trùng",
+                    Value = user.Username.ToString()
+                };
+            }
+            /*End*/
+
+            if (user.FirstName == "" || user.FirstName == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Tên không được để trống",
+                    Value = user.Username.ToString()
+                };
+            }
+
+            if (user.LastName == "" || user.LastName == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Họ được để trống",
+                    Value = user.Username.ToString()
                 };
             }
 
@@ -140,19 +209,19 @@ namespace Repository
         {
             return await FindAll()
                 .Where(ow => !ow.TinhTrang)
-                .OrderBy(ow => ow.TenUser)
+                .OrderBy(ow => ow.Username)
                 .ToListAsync();
         }
 
-        public async Task<User> GetUserByNameAsync(string tenUser)
+        public async Task<User> GetUserByNameAsync(string Username)
         {
-            return await FindByCondition(user => user.TenUser.Equals(tenUser))
+            return await FindByCondition(user => user.Username.Equals(Username))
                     .FirstOrDefaultAsync();
         }
 
-        public async Task<User> GetUserByDetailAsync(string tenUser)
+        public async Task<User> GetUserByDetailAsync(string Username)
         {
-            return await FindByCondition(user => user.TenUser.Equals(tenUser))
+            return await FindByCondition(user => user.Username.Equals(Username))
                 .Include(a => a.TheoDois)
                     .ThenInclude(b => b.Truyen)
                 .FirstOrDefaultAsync();

@@ -6,7 +6,7 @@ namespace CoreLibrary.Helpers
 {
     public class TheoDoiParameters: QueryStringParameters
     {
-        public string TenUser { get; set; }
+        public string Username { get; set; }
 
         private bool _getAll;
         public bool GetAll

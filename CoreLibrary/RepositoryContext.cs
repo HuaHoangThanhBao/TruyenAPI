@@ -1,5 +1,5 @@
 ﻿using CoreLibrary.Models;
-using Entities.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CoreLibrary
 {
-    public class RepositoryContext : DbContext
+    public class RepositoryContext : IdentityDbContext<ApplicationUser>
     {
         public RepositoryContext(DbContextOptions options)
             : base(options)
@@ -16,14 +16,7 @@ namespace CoreLibrary
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.ApplyConfiguration(new TruyenConfiguration());
-            //modelBuilder.ApplyConfiguration(new TheLoaiConfiguration());
-            //modelBuilder.ApplyConfiguration(new TacGiaConfiguration());
-            //modelBuilder.ApplyConfiguration(new UserConfiguration());
-            //modelBuilder.ApplyConfiguration(new BinhLuanConfiguration());
-            //modelBuilder.ApplyConfiguration(new TheoDoiConfiguration());
-            //modelBuilder.ApplyConfiguration(new ChuongConfiguration());
-            //modelBuilder.ApplyConfiguration(new PhuLucConfiguration());
+            base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Truyen> Truyens { get; set; }

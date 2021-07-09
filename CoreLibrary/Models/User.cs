@@ -14,9 +14,18 @@ namespace CoreLibrary.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid UserID { get; set; }
 
-        [Required(ErrorMessage = "Ten user is required")]
-        [StringLength(50, ErrorMessage = "Ten user can't be longer than 50 characters")]
-        public string TenUser { get; set; }
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "First name is required")]
+        [StringLength(50, ErrorMessage = "Last name can't be longer than 50 characters")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Last name is required")]
+        [StringLength(50, ErrorMessage = "Last name can't be longer than 50 characters")]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+        public string Email { get; set; }
 
         public int Quyen { get; set; }
 

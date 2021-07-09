@@ -18,7 +18,7 @@ namespace Repository
         public ResponseDetails LogIn(string username, string password)
         {
             var userRepo = new UserRepository(_context);
-            if(!userRepo.FindByCondition(m => m.TenUser.Equals(username)).Any())
+            if(!userRepo.FindByCondition(m => m.Username.Equals(username)).Any())
             {
                 return new ResponseDetails()
                 {
@@ -29,7 +29,7 @@ namespace Repository
             }
             else
             {
-                var user = userRepo.FindByCondition(m => m.TenUser == username).First();
+                var user = userRepo.FindByCondition(m => m.Username == username).First();
                 if(!BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
                     return new ResponseDetails()

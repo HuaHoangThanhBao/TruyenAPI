@@ -29,6 +29,9 @@ namespace API
 
             CreateMap<BinhLuan, BinhLuanDto>();
 
+            CreateMap<UserForRegistrationDto, ApplicationUser>()
+                .ForMember(u => u.UserName, opt => opt.MapFrom(x => x.Email));
+
             //CRUD Map
             CreateMap<TacGiaForCreationDto, TacGia>();
 

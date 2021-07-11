@@ -8,8 +8,9 @@ namespace DataAccessLayer
     public interface IUserRepository
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
-        Task<User> GetUserByNameAsync(string tenUser);
-        Task<User> GetUserByDetailAsync(string tenUser);
+        Task<User> GetUserByEmailAsync(string userID);
+        Task<User> GetUserByIDAsync(string userID);
+        Task<User> GetUserByUserIDDetailAsync(string userID);
         ResponseDetails CreateUser(User user);
         ResponseDetails UpdateUser(User user);
         ResponseDetails DeleteUser(User user);

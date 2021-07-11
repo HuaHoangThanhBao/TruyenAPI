@@ -13,11 +13,15 @@ using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
 using EmailService;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers
@@ -117,6 +121,27 @@ namespace API.Controllers
             return Ok();
         }
 
+        [HttpPost("check-login")]
+        public async Task<IActionResult> CheckLogin()
+        {
+            var cookies = Request.Cookies;
+            var loginCookie = cookies[".AspNetCore.Cookies"];
+            var userIDCookie = cookies["UserID"];
+
+            if (loginCookie == null)
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Phiên đăng nhập hết hạn" });
+            }
+
+            var user = await _repository.User.GetUserByIDAsync(userIDCookie);
+            if(user == null)
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "User không tồn tại" });
+            }
+
+            return Ok();
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthentication)
         {
@@ -157,53 +182,73 @@ namespace API.Controllers
                 return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
             }
 
-            if (!await _userManager.GetTwoFactorEnabledAsync(user))
-            {
-                await _userManager.SetTwoFactorEnabledAsync(user, true);
-            }
+            //if (!await _userManager.GetTwoFactorEnabledAsync(user))
+            //{
+            //    await _userManager.SetTwoFactorEnabledAsync(user, true);
+            //}
 
-            if (await _userManager.GetTwoFactorEnabledAsync(user))
-                return await GenerateOTPFor2StepVerification(user);
+            //if (await _userManager.GetTwoFactorEnabledAsync(user))
+            //    return await GenerateOTPFor2StepVerification(user);
 
-            var token = await _jwtHandler.GenerateToken(user);
+            //var token = await _jwtHandler.GenerateToken(user);
+            var claims = await _jwtHandler.GenerateToken(user);
 
             await _userManager.ResetAccessFailedCountAsync(user);
 
-            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
-        }
 
-        private async Task<IActionResult> GenerateOTPFor2StepVerification(ApplicationUser user)
-        {
-            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
-            if (!providers.Contains("Email"))
+            //Thêm mới
+            var authProperties = new AuthenticationProperties()
             {
-                return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid 2-Step Verification Provider." });
-            }
+                IsPersistent = true
+            };
 
-            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-            var message = new Message(new string[] { user.Email }, "Authentication token", token, null);
-            await _emailSender.SendEmailAsync(message);
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return Ok(new AuthResponseDto { Is2StepVerificationRequired = true, Provider = "Email" });
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+            var userID = await _repository.User.GetUserByEmailAsync(userForAuthentication.Email);
+
+            CookieOptions option = new CookieOptions();
+            option.HttpOnly = true;
+            option.Expires = DateTime.Now.AddMinutes(1);
+            Response.Cookies.Append("UserID", userID.UserID.ToString().ToUpper(), option);
+            //
+
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, /*Token = token*/ });
         }
 
-        [HttpPost("LoginVerification")]
-        public async Task<IActionResult> LoginVerification([FromBody] TwoFactorDto twoFactorDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
+        //private async Task<IActionResult> GenerateOTPFor2StepVerification(ApplicationUser user)
+        //{
+        //    var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
+        //    if (!providers.Contains("Email"))
+        //    {
+        //        return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid 2-Step Verification Provider." });
+        //    }
 
-            var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
-            if (user == null)
-                return BadRequest("Invalid Request");
+        //    var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+        //    var message = new Message(new string[] { user.Email }, "Authentication token", token, null);
+        //    await _emailSender.SendEmailAsync(message);
 
-            var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
-            if (!validVerification)
-                return BadRequest("Invalid Token Verification");
+        //    return Ok(new AuthResponseDto { Is2StepVerificationRequired = true, Provider = "Email" });
+        //}
 
-            var token = await _jwtHandler.GenerateToken(user);
-            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
-        }
+        //[HttpPost("LoginVerification")]
+        //public async Task<IActionResult> LoginVerification([FromBody] TwoFactorDto twoFactorDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest();
+
+        //    var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
+        //    if (user == null)
+        //        return BadRequest("Invalid Request");
+
+        //    var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
+        //    if (!validVerification)
+        //        return BadRequest("Invalid Token Verification");
+
+        //    var token = await _jwtHandler.GenerateToken(user);
+        //    return Ok(new AuthResponseDto { IsAuthSuccessful = true, /*Token = token*/ });
+        //}
 
         [HttpGet("RegistrationVerification")]
         public async Task<IActionResult> RegistrationVerification([FromQuery] string email, [FromQuery] string token)

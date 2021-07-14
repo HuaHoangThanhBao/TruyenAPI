@@ -15,13 +15,13 @@ using DataAccessLayer;
 using EmailService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers
@@ -82,18 +82,6 @@ namespace API.Controllers
                 return BadRequest(new RegistrationResponseDto { Errors = errors });
             }
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var param = new Dictionary<string, string>
-            {
-                {"token", token },
-                {"email", user.Email }
-            };
-
-            var callback = QueryHelpers.AddQueryString(userForRegistration.ClientURI, param);
-
-            var message = new Message(new string[] { userForRegistration.Email }, "Email Confirmation token", callback, null);
-            await _emailSender.SendEmailAsync(message);
-
             var roleExist = await _roleManager.RoleExistsAsync("User");
             if (!roleExist)
             {
@@ -101,6 +89,8 @@ namespace API.Controllers
             }
 
             await _userManager.AddToRoleAsync(user, "User");
+
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
 
             var response = _repository.User.CreateUser(
                 new User()
@@ -118,25 +108,49 @@ namespace API.Controllers
                 _repository.Save();
             }
 
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var param = new Dictionary<string, string>
+            {
+                {"token", token },
+                {"email", user.Email }
+            };
+
+            var callback = QueryHelpers.AddQueryString(userForRegistration.ClientURI, param);
+
+            var message = new Message(new string[] { userForRegistration.Email }, "Email Confirmation token", callback, null);
+            await _emailSender.SendEmailAsync(message);
+
             return Ok();
         }
 
-        [HttpPost("check-login")]
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogOut()
+        {
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+            if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+            foreach (var cookieKey in Request.Cookies.Keys)
+            {
+                HttpContext.Response.Cookies.Delete(cookieKey);
+            }
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return Ok();
+        }
+
+        [HttpPost("checklogin")]
         public async Task<IActionResult> CheckLogin()
         {
             var cookies = Request.Cookies;
-            var loginCookie = cookies[".AspNetCore.Cookies"];
             var userIDCookie = cookies["UserID"];
 
-            if (loginCookie == null)
+            var user = await _repository.User.GetUserByIDAsync(userIDCookie);
+            if (user == null)
             {
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Phiên đăng nhập hết hạn" });
-            }
-
-            var user = await _repository.User.GetUserByIDAsync(userIDCookie);
-            if(user == null)
-            {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "User không tồn tại" });
             }
 
             return Ok();
@@ -182,73 +196,79 @@ namespace API.Controllers
                 return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
             }
 
-            //if (!await _userManager.GetTwoFactorEnabledAsync(user))
-            //{
-            //    await _userManager.SetTwoFactorEnabledAsync(user, true);
-            //}
-
-            //if (await _userManager.GetTwoFactorEnabledAsync(user))
-            //    return await GenerateOTPFor2StepVerification(user);
+            if(await _userManager.GetTwoFactorEnabledAsync(user))
+                return await GenerateOTPFor2StepVerification(user);
 
             //var token = await _jwtHandler.GenerateToken(user);
-            var claims = await _jwtHandler.GenerateToken(user);
 
             await _userManager.ResetAccessFailedCountAsync(user);
-
-
-            //Thêm mới
-            var authProperties = new AuthenticationProperties()
-            {
-                IsPersistent = true
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-            var userID = await _repository.User.GetUserByEmailAsync(userForAuthentication.Email);
-
-            CookieOptions option = new CookieOptions();
-            option.HttpOnly = true;
-            option.Expires = DateTime.Now.AddMinutes(1);
-            Response.Cookies.Append("UserID", userID.UserID.ToString().ToUpper(), option);
-            //
 
             return Ok(new AuthResponseDto { IsAuthSuccessful = true, /*Token = token*/ });
         }
 
-        //private async Task<IActionResult> GenerateOTPFor2StepVerification(ApplicationUser user)
-        //{
-        //    var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
-        //    if (!providers.Contains("Email"))
-        //    {
-        //        return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid 2-Step Verification Provider." });
-        //    }
+        private async Task<IActionResult> GenerateOTPFor2StepVerification(ApplicationUser user)
+        {
+            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            if (!providers.Contains("Email"))
+            {
+                return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid 2-Step Verification Provider." });
+            }
 
-        //    var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-        //    var message = new Message(new string[] { user.Email }, "Authentication token", token, null);
-        //    await _emailSender.SendEmailAsync(message);
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+            var message = new Message(new string[] { user.Email }, "Authentication token", token, null);
+            await _emailSender.SendEmailAsync(message);
 
-        //    return Ok(new AuthResponseDto { Is2StepVerificationRequired = true, Provider = "Email" });
-        //}
+            return Ok(new AuthResponseDto { Is2StepVerificationRequired = true, Provider = "Email" });
+        }
 
-        //[HttpPost("LoginVerification")]
-        //public async Task<IActionResult> LoginVerification([FromBody] TwoFactorDto twoFactorDto)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest();
+        [HttpPost("LoginVerification")]
+        public async Task<IActionResult> LoginVerification([FromBody] TwoFactorDto twoFactorDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-        //    var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
-        //    if (user == null)
-        //        return BadRequest("Invalid Request");
+            var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
+            if (user == null)
+                return BadRequest("Invalid Request");
 
-        //    var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
-        //    if (!validVerification)
-        //        return BadRequest("Invalid Token Verification");
+            var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
+            if (!validVerification)
+                return BadRequest("Invalid Token Verification");
 
-        //    var token = await _jwtHandler.GenerateToken(user);
-        //    return Ok(new AuthResponseDto { IsAuthSuccessful = true, /*Token = token*/ });
-        //}
+            //var token = await _jwtHandler.GenerateToken(user);
+
+
+            /**************/
+            var claims = await _jwtHandler.GenerateClaims(user);
+
+            await _userManager.ResetAccessFailedCountAsync(user);
+
+            var authProperties = new AuthenticationProperties()
+            {
+                IsPersistent = true,
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var userID = await _repository.User.GetUserByEmailAsync(twoFactorDto.Email);
+
+            CookieOptions option = new CookieOptions()
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.Now.AddMinutes(5),
+                IsEssential = true,
+            };
+
+            Response.Cookies.Append("UserID", userID.UserID.ToString().ToUpper(), option);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+            /**************/
+
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, /*Token = token*/ });
+        }
 
         [HttpGet("RegistrationVerification")]
         public async Task<IActionResult> RegistrationVerification([FromQuery] string email, [FromQuery] string token)
@@ -268,6 +288,11 @@ namespace API.Controllers
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
         {
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+            if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
             if (!ModelState.IsValid)
                 return BadRequest();
 
@@ -293,6 +318,11 @@ namespace API.Controllers
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+            if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
             if (!ModelState.IsValid)
                 return BadRequest();
 

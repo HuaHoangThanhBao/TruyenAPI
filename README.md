@@ -357,7 +357,10 @@ Method: POST
 Request: host/api/user
 Body (Json):
 {
-    "TenUser": string,
+    "FirstName": string,
+    "LastName": string,
+    "Email": string,
+    "Quyen": number,
     "Password": string
 }
 
@@ -382,7 +385,9 @@ Method: PUT
 Request: host/api/user
 Body (Json):
 {
-    "TenUser": string,
+    "FirstName": string,
+    "LastName": string,
+    "Email": string,
     "Quyen": number,
     "Password": string
 }
@@ -498,7 +503,9 @@ Request: Request/api/binhluan/{id}
 
 ````
 
-#### JWT For Login
+#### Cookie Authentication
+
+1. Login
 
 ````console
 
@@ -507,8 +514,26 @@ Method: POST
 Request: host/api/auth/login
 Body (Json):
 {
-    "TenUser": string,
-    "Password": string
+    "Email": string,
+    "Password": string,
+    "clientURI": string,
+}
+
+2. Registration
+
+````console
+
+Method: POST
+
+Request: host/api/auth/registration
+Body (Json):
+{
+    "FirstName": string,
+    "LastName": string,
+    "Email": string,
+    "Password": string,
+    "ConfirmPassword": string,
+    "clientURI": string,
 }
 
 ````

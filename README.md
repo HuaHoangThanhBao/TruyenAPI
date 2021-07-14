@@ -519,6 +519,8 @@ Body (Json):
     "clientURI": string,
 }
 
+````
+
 2. Registration
 
 ````console
@@ -537,6 +539,10 @@ Body (Json):
 }
 
 ````
+
+Note: Login and registration have two-step verification through email. 
+Once you confirm by email, you would be avaiable to the next step. 
+This function can be intergrated with any front-end framework by calling API.
 
 #### Pagination
 

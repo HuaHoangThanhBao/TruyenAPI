@@ -68,5 +68,14 @@ namespace API
 
             return token;
         }
+
+        public async Task<List<Claim>> GenerateClaims(ApplicationUser user)
+        {
+            var signingCredentials = GetSigningCredentials();
+            var claims = await GetClaims(user);
+            var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+
+            return claims;
+        }
     }
 }

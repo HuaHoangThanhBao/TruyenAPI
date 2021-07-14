@@ -3,7 +3,6 @@ using CoreLibrary;
 using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,15 +57,15 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Username]*/
-            if (FindByCondition(t => t.FirstName.Equals(user.FirstName) && t.LastName.Equals(user.LastName)).Any())
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Họ tên bị trùng",
-                    Value = user.Username.ToString()
-                };
-            }
+            //if (FindByCondition(t => t.FirstName.Equals(user.FirstName) && t.LastName.Equals(user.LastName)).Any())
+            //{
+            //    return new ResponseDetails()
+            //    {
+            //        StatusCode = ResponseCode.Error,
+            //        Message = "Họ tên bị trùng",
+            //        Value = user.Username.ToString()
+            //    };
+            //}
             /*End*/
 
             if (user.FirstName == "" || user.FirstName == null)
@@ -148,15 +147,15 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Username]*/
-            if (FindByCondition(t => t.FirstName.Equals(user.FirstName) && t.LastName.Equals(user.LastName) && t.UserID != user.UserID).Any())
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Họ tên bị trùng",
-                    Value = user.Username.ToString()
-                };
-            }
+            //if (FindByCondition(t => t.FirstName.Equals(user.FirstName) && t.LastName.Equals(user.LastName) && t.UserID != user.UserID).Any())
+            //{
+            //    return new ResponseDetails()
+            //    {
+            //        StatusCode = ResponseCode.Error,
+            //        Message = "Họ tên bị trùng",
+            //        Value = user.Username.ToString()
+            //    };
+            //}
             /*End*/
 
             if (user.FirstName == "" || user.FirstName == null)
@@ -213,15 +212,24 @@ namespace Repository
                 .ToListAsync();
         }
 
-        public async Task<User> GetUserByNameAsync(string Username)
+        //Dùng cho khi xác thực login và lấy ra mã GUID để lưu lại phía client
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            return await FindByCondition(user => user.Username.Equals(Username))
+            return await FindByCondition(user => user.Email.Equals(email))
                     .FirstOrDefaultAsync();
         }
 
-        public async Task<User> GetUserByDetailAsync(string Username)
+        //Dùng cho lấy user để get/update/delete
+        public async Task<User> GetUserByIDAsync(string userID)
         {
-            return await FindByCondition(user => user.Username.Equals(Username))
+            return await FindByCondition(user => user.UserID.ToString() == userID)
+                    .FirstOrDefaultAsync();
+        }
+
+        //Dùng cho khi đã login rồi mà muốn lấy thông tin của user
+        public async Task<User> GetUserByUserIDDetailAsync(string guid)
+        {
+            return await FindByCondition(user => user.UserID.Equals(guid))
                 .Include(a => a.TheoDois)
                     .ThenInclude(b => b.Truyen)
                 .FirstOrDefaultAsync();

@@ -364,4 +364,3 @@ FodyWeavers.xsd
 /.vs
 .vs/*
 /API/Resources/Keys/credential.json
-/API/appsettings.json

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace CoreLibrary.DataTransferObjects
 {
@@ -9,6 +10,9 @@ namespace CoreLibrary.DataTransferObjects
 
         [Required(ErrorMessage = "TheLoaiID is required")]
         public int TheLoaiID { get; set; }
+
+        [DefaultValue(false)]
+        public bool TinhTrang { get; set; }
     }
 
     public class PhuLucForUpdateDto
@@ -18,5 +22,8 @@ namespace CoreLibrary.DataTransferObjects
 
         [Required(ErrorMessage = "TheLoaiID is required")]
         public int TheLoaiID { get; set; }
+
+        [DefaultValue(false)]
+        public bool TinhTrang { get; set; }
     }
 }

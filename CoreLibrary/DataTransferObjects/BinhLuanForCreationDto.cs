@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CoreLibrary.DataTransferObjects
@@ -14,8 +15,10 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "Noi dung is required")]
         public string NoiDung { get; set; }
 
-        [Required(ErrorMessage = "Ngay binh luan is required")]
-        public DateTime NgayBL { get; set; }
+        public string NgayBL { get; set; }
+
+        [DefaultValue(false)]
+        public bool TinhTrang { get; set; }
     }
 
     public class BinhLuanForUpdateDto
@@ -29,7 +32,9 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "Noi dung is required")]
         public string NoiDung { get; set; }
 
-        [Required(ErrorMessage = "Ngay binh luan is required")]
-        public DateTime NgayBL { get; set; }
+        public string NgayBL { get; set; }
+
+        [DefaultValue(false)]
+        public bool TinhTrang { get; set; }
     }
 }

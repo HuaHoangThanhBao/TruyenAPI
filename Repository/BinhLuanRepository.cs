@@ -4,6 +4,7 @@ using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Repository.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,25 +60,7 @@ namespace Repository
             }
             /*End*/
 
-            if(binhLuan.NoiDung == "" || binhLuan.NoiDung == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Nội dung chương không được để trống",
-                    Value = binhLuan.NoiDung.ToString()
-                };
-            }
-
-            if (binhLuan.NgayBL == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Ngày bình luận không được để trống",
-                    Value = binhLuan.NgayBL.ToString()
-                };
-            }
+            binhLuan.NgayBL = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
 
             Create(binhLuan);
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
@@ -123,25 +106,8 @@ namespace Repository
             }
             /*End*/
 
-            if (binhLuan.NoiDung == "" || binhLuan.NoiDung == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Nội dung chương không được để trống",
-                    Value = binhLuan.NoiDung.ToString()
-                };
-            }
-
-            if (binhLuan.NgayBL == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Ngày bình luận không được để trống",
-                    Value = binhLuan.BinhLuanID.ToString()
-                };
-            }
+            var binhLuanOld = FindByCondition(m => m.BinhLuanID.Equals(binhLuan.BinhLuanID)).FirstOrDefault();
+            binhLuan.NgayBL = (binhLuan.NgayBL == "" || binhLuan.NgayBL == null) ? binhLuanOld.NgayBL : binhLuan.NgayBL;
 
             Update(binhLuan);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa bình luận thành công" };
@@ -150,7 +116,8 @@ namespace Repository
         //Xóa logic
         public ResponseDetails DeleteBinhLuan(BinhLuan binhLuan)
         {
-            Delete(binhLuan);
+            binhLuan.TinhTrang = true;
+            Update(binhLuan);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa bình luận thành công" };
         }
 
@@ -158,6 +125,7 @@ namespace Repository
         public async Task<IEnumerable<BinhLuan>> GetAllBinhLuansAsync()
         {
             return await FindAll()
+                .Where(m => !m.TinhTrang)
                 .Include(ac => ac.Chuong)
                     .ThenInclude(ac => ac.Truyen)
                 .Include(m => m.User)
@@ -167,13 +135,13 @@ namespace Repository
 
         public async Task<BinhLuan> GetBinhLuanByIdAsync(int binhLuanId)
         {
-            return await FindByCondition(binhLuan => binhLuan.BinhLuanID.Equals(binhLuanId))
+            return await FindByCondition(binhLuan => binhLuan.BinhLuanID.Equals(binhLuanId) && !binhLuan.TinhTrang)
                     .FirstOrDefaultAsync();
         }
 
         public async Task<BinhLuan> GetBinhLuanByDetailAsync(int binhLuanId)
         {
-            return await FindByCondition(BinhLuan => BinhLuan.BinhLuanID.Equals(binhLuanId))
+            return await FindByCondition(binhLuan => binhLuan.BinhLuanID.Equals(binhLuanId) && !binhLuan.TinhTrang)
                 .Include(ac => ac.Chuong)
                 .Include(ac => ac.User)
                 .FirstOrDefaultAsync();
@@ -182,14 +150,14 @@ namespace Repository
 
         public async Task<PagedList<BinhLuan>> GetBinhLuanForPagination(BinhLuanParameters binhLuanParameters)
         {
-            return await PagedList<BinhLuan>.ToPagedList(FindAll().Include(m => m.User).Include(m => m.Chuong).OrderByDescending(on => on.NgayBL),
+            return await PagedList<BinhLuan>.ToPagedList(FindAll().Where(m => !m.TinhTrang).Include(m => m.User).Include(m => m.Chuong).OrderByDescending(on => on.NgayBL),
                 binhLuanParameters.PageNumber,
                 binhLuanParameters.PageSize);
         }
 
         public async Task<PagedList<BinhLuan>> GetBinhLuanLastestForPagination(BinhLuanParameters binhLuanParameters)
         {
-            return await PagedList<BinhLuan>.ToPagedList(FindAll().Include(m => m.User).Include(m => m.Chuong)
+            return await PagedList<BinhLuan>.ToPagedList(FindAll().Where(m => !m.TinhTrang).Include(m => m.User).Include(m => m.Chuong)
                 .ThenInclude(m => m.Truyen).OrderByDescending(on => on.NgayBL).Take(binhLuanParameters.PageSize),
                 binhLuanParameters.PageNumber,
                 binhLuanParameters.PageSize);
@@ -198,7 +166,7 @@ namespace Repository
         public async Task<PagedList<BinhLuan>> GetBinhLuanOfTruyenForPagination(int truyenID, BinhLuanParameters binhLuanParameters)
         {
             var chuongs = (from m in _context.Chuongs
-                           where m.TruyenID == truyenID
+                           where m.TruyenID == truyenID && !m.TinhTrang
                            select m);
 
             return await PagedList<BinhLuan>.ToPagedList(
@@ -206,6 +174,7 @@ namespace Repository
                 (from m in _context.BinhLuans
                  join n in chuongs
                  on m.ChuongID equals n.ChuongID
+                 where !m.TinhTrang
                  select m).Include(m => m.User).Include(m => m.Chuong).ThenInclude(m => m.Truyen).Take(binhLuanParameters.PageSize).OrderByDescending(m => m.NgayBL)
                 
                  ,
@@ -219,7 +188,7 @@ namespace Repository
             return await PagedList<BinhLuan>.ToPagedList(
 
                 (from m in _context.BinhLuans
-                 where m.ChuongID == chuongID
+                 where m.ChuongID == chuongID && !m.TinhTrang
                  select m).Include(m => m.User).Include(m => m.Chuong).OrderByDescending(m => m.NgayBL)
 
                  ,

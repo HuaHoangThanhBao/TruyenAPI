@@ -20,6 +20,8 @@ namespace Repository
         //KQ: !null = Username bị trùng, null: thêm thành công
         public ResponseDetails CreateUser(User user)
         {
+            user.Username = (user.Username == "" || user.Username == null) ? user.FirstName + user.LastName : user.Username;
+
             /*Bắt lỗi ký tự đặc biệt*/
             if (ValidationExtensions.isSpecialChar(user.FirstName))
             {
@@ -57,49 +59,18 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Username]*/
-            //if (FindByCondition(t => t.FirstName.Equals(user.FirstName) && t.LastName.Equals(user.LastName)).Any())
-            //{
-            //    return new ResponseDetails()
-            //    {
-            //        StatusCode = ResponseCode.Error,
-            //        Message = "Họ tên bị trùng",
-            //        Value = user.Username.ToString()
-            //    };
-            //}
+            if (FindByCondition(t => t.Username.Equals(user.Username)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Username bị trùng",
+                    Value = user.Username.ToString()
+                };
+            }
             /*End*/
 
-            if (user.FirstName == "" || user.FirstName == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Tên không được để trống",
-                    Value = user.Username.ToString()
-                };
-            }
-
-            if (user.LastName == "" || user.LastName == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Họ được để trống",
-                    Value = user.Username.ToString()
-                };
-            }
-
-            if (user.Password == "" || user.Password == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Password không được để trống",
-                    Value = user.Password.ToString()
-                };
-            }
-
             string passHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            user.Username = user.LastName + user.FirstName;
             user.Password = passHash;
 
             Create(user);
@@ -110,6 +81,8 @@ namespace Repository
         //KQ: false: Username bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateUser(User user)
         {
+            user.Username = (user.Username == "" || user.Username == null) ? user.FirstName + user.LastName : user.Username;
+
             /*Bắt lỗi ký tự đặc biệt*/
             if (ValidationExtensions.isSpecialChar(user.FirstName))
             {
@@ -147,46 +120,16 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Username]*/
-            //if (FindByCondition(t => t.FirstName.Equals(user.FirstName) && t.LastName.Equals(user.LastName) && t.UserID != user.UserID).Any())
-            //{
-            //    return new ResponseDetails()
-            //    {
-            //        StatusCode = ResponseCode.Error,
-            //        Message = "Họ tên bị trùng",
-            //        Value = user.Username.ToString()
-            //    };
-            //}
+            if (FindByCondition(t => t.Username.Equals(user.Username)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Username bị trùng",
+                    Value = user.Username.ToString()
+                };
+            }
             /*End*/
-
-            if (user.FirstName == "" || user.FirstName == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Tên không được để trống",
-                    Value = user.Username.ToString()
-                };
-            }
-
-            if (user.LastName == "" || user.LastName == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Họ được để trống",
-                    Value = user.Username.ToString()
-                };
-            }
-
-            if (user.Password == "" || user.Password == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Password không được để trống",
-                    Value = user.Password.ToString()
-                };
-            }
 
             string passHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
             user.Password = passHash;
@@ -196,10 +139,10 @@ namespace Repository
         }
 
         //Xóa logic
-        public ResponseDetails DeleteUser(User User)
+        public ResponseDetails DeleteUser(User user)
         {
-            User.TinhTrang = true;
-            Update(User);
+            user.TinhTrang = true;
+            Update(user);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa user thành công" };
         }
 

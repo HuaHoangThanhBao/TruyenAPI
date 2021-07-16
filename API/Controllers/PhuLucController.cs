@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
 using Microsoft.AspNetCore.Cors;
 using CoreLibrary.Helpers;
+using LoggerService;
+using System;
 
 namespace API.Controllers
 {
@@ -17,11 +19,13 @@ namespace API.Controllers
     public class PhuLucController : ControllerBase
     {
         private IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public PhuLucController(IRepositoryWrapper repository, IMapper mapper)
+        public PhuLucController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -106,8 +110,9 @@ namespace API.Controllers
 
                 return Ok(createdPhuLuc);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi tạo mới danh sách phụ lục: " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreatePhuLuc" });
             }
         }
@@ -150,8 +155,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi cập nhật phụ lục với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdatePhuLuc" });
             }
         }
@@ -167,11 +173,6 @@ namespace API.Controllers
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID phụ lục không tồn tại" });
                 }
 
-                //if (_repository.Account.AccountsByOwner(id).Any())
-                //{
-                //    return BadRequest("Cannot delete owner. It has related accounts. Delete those accounts first");
-                //}
-
                 ResponseDetails response = _repository.PhuLuc.DeletePhuLuc(phuLuc);
 
                 if (response.StatusCode == ResponseCode.Success)
@@ -179,8 +180,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi cập nhật phụ lục với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeletePhuLuc" });
             }
         }

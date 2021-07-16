@@ -13,8 +13,12 @@ namespace CoreLibrary.DataTransferObjects
 
         public string TenChuong { get; set; }
 
-        public DateTime ThoiGianCapNhat { get; set; }
+        public string ThoiGianCapNhat { get; set; }
 
         public int LuotXem { get; set; }
+
+        public int TrangThai { get; set; }
+
+        public bool TinhTrang { get; set; }
     }
 }

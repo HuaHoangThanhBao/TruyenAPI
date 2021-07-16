@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Extensions;
 using AutoMapper;
@@ -6,6 +7,7 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
+using LoggerService;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -18,11 +20,13 @@ namespace API.Controllers
     public class BinhLuanController : ControllerBase
     {
         private IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public BinhLuanController(IRepositoryWrapper repository, IMapper mapper)
+        public BinhLuanController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -135,8 +139,9 @@ namespace API.Controllers
 
                 return Ok(createdBinhLuan);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi tạo mới bình luận: " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateBinhLuan" });
             }
         }
@@ -179,8 +184,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi cập nhật bình luận với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateBinhLuan" });
             }
         }
@@ -208,8 +214,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi xóa bình luận với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteBinhLuan" });
             }
         }

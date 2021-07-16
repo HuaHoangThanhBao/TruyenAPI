@@ -8,11 +8,15 @@ namespace CoreLibrary.DataTransferObjects
     {
         public Guid UserID { get; set; }
 
-        public string TenUser { get; set; }
+        public string Username { get; set; }
 
-        //public string Password { get; set; }
+        public string FirstName { get; set; }
 
-        public bool TinhTrang { get; set; }
+        public string LastName { get; set; }
+
+        public string Email { get; set; }
+
+        public int Quyen { get; set; }
 
         public IEnumerable<TheoDoi> TheoDois { get; set; }
         public IEnumerable<BinhLuan> BinhLuans { get; set; }

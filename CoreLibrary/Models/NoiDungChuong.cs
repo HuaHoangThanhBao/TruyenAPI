@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoreLibrary.Models
@@ -17,5 +18,8 @@ namespace CoreLibrary.Models
 
         [Required(ErrorMessage = "HinhAnh is required")]
         public string HinhAnh { get; set; }
+
+        [DefaultValue(false)]
+        public bool TinhTrang { get; set; }
     }
 }

@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
 using Microsoft.AspNetCore.Cors;
 using CoreLibrary.Helpers;
+using LoggerService;
+using System;
 
 namespace API.Controllers
 {
@@ -17,11 +19,13 @@ namespace API.Controllers
     public class NoiDungChuongController : ControllerBase
     {
         private IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public NoiDungChuongController(IRepositoryWrapper repository, IMapper mapper)
+        public NoiDungChuongController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -106,8 +110,9 @@ namespace API.Controllers
 
                 return Ok(createdNoiDungChuong);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi tạo mới danh sách nội dung chương: " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi exception xảy ra ở hàm CreateNoiDungChuong" });
             }
         }
@@ -150,8 +155,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi cập nhật nội dung chương với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateNoiDungChuong" });
             }
         }
@@ -179,8 +185,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi xóa nội dung chương với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteNoiDungChuong" });
             }
         }

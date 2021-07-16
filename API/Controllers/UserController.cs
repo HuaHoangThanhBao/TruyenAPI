@@ -7,6 +7,7 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
+using LoggerService;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,11 +19,13 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public UserController(IRepositoryWrapper repository, IMapper mapper)
+        public UserController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -134,10 +137,13 @@ namespace API.Controllers
 
                 var createdUser = _mapper.Map<UserDto>(userEntity);
 
+                _logger.LogInfo("User mới đăng ký với ID là: " + userEntity.UserID);
+
                 return Ok(createdUser);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Lỗi khi create new user: " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateUser" });
             }
         }
@@ -180,8 +186,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Lỗi khi update user " + userid + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateUser" });
             }
         }
@@ -209,8 +216,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Lỗi khi delete user " + userid + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteUser" });
             }
         }

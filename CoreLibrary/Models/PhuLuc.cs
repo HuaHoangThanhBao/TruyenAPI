@@ -1,9 +1,6 @@
-﻿using CoreLibrary.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace CoreLibrary.Models
 {
@@ -25,5 +22,8 @@ namespace CoreLibrary.Models
         [ForeignKey(nameof(TheLoai))]
         public int TheLoaiID { get; set; }
         public TheLoai TheLoai { get; set; }
+
+        [DefaultValue(false)]
+        public bool TinhTrang { get; set; }
     }
 }

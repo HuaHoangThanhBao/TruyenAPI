@@ -22,6 +22,21 @@ namespace Repository
         //KQ: false = TruyenID hoặc TheLoaiID không tồn tại, true: thêm thành công
         public ResponseDetails CreateNoiDungChuong(IEnumerable<NoiDungChuong> noiDungChuongs)
         {
+            /*Kiểm tra xem chuỗi json nhập vào có bị trùng tên chương không*/
+            foreach (var dup in noiDungChuongs.GroupBy(p => p.HinhAnh))
+            {
+                if (dup.Count() - 1 > 0)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Chuỗi json nhập vào bị trùng đường dẫn ảnh",
+                        Value = dup.Key.ToString()
+                    };
+                }
+            }
+            /*End*/
+
             var truyenRepo = new TruyenRepository(_context);
 
             foreach (var nd in noiDungChuongs)
@@ -75,7 +90,7 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Tên hình ảnh]*/
-            if (FindByCondition(t => t.HinhAnh.Equals(nd.HinhAnh) && t.ChuongID.Equals(nd.ChuongID)).Any())
+            if (FindByCondition(t => t.HinhAnh.Equals(nd.HinhAnh) && !t.ChuongID.Equals(nd.ChuongID)).Any())
             {
                 return new ResponseDetails()
                 {
@@ -95,7 +110,8 @@ namespace Repository
         //Xóa logic
         public ResponseDetails DeleteNoiDungChuong(NoiDungChuong noiDungChuong)
         {
-            Delete(noiDungChuong);
+            noiDungChuong.TinhTrang = true;
+            Update(noiDungChuong);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa nội dung chương thành công" };
         }
 
@@ -103,6 +119,7 @@ namespace Repository
         public async Task<IEnumerable<NoiDungChuong>> GetAllNoiDungChuongsAsync()
         {
             return await FindAll()
+                .Where(m => !m.TinhTrang)
                 .OrderBy(ow => ow.ChuongID)
                 .ToListAsync();
         }
@@ -110,7 +127,7 @@ namespace Repository
         //Lấy nội dung chương = [id]
         public async Task<NoiDungChuong> GetNoiDungChuongByChuongIdAsync(int noiDungId)
         {
-            return await FindByCondition(chuong => chuong.NoiDungChuongID.Equals(noiDungId))
+            return await FindByCondition(chuong => chuong.NoiDungChuongID.Equals(noiDungId) && !chuong.TinhTrang)
                 .FirstOrDefaultAsync();
         }
     }

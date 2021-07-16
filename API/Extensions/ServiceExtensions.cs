@@ -7,7 +7,6 @@ using Repository;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using API.Extensions;
 using EmailService;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +15,7 @@ using CoreLibrary.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Http;
+using LoggerService;
 
 namespace API
 {
@@ -45,6 +45,8 @@ namespace API
             //        builder => builder.WithOrigins("http://localhost:4000")
             //                    .WithMethods("GET").WithMethods("POST").WithMethods("PUT").WithMethods("DELETE"));
             //});
+
+            services.AddSingleton<ILoggerManager, LoggerManager>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {

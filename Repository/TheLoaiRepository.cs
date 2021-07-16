@@ -11,9 +11,12 @@ namespace Repository
 {
     public class TheLoaiRepository : RepositoryBase<TheLoai>, ITheLoaiRepository
     {
+        private RepositoryContext _context;
+
         public TheLoaiRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
         {
+            _context = repositoryContext;
         }
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
@@ -50,16 +53,6 @@ namespace Repository
                 /*End*/
 
                 /*Bắt lỗi [Tên thể loại]*/
-                if (theLoai.TenTheLoai == "" || theLoai.TenTheLoai == null)
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Tên thể loại không được để trống",
-                        Value = theLoai.TenTheLoai
-                    };
-                }
-
                 if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai)).Any())
                 {
                     return new ResponseDetails()
@@ -93,16 +86,6 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Tên thể loại]*/
-            if (theLoai.TenTheLoai == "" || theLoai.TenTheLoai == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Tên thể loại không được để trống",
-                    Value = theLoai.TenTheLoai
-                };
-            }
-
             if (FindByCondition(t => t.TenTheLoai.Equals(theLoai.TenTheLoai) && t.TheLoaiID != theLoai.TheLoaiID).Any())
             {
                 return new ResponseDetails()
@@ -121,9 +104,18 @@ namespace Repository
         //Xóa logic
         public ResponseDetails DeleteTheLoai(TheLoai theLoai)
         {
-            theLoai.TinhTrang = true;
-            Update(theLoai);
-            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa thể loại thành công" };
+            //Kiểm tra [id tác giả] hiện tại có nằm trong [Phụ lục] không? Nếu không thì cho phép xóa
+            var phuLucRepo = new PhuLucRepository(_context);
+            if (!phuLucRepo.FindByCondition(t => t.TheLoaiID.Equals(theLoai.TheLoaiID)).Any())
+            {
+                theLoai.TinhTrang = true;
+                Update(theLoai);
+                return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa thể loại thành công" };
+            }
+            else
+            {
+                return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Thể loại này đang tồn tại trong phụ lục" };
+            }
         }
 
         //Lấy danh sách các tác giả không bị xóa

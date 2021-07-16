@@ -11,7 +11,8 @@ using CoreLibrary.Helpers;
 using Microsoft.AspNetCore.Cors;
 using System.Text.RegularExpressions;
 using System.Text;
-using System.Linq;
+using LoggerService;
+using System;
 
 namespace API.Controllers
 {
@@ -21,11 +22,13 @@ namespace API.Controllers
     public class TruyenController : ControllerBase
     {
         private IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public TruyenController(IRepositoryWrapper repository, IMapper mapper)
+        public TruyenController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -136,10 +139,13 @@ namespace API.Controllers
 
                 var createdTruyen = _mapper.Map<IEnumerable<TruyenDto>>(truyenEntity);
 
+                _logger.LogInfo("Thêm mới danh sách truyện thành công");
+
                 return Ok(createdTruyen);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Lỗi khi create list truyện: " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateTruyen" });
             }
         }
@@ -182,8 +188,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Lỗi khi update truyện " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateTruyen" });
             }
         }
@@ -211,8 +218,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Lỗi khi xóa truyện " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTruyen" });
             }
         }

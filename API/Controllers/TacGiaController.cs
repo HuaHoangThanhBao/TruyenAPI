@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
 using Microsoft.AspNetCore.Cors;
 using CoreLibrary.Helpers;
+using LoggerService;
+using System;
 
 namespace API.Controllers
 {
@@ -17,11 +19,13 @@ namespace API.Controllers
     public class TacGiaController : ControllerBase
     {
         private IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public TacGiaController(IRepositoryWrapper repository, IMapper mapper)
+        public TacGiaController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -134,8 +138,9 @@ namespace API.Controllers
 
                 return Ok(createdTacGia);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi tạo mới tác giả: " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateTacGia" });
             }
         }
@@ -178,8 +183,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi cập nhật tác giả với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateTacGia" });
             }
         }
@@ -207,8 +213,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi xóa tác giả với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTacGia" });
             }
         }

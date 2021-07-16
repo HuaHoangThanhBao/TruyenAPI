@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace CoreLibrary.DataTransferObjects
 {
@@ -9,6 +10,9 @@ namespace CoreLibrary.DataTransferObjects
 
         [Required(ErrorMessage = "Hinh anh is required")]
         public string HinhAnh { get; set; }
+
+        [DefaultValue(false)]
+        public bool TinhTrang { get; set; }
     }
 
     public class NoiDungChuongForUpdateDto
@@ -18,5 +22,8 @@ namespace CoreLibrary.DataTransferObjects
 
         [Required(ErrorMessage = "Hinh anh is required")]
         public string HinhAnh { get; set; }
+
+        [DefaultValue(false)]
+        public bool TinhTrang { get; set; }
     }
 }

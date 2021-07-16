@@ -58,16 +58,6 @@ namespace Repository
                 /*End*/
 
                 /*Bắt lỗi [Tên truyện]*/
-                if (truyen.TenTruyen == "" || truyen.TenTruyen == null)
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Tên truyện không được để trống",
-                        Value = truyen.TenTruyen
-                    };
-                }
-
                 if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
                 {
                     return new ResponseDetails()
@@ -78,38 +68,6 @@ namespace Repository
                     };
                 }
                 /*End*/
-
-                /*Bắt lỗi [Mô tả]*/
-                if (truyen.MoTa == "" || truyen.MoTa == null)
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Mô tả không được để trống",
-                        Value = truyen.TenTruyen
-                    };
-                }
-                /*End*/
-
-                if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen)).Any())
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Tên truyện bị trùng",
-                        Value = truyen.TenTruyen
-                    };
-                }
-
-                if (!tacGiaRepo.FindByCondition(t => t.TacGiaID.Equals(truyen.TacGiaID)).Any())
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "ID tác giả không tồn tại",
-                        Value = truyen.TacGiaID.ToString()
-                    };
-                }
 
                 Create(truyen);
             }
@@ -135,34 +93,12 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Tên truyện]*/
-            if (truyen.TenTruyen == "" || truyen.TenTruyen == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Tên truyện không được để trống",
-                    Value = truyen.TenTruyen
-                };
-            }
-
             if (FindByCondition(t => t.TenTruyen.Equals(truyen.TenTruyen) && t.TruyenID != truyen.TruyenID).Any())
             {
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
                     Message = "Tên truyện bị trùng"
-                };
-            }
-            /*End*/
-
-            /*Bắt lỗi [Mô tả]*/
-            if (truyen.MoTa == "" || truyen.MoTa == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Mô tả không được để trống",
-                    Value = truyen.TenTruyen
                 };
             }
             /*End*/
@@ -192,14 +128,13 @@ namespace Repository
 
         public async Task<Truyen> GetTruyenByIdAsync(int truyenId)
         {
-            return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId))
-                    .Where(m => !m.TinhTrang)
+            return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId) && !truyen.TinhTrang)
                     .FirstOrDefaultAsync();
         }
 
         public async Task<Truyen> GetTruyenByDetailAsync(int truyenId)
         {
-            return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId)).Where(m => !m.TinhTrang)
+            return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId) && !truyen.TinhTrang)
                 .Include(a => a.TacGia)
                 .Include(a => a.Chuongs)
                 //    .ThenInclude(a => a.BinhLuans)
@@ -213,7 +148,7 @@ namespace Repository
 
         public async Task<PagedList<Truyen>> GetTruyenForPagination(TruyenParameters truyenParameters)
         {
-            return await PagedList<Truyen>.ToPagedList(FindAll().Include(m => m.Chuongs).Where(m => !m.TinhTrang)
+            return await PagedList<Truyen>.ToPagedList(FindAll().Where(m => !m.TinhTrang).Include(m => m.Chuongs)
                 .OrderBy(on => on.TenTruyen),
                 truyenParameters.PageNumber,
                 truyenParameters.PageSize);
@@ -222,12 +157,13 @@ namespace Repository
         public async Task<PagedList<Truyen>> GetTruyenLastestUpdateForPagination(TruyenParameters truyenParameters)
         {
             var chuongs = (from m in _context.Chuongs
+                           where !m.TinhTrang
                            orderby m.ThoiGianCapNhat descending
                            select m);
 
             return await PagedList<Truyen>.ToPagedList(
 
-               _context.Truyens.OrderByDescending(user => user.Chuongs.Max(d => d.ThoiGianCapNhat)).Include(m => m.Chuongs)
+               _context.Truyens.Where(m => !m.TinhTrang).OrderByDescending(user => user.Chuongs.Max(d => d.ThoiGianCapNhat)).Include(m => m.Chuongs)
 
                 ,
                 truyenParameters.PageNumber,
@@ -241,7 +177,7 @@ namespace Repository
                 (from m in _context.Truyens
                  join n in _context.PhuLucs
                  on m.TruyenID equals n.TruyenID
-                 where n.TheLoaiID == theLoaiID && !m.TinhTrang
+                 where n.TheLoaiID == theLoaiID && !m.TinhTrang && !n.TinhTrang
                  select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
 
                 ,
@@ -268,7 +204,7 @@ namespace Repository
         {
             return await PagedList<Truyen>.ToPagedList(
 
-               _context.Truyens.OrderByDescending(user => user.Chuongs.Sum(d => d.LuotXem))
+               _context.Truyens.Where(m => !m.TinhTrang).OrderByDescending(user => user.Chuongs.Sum(d => d.LuotXem))
                .Take(truyenParameters.PageSize).Include(m => m.Chuongs)
 
                 ,
@@ -283,23 +219,6 @@ namespace Repository
                 .Where(ow => !ow.TinhTrang)
                 .OrderBy(on => on.TruyenID)
                 .ToListAsync();
-        }
-
-        private string ConvertToUnSign(string input)
-        {
-            input = input.Trim();
-            for (int i = 0x20; i < 0x30; i++)
-            {
-                input = input.Replace(((char)i).ToString(), " ");
-            }
-            Regex regex = new Regex(@"\p{IsCombiningDiacriticalMarks}+");
-            string str = input.Normalize(NormalizationForm.FormD);
-            string str2 = regex.Replace(str, string.Empty).Replace('đ', 'd').Replace('Đ', 'D');
-            while (str2.IndexOf("?") >= 0)
-            {
-                str2 = str2.Remove(str2.IndexOf("?"), 1);
-            }
-            return str2;
         }
     }
 }

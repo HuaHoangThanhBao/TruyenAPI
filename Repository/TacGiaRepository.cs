@@ -53,16 +53,6 @@ namespace Repository
                 /*End*/
 
                 /*Bắt lỗi [Tên tác giả]*/
-                if (tacGia.TenTacGia == "" || tacGia.TenTacGia == null)
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Tên tác giả không được để trống",
-                        Value = tacGia.TenTacGia
-                    };
-                }
-
                 if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia)).Any())
                 {
                     return new ResponseDetails()
@@ -96,16 +86,6 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Tên tác giả]*/
-            if (tacGia.TenTacGia == "" || tacGia.TenTacGia == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Tên tác giả không được để trống",
-                    Value = tacGia.TenTacGia
-                };
-            }
-
             if (FindByCondition(t => t.TenTacGia.Equals(tacGia.TenTacGia) && t.TacGiaID != tacGia.TacGiaID).Any())
             {
                 return new ResponseDetails()

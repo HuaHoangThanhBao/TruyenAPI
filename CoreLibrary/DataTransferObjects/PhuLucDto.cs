@@ -10,5 +10,7 @@ namespace CoreLibrary.DataTransferObjects
 
         public TheLoai TheLoai { get; set; }
         public int TheLoaiID { get; set; }
+
+        public bool TinhTrang { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace CoreLibrary.DataTransferObjects
 {
@@ -8,7 +9,7 @@ namespace CoreLibrary.DataTransferObjects
         [StringLength(50, ErrorMessage = "Ten the loai can't be longer than 50 characters")]
         public string TenTheLoai { get; set; }
 
-        [Required(ErrorMessage = "Tinh trang is required")]
+        [DefaultValue(false)]
         public bool TinhTrang { get; set; }
     }
 
@@ -18,7 +19,7 @@ namespace CoreLibrary.DataTransferObjects
         [StringLength(50, ErrorMessage = "Ten the loai can't be longer than 50 characters")]
         public string TenTheLoai { get; set; }
 
-        [Required(ErrorMessage = "Tinh trang is required")]
+        [DefaultValue(false)]
         public bool TinhTrang { get; set; }
     }
 }

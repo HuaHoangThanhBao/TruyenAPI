@@ -111,7 +111,8 @@ namespace Repository
         //Xóa logic
         public ResponseDetails DeletePhuLuc(PhuLuc phuLuc)
         {
-            Delete(phuLuc);
+            phuLuc.TinhTrang = true;
+            Update(phuLuc);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa phụ lục thành công" };
         }
 
@@ -119,20 +120,21 @@ namespace Repository
         public async Task<IEnumerable<PhuLuc>> GetAllPhuLucsAsync()
         {
             return await FindAll()
+                .Where(m => !m.TinhTrang)
                 .OrderBy(ow => ow.TruyenID)
                 .ToListAsync();
         }
 
         public async Task<PhuLuc> GetPhuLucByIdAsync(int phuLucId)
         {
-            return await FindByCondition(phuLuc => phuLuc.PhuLucID.Equals(phuLucId))
+            return await FindByCondition(phuLuc => phuLuc.PhuLucID.Equals(phuLucId) && !phuLuc.TinhTrang)
                     .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<PhuLuc>> GetPhuLucByTruyenIdAsync(int truyenId)
         {
             return await FindAll()
-                .Where(m => m.TruyenID == truyenId)
+                .Where(m => m.TruyenID == truyenId && !m.TinhTrang)
                 .Include(ac => ac.TheLoai)
                 .ToListAsync();
         }

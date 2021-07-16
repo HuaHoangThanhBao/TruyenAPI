@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace CoreLibrary.Models
 {
@@ -28,7 +27,9 @@ namespace CoreLibrary.Models
         [Required(ErrorMessage = "Noi dung is required")]
         public string NoiDung { get; set; }
 
-        [Required(ErrorMessage = "Ngay binh luan is required")]
-        public DateTime NgayBL { get; set; }
+        public string NgayBL { get; set; }
+
+        [DefaultValue(false)]
+        public bool TinhTrang { get; set; }
     }
 }

@@ -9,6 +9,8 @@ using API.Extensions;
 using Microsoft.AspNetCore.Cors;
 using CoreLibrary.Helpers;
 using Newtonsoft.Json;
+using LoggerService;
+using System;
 
 namespace API.Controllers
 {
@@ -18,11 +20,13 @@ namespace API.Controllers
     public class TheoDoiController : ControllerBase
     {
         private IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public TheoDoiController(IRepositoryWrapper repository, IMapper mapper)
+        public TheoDoiController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -107,8 +111,9 @@ namespace API.Controllers
 
                 return Ok(createdTheoDoi);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("User " + theoDoi.UserID + " gặp lỗi khi tạo mới theo dõi truyện có ID " + theoDoi.TruyenID + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateTheoDoi" });
             }
         }
@@ -151,8 +156,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("User " + theoDoi.UserID + " gặp lỗi khi cập nhật theo dõi truyện có ID " + theoDoi.TruyenID + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateTheoDoi" });
             }
         }
@@ -180,8 +186,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi xóa theo dõi có ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTheoDoi" });
             }
         }

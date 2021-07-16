@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Extensions;
 using AutoMapper;
@@ -6,6 +7,7 @@ using CoreLibrary.DataTransferObjects;
 using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
+using LoggerService;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,11 +19,13 @@ namespace API.Controllers
     public class ChuongController : ControllerBase
     {
         private IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public ChuongController(IRepositoryWrapper repository, IMapper mapper)
+        public ChuongController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -134,8 +138,9 @@ namespace API.Controllers
 
                 return Ok(createdChuong);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi tạo mới danh sách chương: " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateChuong" });
             }
         }
@@ -178,8 +183,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi cập nhật chương với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateChuong" });
             }
         }
@@ -207,8 +213,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi xóa chương với ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteChuong" });
             }
         }

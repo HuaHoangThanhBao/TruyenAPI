@@ -22,8 +22,6 @@ namespace CoreLibrary.DataTransferObjects
 
         public string MoTa { get; set; }
 
-        public int LuotXem { get; set; }
-
         public bool TinhTrang { get; set; }
 
         public string HinhAnh { get; set; }

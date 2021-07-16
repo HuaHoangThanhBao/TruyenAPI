@@ -32,6 +32,8 @@ namespace CoreLibrary.Models
         [Required(ErrorMessage = "Mo ta is required")]
         public string MoTa { get; set; }
 
+        //0: chờ duyệt, 1: đã duyệt
+        [DefaultValue(0)]
         public int TrangThai { get; set; }
         
         [DefaultValue(false)]

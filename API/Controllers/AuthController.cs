@@ -13,6 +13,7 @@ using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
 using EmailService;
+using LoggerService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -36,14 +37,16 @@ namespace API.Controllers
         private IRepositoryWrapper _repository;
         private readonly JwtHandler _jwtHandler;
         private readonly IEmailSender _emailSender;
+        private readonly ILoggerManager _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthController(UserManager<ApplicationUser> userManager, IRepositoryWrapper repository, IMapper mapper, JwtHandler jwtHandler, IEmailSender emailSender,
+        public AuthController(UserManager<ApplicationUser> userManager, IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger, JwtHandler jwtHandler, IEmailSender emailSender,
             RoleManager<IdentityRole> roleManager)
         {
             _repository = repository;
             _userManager = userManager;
             _mapper = mapper;
+            _logger = logger;
             _emailSender = emailSender;
             _jwtHandler = jwtHandler;
             _roleManager = roleManager;
@@ -186,6 +189,8 @@ namespace API.Controllers
 
                 if (await _userManager.IsLockedOutAsync(user))
                 {
+                    _logger.LogWarn("User với email " + user.Email + " đã quá hạn đăng nhập 3 lần, đã tạm lock tài khoản");
+
                     var content = $"Your account is locked out. To reset the password click this link: {userForAuthentication.clientURI}";
                     var message = new Message(new string[] { userForAuthentication.Email }, "Locked out account information", content, null);
                     await _emailSender.SendEmailAsync(message);

@@ -54,16 +54,6 @@ namespace Repository
                 /*End*/
 
                 /*Bắt lỗi [Tên chương]*/
-                if (chuong.TenChuong == "" || chuong.TenChuong == null)
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Tên chương không được để trống",
-                        Value = chuong.TenChuong
-                    };
-                }
-
                 if (FindByCondition(t => t.TenChuong.Equals(chuong.TenChuong) && t.TruyenID.Equals(chuong.TruyenID)).Any())
                 {
                     return new ResponseDetails()
@@ -75,21 +65,7 @@ namespace Repository
                 }
                 /*End*/
 
-                /*Bắt lỗi [Thời gian cập nhật]*/
-                if (chuong.ThoiGianCapNhat == null)
-                {
-                    return new ResponseDetails()
-                    {
-                        StatusCode = ResponseCode.Error,
-                        Message = "Thời gian cập nhật không được để trống",
-                        Value = chuong.TenChuong
-                    };
-                }
-                /*End*/
-
-                //Mặc định khi thêm chương thì chương đó sẽ ở trạng thái chờ duyệt (=-1)
-                chuong.TrangThai = -1;
-                chuong.ThoiGianCapNhat = DateTime.Now;
+                chuong.ThoiGianCapNhat = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
                 Random r = new Random();
                 chuong.LuotXem = r.Next(5000, 15000);
 
@@ -117,16 +93,6 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Tên chương]*/
-            if (chuong.TenChuong == "" || chuong.TenChuong == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Tên chương không được để trống",
-                    Value = chuong.TenChuong
-                };
-            }
-
             if (FindByCondition(t => t.TenChuong.Equals(chuong.TenChuong) 
                                 && t.TruyenID.Equals(chuong.TruyenID)
                                 && t.ChuongID != chuong.ChuongID).Any())
@@ -139,17 +105,9 @@ namespace Repository
             }
             /*End*/
 
-            /*Bắt lỗi [Thời gian cập nhật]*/
-            if (chuong.ThoiGianCapNhat == null)
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Thời gian cập nhật không được để trống",
-                    Value = chuong.TenChuong
-                };
-            }
-            /*End*/
+            var chuongOld = FindByCondition(m => m.ChuongID.Equals(chuong.ChuongID)).FirstOrDefault();
+            chuong.ThoiGianCapNhat = (chuong.ThoiGianCapNhat == "" || chuong.ThoiGianCapNhat == null) ? chuongOld.ThoiGianCapNhat: chuong.ThoiGianCapNhat;
+            chuong.LuotXem = chuong.LuotXem == 0 ? chuongOld.LuotXem: chuong.LuotXem;
 
             //Tạo bản ghi mới nhưng chưa update vào CSDL
             Update(chuong);
@@ -159,15 +117,9 @@ namespace Repository
         //Xóa logic
         public ResponseDetails DeleteChuong(Chuong chuong)
         {
-            //Khi xóa chương thì xóa luôn những [Nội dung chương] kèm theo
-            var noiDungChuongRepo = FindByCondition(t => t.ChuongID.Equals(chuong.ChuongID));
-            foreach (var noiDung in noiDungChuongRepo)
-            {
-                Delete(noiDung);
-            }
-
-            //Tạo bản ghi mới nhưng chưa update vào CSDL
-            Delete(chuong);
+            chuong.TinhTrang = true;
+            Update(chuong);
+            
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa chương thành công" };
         }
 
@@ -175,19 +127,20 @@ namespace Repository
         public async Task<IEnumerable<Chuong>> GetAllChuongsAsync()
         {
             return await FindAll()
+                .Where(m => !m.TinhTrang)
                 .OrderBy(ow => ow.TenChuong)
                 .ToListAsync();
         }
 
         public async Task<Chuong> GetChuongByIdAsync(int chuongId)
         {
-            return await FindByCondition(Chuong => Chuong.ChuongID.Equals(chuongId))
+            return await FindByCondition(chuong => chuong.ChuongID.Equals(chuongId) && !chuong.TinhTrang)
                     .FirstOrDefaultAsync();
         }
 
         public async Task<Chuong> GetChuongByDetailAsync(int chuongId)
         {
-            return await FindByCondition(chuong => chuong.ChuongID.Equals(chuongId))
+            return await FindByCondition(chuong => chuong.ChuongID.Equals(chuongId) && !chuong.TinhTrang)
                 .Include(ac => ac.Truyen)
                 .Include(ac => ac.NoiDungChuongs)
                 .Include(a => a.BinhLuans)

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace CoreLibrary.DataTransferObjects
 {
@@ -7,7 +8,7 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "Ten tac gia is required")]
         public string TenTacGia { get; set; }
 
-        [Required(ErrorMessage = "Tinh trang is required")]
+        [DefaultValue(false)]
         public bool TinhTrang { get; set; }
     }
 
@@ -16,7 +17,7 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "Ten tac gia is required")]
         public string TenTacGia { get; set; }
 
-        [Required(ErrorMessage = "Tinh trang is required")]
+        [DefaultValue(false)]
         public bool TinhTrang { get; set; }
     }
 }

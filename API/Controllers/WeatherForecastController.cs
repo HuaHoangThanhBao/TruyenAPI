@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataAccessLayer;
+using LoggerService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,20 +13,13 @@ namespace API.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private IRepositoryWrapper _repoWrapper;
-
-        public WeatherForecastController(IRepositoryWrapper repoWrapper)
+        public WeatherForecastController()
         {
-            _repoWrapper = repoWrapper;
         }
 
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            //var domesticAccounts = _repoWrapper.Account.FindByCondition(x => x.AccountType.Equals("Domestic"));
-            //var truyens = await _repoWrapper.Truyen.GetAllTruyensAsync();
-            //var tacGias = await _repoWrapper.TacGia.GetAllTacGiasAsync();
-            //var theLoais = await _repoWrapper.TheLoai.GetAllTheLoaisAsync();
             return new string[] {"Hello"};
         }
     }

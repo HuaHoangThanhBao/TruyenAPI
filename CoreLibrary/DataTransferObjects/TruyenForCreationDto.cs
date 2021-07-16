@@ -15,7 +15,7 @@ namespace CoreLibrary.DataTransferObjects
         public string MoTa { get; set; }
 
         [DefaultValue(0)]
-        public int LuotXem { get; set; }
+        public int TrangThai { get; set; }
 
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }
@@ -36,7 +36,7 @@ namespace CoreLibrary.DataTransferObjects
         public string MoTa { get; set; }
 
         [DefaultValue(0)]
-        public int LuotXem { get; set; }
+        public int TrangThai { get; set; }
 
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }

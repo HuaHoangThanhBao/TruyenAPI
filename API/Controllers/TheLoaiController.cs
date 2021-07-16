@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using API.Extensions;
 using Microsoft.AspNetCore.Cors;
 using CoreLibrary.Helpers;
+using LoggerService;
+using System;
 
 namespace API.Controllers
 {
@@ -18,11 +20,13 @@ namespace API.Controllers
     public class TheLoaiController : ControllerBase
     {
         private IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public TheLoaiController(IRepositoryWrapper repository, IMapper mapper)
+        public TheLoaiController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -135,8 +139,9 @@ namespace API.Controllers
 
                 return Ok(createdTheLoai);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi tạo mới danh sách thể loại: " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm CreateTheLoai" });
             }
         }
@@ -179,8 +184,9 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi cập nhật thể loại có ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdateTheLoai" });
             }
         }
@@ -215,10 +221,11 @@ namespace API.Controllers
                 if (response.StatusCode == ResponseCode.Success)
                     _repository.Save();
 
-                return NoContent();
+                return Ok(response);
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError("Gặp lỗi khi cập nhật thể loại có ID " + id + ": " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = 500, Message = "Lỗi execption ở hàm DeleteTheLoai" });
             }
         }

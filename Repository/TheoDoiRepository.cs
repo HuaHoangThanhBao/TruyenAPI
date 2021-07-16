@@ -43,6 +43,15 @@ namespace Repository
                     Value = theoDoi.TruyenID.ToString()
                 };
             }
+            if (FindByCondition(t => t.UserID == theoDoi.UserID && t.TruyenID == theoDoi.TruyenID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "User đã theo dõi truyện này",
+                    Value = theoDoi.TruyenID.ToString()
+                };
+            }
 
             Create(theoDoi);
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
@@ -72,6 +81,15 @@ namespace Repository
                     Value = theoDoi.TruyenID.ToString()
                 };
             }
+            if (FindByCondition(t => t.UserID == theoDoi.UserID && t.TruyenID == theoDoi.TruyenID & t.TheoDoiID != theoDoi.TheoDoiID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "User đã theo dõi truyện này",
+                    Value = theoDoi.TruyenID.ToString()
+                };
+            }
 
             Update(theoDoi);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa TheoDoi thành công" };
@@ -92,9 +110,9 @@ namespace Repository
                 .ToListAsync();
         }
 
-        public async Task<TheoDoi> GetTheoDoiByIdAsync(int TheoDoiId)
+        public async Task<TheoDoi> GetTheoDoiByIdAsync(int theoDoiId)
         {
-            return await FindByCondition(TheoDoi => TheoDoi.TheoDoiID.Equals(TheoDoiId))
+            return await FindByCondition(theoDoi => theoDoi.TheoDoiID.Equals(theoDoiId))
                     .FirstOrDefaultAsync();
         }
 
@@ -106,7 +124,7 @@ namespace Repository
                  on m.TruyenID equals n.TruyenID
                  join c in _context.Users
                  on n.UserID equals c.UserID
-                 where c.Username == theoDoiParameters.Username && !m.TinhTrang
+                 where c.Username == theoDoiParameters.Username && !m.TinhTrang && !c.TinhTrang
                  select m).Include(m => m.Chuongs)
                           .OrderBy(on => on.TruyenID),
                 theoDoiParameters.PageNumber,

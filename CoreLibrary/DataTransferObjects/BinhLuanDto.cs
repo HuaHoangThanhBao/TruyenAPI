@@ -18,5 +18,7 @@ namespace CoreLibrary.DataTransferObjects
         public string NoiDung { get; set; }
 
         public DateTime NgayBL { get; set; }
+
+        public bool TinhTrang { get; set; }
     }
 }

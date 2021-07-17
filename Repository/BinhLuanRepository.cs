@@ -125,11 +125,11 @@ namespace Repository
         public async Task<IEnumerable<BinhLuan>> GetAllBinhLuansAsync()
         {
             return await FindAll()
-                .Where(m => !m.TinhTrang)
-                .Include(ac => ac.Chuong)
-                    .ThenInclude(ac => ac.Truyen)
-                .Include(m => m.User)
-                .OrderBy(ow => ow.BinhLuanID)
+                .Where(binhLuan => !binhLuan.TinhTrang)
+                .Include(binhLuan => binhLuan.Chuong)
+                    .ThenInclude(b => b.Truyen)
+                .Include(binhLuan => binhLuan.User)
+                .OrderBy(binhLuan => binhLuan.BinhLuanID)
                 .ToListAsync();
         }
 
@@ -142,8 +142,8 @@ namespace Repository
         public async Task<BinhLuan> GetBinhLuanByDetailAsync(int binhLuanId)
         {
             return await FindByCondition(binhLuan => binhLuan.BinhLuanID.Equals(binhLuanId) && !binhLuan.TinhTrang)
-                .Include(ac => ac.Chuong)
-                .Include(ac => ac.User)
+                .Include(binhLuan => binhLuan.Chuong)
+                .Include(binhLuan => binhLuan.User)
                 .FirstOrDefaultAsync();
         }
 

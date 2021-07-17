@@ -60,7 +60,7 @@ namespace API.Controllers
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 
-                var noiDungChuong = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(id);
+                var noiDungChuong = await _repository.NoiDungChuong.GetNoiDungChuongByIdAsync(id);
                 if (noiDungChuong == null)
                 {
                     return NotFound();
@@ -137,7 +137,7 @@ namespace API.Controllers
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
-                var noiDungChuongEntity = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(id);
+                var noiDungChuongEntity = await _repository.NoiDungChuong.GetNoiDungChuongByIdAsync(id);
                 if (noiDungChuongEntity == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Nội dung chương không tồn tại" });
@@ -172,7 +172,7 @@ namespace API.Controllers
                 if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 
-                var noiDungChuong = await _repository.NoiDungChuong.GetNoiDungChuongByChuongIdAsync(id);
+                var noiDungChuong = await _repository.NoiDungChuong.GetNoiDungChuongByIdAsync(id);
                 if (noiDungChuong == null)
                 {
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID Nội dung chương không tồn tại" });

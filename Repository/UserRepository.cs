@@ -150,8 +150,8 @@ namespace Repository
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await FindAll()
-                .Where(ow => !ow.TinhTrang)
-                .OrderBy(ow => ow.Username)
+                .Where(user => !user.TinhTrang)
+                .OrderBy(user => user.Username)
                 .ToListAsync();
         }
 
@@ -165,15 +165,15 @@ namespace Repository
         //Dùng cho lấy user để get/update/delete
         public async Task<User> GetUserByIDAsync(string userID)
         {
-            return await FindByCondition(user => user.UserID.ToString() == userID)
+            return await FindByCondition(user => user.UserID.ToString() == userID && !user.TinhTrang)
                     .FirstOrDefaultAsync();
         }
 
         //Dùng cho khi đã login rồi mà muốn lấy thông tin của user
         public async Task<User> GetUserByUserIDDetailAsync(string guid)
         {
-            return await FindByCondition(user => user.UserID.Equals(guid))
-                .Include(a => a.TheoDois)
+            return await FindByCondition(user => user.UserID.Equals(guid) && !user.TinhTrang)
+                .Include(user => user.TheoDois)
                     .ThenInclude(b => b.Truyen)
                 .FirstOrDefaultAsync();
         }

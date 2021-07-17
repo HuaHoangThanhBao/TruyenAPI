@@ -129,13 +129,13 @@ namespace Repository
 
         public async Task<TheLoai> GetTheLoaiByIdAsync(int theLoaiId)
         {
-            return await FindByCondition(theLoai => theLoai.TheLoaiID.Equals(theLoaiId))
+            return await FindByCondition(theLoai => theLoai.TheLoaiID.Equals(theLoaiId) && !theLoai.TinhTrang)
                     .FirstOrDefaultAsync();
         }
 
         public async Task<TheLoai> GetTheLoaiByDetailAsync(int theLoaiId)
         {
-            return await FindByCondition(theLoai => theLoai.TheLoaiID.Equals(theLoaiId))
+            return await FindByCondition(theLoai => theLoai.TheLoaiID.Equals(theLoaiId) && !theLoai.TinhTrang)
                 .Include(ac => ac.PhuLucs)
                 .FirstOrDefaultAsync();
         }

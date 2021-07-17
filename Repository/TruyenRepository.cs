@@ -5,11 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Repository.Extensions;
 using CoreLibrary.Helpers;
-using System;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Repository
 {
@@ -121,8 +117,8 @@ namespace Repository
         public async Task<IEnumerable<Truyen>> GetAllTruyensAsync()
         {
             return await FindAll()
-                .Where(ow => !ow.TinhTrang)
-                .OrderBy(ow => ow.TruyenID)
+                .Where(truyen => !truyen.TinhTrang)
+                .OrderBy(truyen => truyen.TruyenID)
                 .ToListAsync();
         }
 
@@ -135,21 +131,15 @@ namespace Repository
         public async Task<Truyen> GetTruyenByDetailAsync(int truyenId)
         {
             return await FindByCondition(truyen => truyen.TruyenID.Equals(truyenId) && !truyen.TinhTrang)
-                .Include(a => a.TacGia)
-                .Include(a => a.Chuongs)
-                //    .ThenInclude(a => a.BinhLuans)
-                //    .ThenInclude(b => b.User)
-                //.Include(a => a.PhuLucs)
-                //    .ThenInclude(b => b.TheLoai)
-                //.Include(a => a.TheoDois)
-                //    .ThenInclude(b => b.User)
+                .Include(truyen => truyen.TacGia)
+                .Include(truyen => truyen.Chuongs)
                 .FirstOrDefaultAsync();
         }
 
         public async Task<PagedList<Truyen>> GetTruyenForPagination(TruyenParameters truyenParameters)
         {
             return await PagedList<Truyen>.ToPagedList(FindAll().Where(m => !m.TinhTrang).Include(m => m.Chuongs)
-                .OrderBy(on => on.TenTruyen),
+                .OrderBy(truyen => truyen.TenTruyen),
                 truyenParameters.PageNumber,
                 truyenParameters.PageSize);
         }
@@ -216,7 +206,7 @@ namespace Repository
         {
             return await
                 FindAll()
-                .Where(ow => !ow.TinhTrang)
+                .Where(truyen => !truyen.TinhTrang)
                 .OrderBy(on => on.TruyenID)
                 .ToListAsync();
         }

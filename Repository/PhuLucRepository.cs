@@ -120,8 +120,8 @@ namespace Repository
         public async Task<IEnumerable<PhuLuc>> GetAllPhuLucsAsync()
         {
             return await FindAll()
-                .Where(m => !m.TinhTrang)
-                .OrderBy(ow => ow.TruyenID)
+                .Where(phuLuc => !phuLuc.TinhTrang)
+                .OrderBy(phuLuc => phuLuc.TruyenID)
                 .ToListAsync();
         }
 
@@ -134,8 +134,8 @@ namespace Repository
         public async Task<IEnumerable<PhuLuc>> GetPhuLucByTruyenIdAsync(int truyenId)
         {
             return await FindAll()
-                .Where(m => m.TruyenID == truyenId && !m.TinhTrang)
-                .Include(ac => ac.TheLoai)
+                .Where(phuLuc => phuLuc.TruyenID == truyenId && !phuLuc.TinhTrang)
+                .Include(phuLuc => phuLuc.TheLoai)
                 .ToListAsync();
         }
     }

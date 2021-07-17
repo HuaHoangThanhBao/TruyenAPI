@@ -122,21 +122,21 @@ namespace Repository
         public async Task<IEnumerable<TacGia>> GetAllTacGiasAsync()
         {
             return await FindAll()
-                .Where(ow => !ow.TinhTrang)
-                .OrderBy(ow => ow.TenTacGia)
+                .Where(tacGia => !tacGia.TinhTrang)
+                .OrderBy(tacGia => tacGia.TenTacGia)
                 .ToListAsync();
         }
 
         public async Task<TacGia> GetTacGiaByIdAsync(int tacGiaId)
         {
-            return await FindByCondition(tacGia => tacGia.TacGiaID.Equals(tacGiaId))
+            return await FindByCondition(tacGia => tacGia.TacGiaID.Equals(tacGiaId) && !tacGia.TinhTrang)
                     .FirstOrDefaultAsync();
         }
 
         public async Task<TacGia> GetTacGiaByDetailAsync(int tacGiaId)
         {
-            return await FindByCondition(tacGia => tacGia.TacGiaID.Equals(tacGiaId))
-                .Include(ac => ac.Truyens)
+            return await FindByCondition(tacGia => tacGia.TacGiaID.Equals(tacGiaId) && !tacGia.TinhTrang)
+                .Include(tacGia => tacGia.Truyens)
                 .FirstOrDefaultAsync();
         }
     }

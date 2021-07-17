@@ -119,15 +119,15 @@ namespace Repository
         public async Task<IEnumerable<NoiDungChuong>> GetAllNoiDungChuongsAsync()
         {
             return await FindAll()
-                .Where(m => !m.TinhTrang)
-                .OrderBy(ow => ow.ChuongID)
+                .Where(noiDungChuong => !noiDungChuong.TinhTrang)
+                .OrderBy(noiDungChuong => noiDungChuong.ChuongID)
                 .ToListAsync();
         }
 
         //Lấy nội dung chương = [id]
-        public async Task<NoiDungChuong> GetNoiDungChuongByChuongIdAsync(int noiDungId)
+        public async Task<NoiDungChuong> GetNoiDungChuongByIdAsync(int noiDungId)
         {
-            return await FindByCondition(chuong => chuong.NoiDungChuongID.Equals(noiDungId) && !chuong.TinhTrang)
+            return await FindByCondition(noiDungChuong => noiDungChuong.NoiDungChuongID.Equals(noiDungId) && !noiDungChuong.TinhTrang)
                 .FirstOrDefaultAsync();
         }
     }

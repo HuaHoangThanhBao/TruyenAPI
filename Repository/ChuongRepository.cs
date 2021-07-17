@@ -127,8 +127,8 @@ namespace Repository
         public async Task<IEnumerable<Chuong>> GetAllChuongsAsync()
         {
             return await FindAll()
-                .Where(m => !m.TinhTrang)
-                .OrderBy(ow => ow.TenChuong)
+                .Where(chuong => !chuong.TinhTrang)
+                .OrderBy(chuong => chuong.TenChuong)
                 .ToListAsync();
         }
 
@@ -141,9 +141,9 @@ namespace Repository
         public async Task<Chuong> GetChuongByDetailAsync(int chuongId)
         {
             return await FindByCondition(chuong => chuong.ChuongID.Equals(chuongId) && !chuong.TinhTrang)
-                .Include(ac => ac.Truyen)
-                .Include(ac => ac.NoiDungChuongs)
-                .Include(a => a.BinhLuans)
+                .Include(chuong => chuong.Truyen)
+                .Include(chuong => chuong.NoiDungChuongs)
+                .Include(chuong => chuong.BinhLuans)
                     .ThenInclude(b => b.User)
                 .FirstOrDefaultAsync();
         }

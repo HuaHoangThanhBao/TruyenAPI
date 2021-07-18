@@ -5,10 +5,10 @@ namespace CoreLibrary.DataTransferObjects
 {
     public class PhuLucForCreationDto
     {
-        [Required(ErrorMessage = "TruyenID is required")]
+        [Required(ErrorMessage = "TruyenID không được để trống")]
         public int TruyenID { get; set; }
 
-        [Required(ErrorMessage = "TheLoaiID is required")]
+        [Required(ErrorMessage = "TheLoaiID không được để trống")]
         public int TheLoaiID { get; set; }
 
         [DefaultValue(false)]
@@ -17,10 +17,10 @@ namespace CoreLibrary.DataTransferObjects
 
     public class PhuLucForUpdateDto
     {
-        [Required(ErrorMessage = "TruyenID is required")]
+        [Required(ErrorMessage = "TruyenID không được để trống")]
         public int TruyenID { get; set; }
 
-        [Required(ErrorMessage = "TheLoaiID is required")]
+        [Required(ErrorMessage = "TheLoaiID không được để trống")]
         public int TheLoaiID { get; set; }
 
         [DefaultValue(false)]

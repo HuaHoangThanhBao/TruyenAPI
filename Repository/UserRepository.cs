@@ -170,9 +170,10 @@ namespace Repository
         }
 
         //Dùng cho khi đã login rồi mà muốn lấy thông tin của user
-        public async Task<User> GetUserByUserIDDetailAsync(string guid)
+        public async Task<User> GetUserByUserIDDetailAsync(string userID)
         {
-            return await FindByCondition(user => user.UserID.Equals(guid) && !user.TinhTrang)
+            return await FindByCondition(user => user.UserID.ToString() == userID && !user.TinhTrang)
+                .Include(user => user.BinhLuans)
                 .Include(user => user.TheoDois)
                     .ThenInclude(b => b.Truyen)
                 .FirstOrDefaultAsync();

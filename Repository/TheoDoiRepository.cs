@@ -123,7 +123,7 @@ namespace Repository
                  on m.TruyenID equals n.TruyenID
                  join c in _context.Users
                  on n.UserID equals c.UserID
-                 where c.Username == theoDoiParameters.Username && !m.TinhTrang && !c.TinhTrang
+                 where c.UserID.ToString() == theoDoiParameters.UserID && !m.TinhTrang && !c.TinhTrang
                  select m).Include(m => m.Chuongs)
                           .OrderBy(on => on.TruyenID),
                 theoDoiParameters.PageNumber,

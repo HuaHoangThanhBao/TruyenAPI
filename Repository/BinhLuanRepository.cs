@@ -25,15 +25,15 @@ namespace Repository
         public ResponseDetails CreateBinhLuan(BinhLuan binhLuan)
         {
             /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(binhLuan.NoiDung))
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Không được chứa ký tự đặc biệt",
-                    Value = binhLuan.NoiDung.ToString()
-                };
-            }
+            //if (ValidationExtensions.isSpecialChar(binhLuan.NoiDung))
+            //{
+            //    return new ResponseDetails()
+            //    {
+            //        StatusCode = ResponseCode.Error,
+            //        Message = "Không được chứa ký tự đặc biệt",
+            //        Value = binhLuan.NoiDung.ToString()
+            //    };
+            //}
             /*End*/
 
             /*Bắt lỗi [ID]*/
@@ -71,15 +71,15 @@ namespace Repository
         public ResponseDetails UpdateBinhLuan(BinhLuan binhLuan)
         {
             /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(binhLuan.NoiDung))
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Không được chứa ký tự đặc biệt",
-                    Value = binhLuan.NoiDung.ToString()
-                };
-            }
+            //if (ValidationExtensions.isSpecialChar(binhLuan.NoiDung))
+            //{
+            //    return new ResponseDetails()
+            //    {
+            //        StatusCode = ResponseCode.Error,
+            //        Message = "Không được chứa ký tự đặc biệt",
+            //        Value = binhLuan.NoiDung.ToString()
+            //    };
+            //}
             /*End*/
 
             /*Bắt lỗi [ID]*/

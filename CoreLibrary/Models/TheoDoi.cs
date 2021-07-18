@@ -14,13 +14,13 @@ namespace CoreLibrary.Models
         public int TheoDoiID { get; set; }
 
         //Tập khóa ngoại
-        [Required(ErrorMessage = "ID Truyen is required")]
+        [Required(ErrorMessage = "TruyenID không được để trống")]
         [ForeignKey(nameof(Truyen))]
         public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 
         //Tập khóa ngoại
-        [Required(ErrorMessage = "ID User is required")]
+        [Required(ErrorMessage = "UserID không được để trống")]
         [ForeignKey(nameof(User))]
         public Guid UserID { get; set; }
         public User User { get; set; }

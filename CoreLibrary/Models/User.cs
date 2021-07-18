@@ -16,21 +16,22 @@ namespace CoreLibrary.Models
 
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "First name is required")]
-        [StringLength(50, ErrorMessage = "First name can't be longer than 50 characters")]
+        [Required(ErrorMessage = "Tên không được để trống")]
+        [StringLength(50, ErrorMessage = "Tên không được vượt quá 50 ký tự")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Last name is required")]
-        [StringLength(50, ErrorMessage = "Last name can't be longer than 50 characters")]
+        [Required(ErrorMessage = "Họ không được để trống")]
+        [StringLength(50, ErrorMessage = "Họ không được vượt quá 50 ký tự")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
+        [Required(ErrorMessage = "Email không được để trống")]
+        [StringLength(30, ErrorMessage = "Email không được vượt quá 30 ký tự")]
         public string Email { get; set; }
 
         [DefaultValue(0)]
         public int Quyen { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+        [Required(ErrorMessage = "Mật khẩu không được để trống")]
         public string Password { get; set; }
 
         [DefaultValue(false)]

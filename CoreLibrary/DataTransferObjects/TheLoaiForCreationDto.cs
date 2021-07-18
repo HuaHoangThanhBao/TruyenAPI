@@ -5,8 +5,8 @@ namespace CoreLibrary.DataTransferObjects
 {
     public class TheLoaiForCreationDto
     {
-        [Required(ErrorMessage = "Ten the loai is required")]
-        [StringLength(50, ErrorMessage = "Ten the loai can't be longer than 50 characters")]
+        [Required(ErrorMessage = "Tên thể loại không được để trống")]
+        [StringLength(100, ErrorMessage = "Tên thể loại không được vượt quá 100 ký tự")]
         public string TenTheLoai { get; set; }
 
         [DefaultValue(false)]
@@ -15,8 +15,8 @@ namespace CoreLibrary.DataTransferObjects
 
     public class TheLoaiForUpdateDto
     {
-        [Required(ErrorMessage = "Ten the loai is required")]
-        [StringLength(50, ErrorMessage = "Ten the loai can't be longer than 50 characters")]
+        [Required(ErrorMessage = "Tên thể loại không được để trống")]
+        [StringLength(100, ErrorMessage = "Tên thể loại không được vượt quá 100 ký tự")]
         public string TenTheLoai { get; set; }
 
         [DefaultValue(false)]

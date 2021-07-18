@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Http;
 using LoggerService;
+using CoreLibrary.Helpers;
 
 namespace API
 {
@@ -50,14 +51,14 @@ namespace API
 
             services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {
-                opt.Password.RequiredLength = 7;
+                opt.Password.RequiredLength = Data.PasswordRequiredLength;
                 opt.Password.RequireDigit = false;
 
                 opt.User.RequireUniqueEmail = true;
 
                 opt.Lockout.AllowedForNewUsers = true;
-                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
-                opt.Lockout.MaxFailedAccessAttempts = 3;
+                opt.Lockout.DefaultLockoutTimeSpan = Data.LockOutAccountTime;
+                opt.Lockout.MaxFailedAccessAttempts = Data.MaxFailedAccessAttempts;
             })
              .AddEntityFrameworkStores<RepositoryContext>()
              .AddDefaultTokenProviders();
@@ -101,7 +102,7 @@ namespace API
             })
             .AddCookie(options =>
             {
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.ExpireTimeSpan = Data.CookieExpireTime;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SameSite = SameSiteMode.None;

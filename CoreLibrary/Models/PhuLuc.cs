@@ -11,13 +11,13 @@ namespace CoreLibrary.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int PhuLucID { get; set; }
 
-        [Required(ErrorMessage = "TruyenID is required")]
+        [Required(ErrorMessage = "TruyenID không được để trống")]
         //Tập khóa ngoại
         [ForeignKey(nameof(Truyen))]
         public int TruyenID { get; set; }
         public Truyen Truyen { get; set; }
 
-        [Required(ErrorMessage = "TheLoaiID is required")]
+        [Required(ErrorMessage = "TheLoaiID không được để trống")]
         //Tập khóa ngoại
         [ForeignKey(nameof(TheLoai))]
         public int TheLoaiID { get; set; }

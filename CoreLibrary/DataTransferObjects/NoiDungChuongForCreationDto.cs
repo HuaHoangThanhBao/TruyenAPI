@@ -5,10 +5,10 @@ namespace CoreLibrary.DataTransferObjects
 {
     public class NoiDungChuongForCreationDto
     {
-        [Required(ErrorMessage = "ChuongID is required")]
+        [Required(ErrorMessage = "ChuongID không được để trống")]
         public int ChuongID { get; set; }
 
-        [Required(ErrorMessage = "Hinh anh is required")]
+        [Required(ErrorMessage = "Đường dẫn hình ảnh không được để trống")]
         public string HinhAnh { get; set; }
 
         [DefaultValue(false)]
@@ -17,10 +17,10 @@ namespace CoreLibrary.DataTransferObjects
 
     public class NoiDungChuongForUpdateDto
     {
-        [Required(ErrorMessage = "ChuongID is required")]
+        [Required(ErrorMessage = "ChuongID không được để trống")]
         public int ChuongID { get; set; }
 
-        [Required(ErrorMessage = "Hinh anh is required")]
+        [Required(ErrorMessage = "Đường dẫn hình ảnh không được để trống")]
         public string HinhAnh { get; set; }
 
         [DefaultValue(false)]

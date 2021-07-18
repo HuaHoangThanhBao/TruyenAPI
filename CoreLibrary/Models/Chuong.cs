@@ -15,7 +15,7 @@ namespace CoreLibrary.Models
         public int ChuongID { get; set; }
 
 
-        [Required(ErrorMessage = "TruyenID is required")]
+        [Required(ErrorMessage = "TruyenID không được để trống")]
         //Tập khóa ngoại
         [ForeignKey(nameof(Truyen))]
         public int TruyenID { get; set; }
@@ -25,7 +25,8 @@ namespace CoreLibrary.Models
         public ICollection<NoiDungChuong> NoiDungChuongs { get; set; }
 
 
-        [Required(ErrorMessage = "Tên chương is required")]
+        [Required(ErrorMessage = "Tên chương không được để trống")]
+        [StringLength(50, ErrorMessage = "Tên chương không được vượt quá 50 ký tự")]
         public string TenChuong { get; set; }
         
         public string ThoiGianCapNhat { get; set; }

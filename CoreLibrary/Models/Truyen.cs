@@ -16,6 +16,7 @@ namespace CoreLibrary.Models
         public int TruyenID { get; set; }
 
         //Tập khóa ngoại
+        [Required(ErrorMessage = "TacGiaID không được để trống")]
         [ForeignKey(nameof(TacGia))]
         public int TacGiaID { get; set; }
         public TacGia TacGia { get; set; }
@@ -26,10 +27,12 @@ namespace CoreLibrary.Models
         public ICollection<TheoDoi> TheoDois { get; set; }
 
 
-        [Required(ErrorMessage = "Ten truyen is required")]
+        [Required(ErrorMessage = "Tên truyện không được để trống")]
+        [StringLength(200, ErrorMessage = "Tên thể loại không được vượt quá 200 ký tự")]
         public string TenTruyen { get; set; }
 
-        [Required(ErrorMessage = "Mo ta is required")]
+        [Required(ErrorMessage = "Mô tả truyện không được để trống")]
+        [StringLength(1000, ErrorMessage = "Mô tả truyện không được vượt quá 1000 ký tự")]
         public string MoTa { get; set; }
 
         //0: chờ duyệt, 1: đã duyệt
@@ -39,7 +42,7 @@ namespace CoreLibrary.Models
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }
 
-        [Required(ErrorMessage = "HinhAnh is required")]
+        [Required(ErrorMessage = "Đường dẫn hình ảnh không được để trống")]
         public string HinhAnh { get; set; }
     }
 }

@@ -120,7 +120,7 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Username]*/
-            if (FindByCondition(t => t.Username.Equals(user.Username)).Any())
+            if (FindByCondition(t => t.Username.Equals(user.Username) && t.UserID != user.UserID).Any())
             {
                 return new ResponseDetails()
                 {
@@ -174,6 +174,8 @@ namespace Repository
         {
             return await FindByCondition(user => user.UserID.ToString() == userID && !user.TinhTrang)
                 .Include(user => user.BinhLuans)
+                    .ThenInclude(b => b.Chuong)
+                        .ThenInclude(c => c.Truyen)
                 .Include(user => user.TheoDois)
                     .ThenInclude(b => b.Truyen)
                 .FirstOrDefaultAsync();

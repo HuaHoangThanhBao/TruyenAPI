@@ -18,6 +18,10 @@ namespace CoreLibrary.DataTransferObjects
 
         public int Quyen { get; set; }
 
+        public bool TinhTrang { get; set; }
+
+        public string HinhAnh { get; set; }
+
         public IEnumerable<TheoDoi> TheoDois { get; set; }
         public IEnumerable<BinhLuan> BinhLuans { get; set; }
     }

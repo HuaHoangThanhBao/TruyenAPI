@@ -148,6 +148,54 @@ namespace API.Controllers
             }
         }
 
+        [HttpPut("UpdateUserAvatar")]
+        public async Task<IActionResult> UpdateAvatar([FromBody] UpdateUserAvatarDto updateUserAvatarDto)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                if (!ModelState.IsValid)
+                    return BadRequest("Các trường dữ liệu nhập vào chưa chính xác!");
+
+                if (updateUserAvatarDto.HinhAnh == "")
+                    return BadRequest("Hình ảnh không được để trống!");
+
+                var userRepo = await _repository.User.GetUserByEmailAsync(updateUserAvatarDto.Email);
+
+                if (userRepo == null)
+                    return BadRequest("Tài khoản không tồn tại!");
+
+                //Ta cập nhật lại bảng user nhưng chỉ với trường dữ liệu là HinhAnh
+                ResponseDetails response = _repository.User.UpdateUser(new User()
+                {
+                    UserID = userRepo.UserID,
+                    FirstName = userRepo.FirstName,
+                    LastName = userRepo.LastName,
+                    Username = userRepo.Username,
+                    Email = userRepo.Email,
+                    Quyen = userRepo.Quyen,
+                    TinhTrang = userRepo.TinhTrang,
+                    Password = userRepo.Password,
+                    HinhAnh = updateUserAvatarDto.HinhAnh
+                });
+
+                if (response.StatusCode == ResponseCode.Success)
+                {
+                    _repository.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Lỗi khi cập nhật avatar cho user với email {updateUserAvatarDto.Email}: ${ex}");
+            }
+
+            return Ok();
+        }
+
         [HttpPut("{userid}")]
         public async Task<IActionResult> UpdateUser(string userid, [FromBody] UserForUpdateDto user)
         {

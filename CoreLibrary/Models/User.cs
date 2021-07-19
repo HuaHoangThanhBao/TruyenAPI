@@ -37,6 +37,8 @@ namespace CoreLibrary.Models
         [DefaultValue(false)]
         public bool TinhTrang { get; set; }
 
+        public string HinhAnh { get; set; }
+
         //Tập khóa ngoại
         public ICollection<TheoDoi> TheoDois { get; set; }
         public ICollection<BinhLuan> BinhLuans { get; set; }

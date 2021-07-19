@@ -433,5 +433,97 @@ namespace API.Controllers
 
             return Ok();
         }
+
+
+        [HttpPost("UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto updatePasswordDto)
+        {
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+            if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+            if (!ModelState.IsValid)
+                return BadRequest("Các trường dữ liệu nhập vào chưa chính xác!");
+
+            if (updatePasswordDto.Password != updatePasswordDto.ConfirmPassword)
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu xác nhận không khớp!" });
+
+            if (updatePasswordDto.Password.Length < Data.PasswordRequiredLength || updatePasswordDto.Password.Length > Data.PasswordRequiredMaxLength)
+                return BadRequest(new AuthResponseDto
+                {
+                    ErrorMessage =
+                    $"Mật khẩu phải mới có độ dài trong khoảng từ {Data.PasswordRequiredLength} - {Data.PasswordRequiredMaxLength} ký tự"
+                });
+
+            var hasNumber = new Regex(@"[0-9]+");
+            var hasUpperChar = new Regex(@"[A-Z]+");
+            var hasNoneAlpha = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+
+            if (!hasNumber.IsMatch(updatePasswordDto.Password))
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu mới phải có ít nhất 1 chữ số (0-9)" });
+
+            if (!hasUpperChar.IsMatch(updatePasswordDto.Password))
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu mới phải có ít nhất 1 ký tự in hoa (A-Z)" });
+
+            if (!hasNoneAlpha.IsMatch(updatePasswordDto.Password))
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu mới phải có ít nhất 1 ký tự đặc biệt" });
+
+            var user = await _userManager.FindByEmailAsync(updatePasswordDto.Email);
+            if (user == null)
+                return BadRequest("Tài khoản không tồn tại!");
+
+            if (!await _userManager.CheckPasswordAsync(user, updatePasswordDto.OldPassword))
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu cũ không chính xác" });
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var param = new Dictionary<string, string>
+            {
+                {"token", token },
+                {"email", updatePasswordDto.Email }
+            };
+
+            var resetPassResult = await _userManager.ResetPasswordAsync(user, token, updatePasswordDto.Password);
+            if (!resetPassResult.Succeeded)
+            {
+                var errors = resetPassResult.Errors.Select(e => e.Description);
+
+                return BadRequest(new { Errors = errors });
+            }
+
+            var userRepo = await _repository.User.GetUserByEmailAsync(updatePasswordDto.Email);
+
+            try
+            {
+                //Ta cập nhật lại bảng user nhưng chỉ với trường dữ liệu là password
+                ResponseDetails response = _repository.User.UpdateUser(new User()
+                {
+                    UserID = userRepo.UserID,
+                    FirstName = userRepo.FirstName,
+                    LastName = userRepo.LastName,
+                    Username = userRepo.Username,
+                    Email = userRepo.Email,
+                    Quyen = userRepo.Quyen,
+                    TinhTrang = userRepo.TinhTrang,
+                    Password = updatePasswordDto.Password,
+                    HinhAnh = userRepo.HinhAnh
+                });
+
+                if (response.StatusCode == ResponseCode.Success)
+                {
+                    _repository.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Lỗi khi cập nhật password cho user với email {updatePasswordDto.Email}: ${ex}");
+            }
+
+            await _userManager.SetLockoutEnabledAsync(user, false);
+
+            await _userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
+
+            return Ok();
+        }
     }
 }

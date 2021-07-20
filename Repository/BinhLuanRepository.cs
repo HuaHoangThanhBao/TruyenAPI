@@ -39,7 +39,9 @@ namespace Repository
             /*Bắt lỗi [ID]*/
             var userRepo = new UserRepository(_context);
             var chuongRepo = new ChuongRepository(_context);
-            if(!userRepo.FindByCondition(t => t.UserID == binhLuan.UserID).Any())
+            var truyenRepo = new TruyenRepository(_context);
+
+            if (!userRepo.FindByCondition(t => t.UserID == binhLuan.UserID).Any())
             {
                 return new ResponseDetails()
                 {
@@ -49,13 +51,43 @@ namespace Repository
                 };
             }
 
-            if (!chuongRepo.FindByCondition(t => t.ChuongID == binhLuan.ChuongID).Any())
+            if(binhLuan.ChuongID == null && binhLuan.TruyenID == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Vui lòng cung cấp ChuongID hoặc TruyenID",
+                    Value = ""
+                };
+            }
+
+            if (binhLuan.ChuongID != null && !chuongRepo.FindByCondition(t => t.ChuongID == binhLuan.ChuongID).Any())
             {
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
                     Message = "ID Chương không tồn tại",
                     Value = binhLuan.ChuongID.ToString()
+                };
+            }
+
+            if (binhLuan.TruyenID != null && !truyenRepo.FindByCondition(t => t.TruyenID == binhLuan.TruyenID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID Truyện không tồn tại",
+                    Value = binhLuan.ChuongID.ToString()
+                };
+            }
+
+            if (binhLuan.NoiDung == "" || binhLuan.NoiDung == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Nội dung bình luận không được để trống",
+                    Value = ""
                 };
             }
             /*End*/
@@ -81,10 +113,12 @@ namespace Repository
             //    };
             //}
             /*End*/
-
+            
             /*Bắt lỗi [ID]*/
             var userRepo = new UserRepository(_context);
             var chuongRepo = new ChuongRepository(_context);
+            var truyenRepo = new TruyenRepository(_context);
+
             if (!userRepo.FindByCondition(t => t.UserID == binhLuan.UserID).Any())
             {
                 return new ResponseDetails()
@@ -95,13 +129,44 @@ namespace Repository
                 };
             }
 
-            if (!chuongRepo.FindByCondition(t => t.ChuongID == binhLuan.ChuongID).Any())
+
+            if (binhLuan.ChuongID == null && binhLuan.TruyenID == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Vui lòng cung cấp ChuongID hoặc TruyenID",
+                    Value = ""
+                };
+            }
+
+            if (binhLuan.ChuongID != null && !chuongRepo.FindByCondition(t => t.ChuongID == binhLuan.ChuongID).Any())
             {
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
                     Message = "ID Chương không tồn tại",
                     Value = binhLuan.ChuongID.ToString()
+                };
+            }
+
+            if (binhLuan.TruyenID != null && !truyenRepo.FindByCondition(t => t.TruyenID == binhLuan.TruyenID).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "ID Truyện không tồn tại",
+                    Value = binhLuan.ChuongID.ToString()
+                };
+            }
+
+            if (binhLuan.NoiDung == "" || binhLuan.NoiDung == null)
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Nội dung bình luận không được để trống",
+                    Value = ""
                 };
             }
             /*End*/
@@ -148,48 +213,61 @@ namespace Repository
         }
 
 
+        //Lấy tất cả bình luận có trong bảng (theo thứ tự giảm dần ID)
         public async Task<PagedList<BinhLuan>> GetBinhLuanForPagination(BinhLuanParameters binhLuanParameters)
         {
-            return await PagedList<BinhLuan>.ToPagedList(FindAll().Where(m => !m.TinhTrang).Include(m => m.User).Include(m => m.Chuong).OrderByDescending(on => on.NgayBL),
+            return await PagedList<BinhLuan>.ToPagedList(FindAll().Where(m => !m.TinhTrang)
+                .Include(m => m.User)
+                .Include(m => m.Truyen)
+                .OrderByDescending(on => on.BinhLuanID),
                 binhLuanParameters.PageNumber,
                 binhLuanParameters.PageSize);
         }
 
+        //Lấy số lượng bình luận mới nhất có trong bảng (theo thứ tự giảm dần ID)
         public async Task<PagedList<BinhLuan>> GetBinhLuanLastestForPagination(BinhLuanParameters binhLuanParameters)
         {
-            return await PagedList<BinhLuan>.ToPagedList(FindAll().Where(m => !m.TinhTrang).Include(m => m.User).Include(m => m.Chuong)
-                .ThenInclude(m => m.Truyen).OrderByDescending(on => on.NgayBL).Take(binhLuanParameters.PageSize),
+            return await PagedList<BinhLuan>.ToPagedList(FindAll().Where(m => !m.TinhTrang)
+                .Include(m => m.User)
+                .Include(m => m.Truyen)
+                .Include(m => m.Chuong)
+                    .ThenInclude(m => m.Truyen)
+                .OrderByDescending(on => on.BinhLuanID).Take(binhLuanParameters.PageSize),
                 binhLuanParameters.PageNumber,
                 binhLuanParameters.PageSize);
         }
 
+        //Lấy tất cả bình luận của truyện theo [ID] không tính các bình luận của chương trong nó
         public async Task<PagedList<BinhLuan>> GetBinhLuanOfTruyenForPagination(int truyenID, BinhLuanParameters binhLuanParameters)
         {
-            var chuongs = (from m in _context.Chuongs
-                           where m.TruyenID == truyenID && !m.TinhTrang
-                           select m);
-
             return await PagedList<BinhLuan>.ToPagedList(
 
                 (from m in _context.BinhLuans
-                 join n in chuongs
-                 on m.ChuongID equals n.ChuongID
-                 where !m.TinhTrang
-                 select m).Include(m => m.User).Include(m => m.Chuong).ThenInclude(m => m.Truyen).Take(binhLuanParameters.PageSize).OrderByDescending(m => m.NgayBL)
+                 where m.TruyenID == truyenID && m.TruyenID != null && !m.TinhTrang
+                 select m)
+                 .Include(m => m.User)
+                 .Include(m => m.Truyen)
+                 .Take(binhLuanParameters.PageSize)
+                 .OrderByDescending(on => on.BinhLuanID)
                 
                  ,
                 binhLuanParameters.PageNumber,
                 binhLuanParameters.PageSize);
         }
 
+        //Lấy tất cả bình luận của chương theo [ID]
         public async Task<PagedList<BinhLuan>> GetBinhLuanOfChuongForPagination(int chuongID, BinhLuanParameters binhLuanParameters)
         {
 
             return await PagedList<BinhLuan>.ToPagedList(
 
                 (from m in _context.BinhLuans
-                 where m.ChuongID == chuongID && !m.TinhTrang
-                 select m).Include(m => m.User).Include(m => m.Chuong).OrderByDescending(m => m.NgayBL)
+                 where m.ChuongID == chuongID && m.ChuongID != null && !m.TinhTrang
+                 select m)
+                 .Include(m => m.User)
+                 .Include(m => m.Chuong)
+                 .Take(binhLuanParameters.PageSize)
+                 .OrderByDescending(on => on.BinhLuanID)
 
                  ,
                 binhLuanParameters.PageNumber,

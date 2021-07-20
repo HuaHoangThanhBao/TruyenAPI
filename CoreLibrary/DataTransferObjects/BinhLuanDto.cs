@@ -11,9 +11,13 @@ namespace CoreLibrary.DataTransferObjects
 
         public User User { get; set; }
 
-        public int ChuongID { get; set; }
+        public int? ChuongID { get; set; }
 
         public Chuong Chuong { get; set; }
+
+        public int? TruyenID { get; set; }
+        
+        public Truyen Truyen { get; set; }
 
         public string NoiDung { get; set; }
 

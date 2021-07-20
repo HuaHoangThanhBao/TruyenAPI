@@ -9,8 +9,9 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "UserID không được để trống")]
         public Guid UserID { get; set; }
 
-        [Required(ErrorMessage = "ChuongID không được để trống")]
-        public int ChuongID { get; set; }
+        public int? ChuongID { get; set; }
+
+        public int? TruyenID { get; set; }
 
         [Required(ErrorMessage = "Nội dung bình luận không được để trống")]
         [StringLength(500, ErrorMessage = "Nội dung bình luận không được vượt quá 500 ký tự")]
@@ -27,8 +28,9 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "UserID không được để trống")]
         public Guid UserID { get; set; }
 
-        [Required(ErrorMessage = "ChuongID không được để trống")]
-        public int ChuongID { get; set; }
+        public int? ChuongID { get; set; }
+
+        public int? TruyenID { get; set; }
 
         [Required(ErrorMessage = "Nội dung bình luận không được để trống")]
         [StringLength(500, ErrorMessage = "Nội dung bình luận không được vượt quá 500 ký tự")]

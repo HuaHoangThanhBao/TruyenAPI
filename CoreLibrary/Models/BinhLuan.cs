@@ -20,9 +20,12 @@ namespace CoreLibrary.Models
 
         //Tập khóa ngoại
         [ForeignKey(nameof(Chuong))]
-        [Required(ErrorMessage = "ChuongID không được để trống")]
-        public int ChuongID { get; set; }
+        public int? ChuongID { get; set; }
         public Chuong Chuong { get; set; }
+
+        [ForeignKey(nameof(Truyen))]
+        public int? TruyenID { get; set; }
+        public Truyen Truyen { get; set; }
 
         [Required(ErrorMessage = "Nội dung bình luận không được để trống")]
         [StringLength(500, ErrorMessage = "Nội dung bình luận không được vượt quá 500 ký tự")]

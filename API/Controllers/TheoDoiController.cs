@@ -193,6 +193,36 @@ namespace API.Controllers
             }
         }
 
+        [HttpDelete("deleteforuser")]
+        public async Task<IActionResult> DeleteTheoDoiForUser([FromQuery] TheoDoiParameters theoDoiParameters)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var theoDoi = await _repository.TheoDoi.GetTheoDoiByUserIdAndTruyenIdAsync(theoDoiParameters.UserID, theoDoiParameters.TruyenID);
+                if (theoDoi == null)
+                {
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "ID TheoDoi không tồn tại" });
+                }
+
+                ResponseDetails response = _repository.TheoDoi.DeleteTheoDoi(theoDoi);
+
+                if (response.StatusCode == ResponseCode.Success)
+                    _repository.Save();
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Gặp lỗi khi xóa theo dõi có userID " + theoDoiParameters.UserID + " và truyện ID " + theoDoiParameters.TruyenID + ": " + ex);
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteTheoDoiForUser" });
+            }
+        }
+
         [HttpGet("pagination")]
         public async Task<IActionResult> GetTruyenByTheoDoiForPagination([FromQuery] TheoDoiParameters theoDoiParameters)
         {

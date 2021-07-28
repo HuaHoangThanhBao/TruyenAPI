@@ -115,6 +115,12 @@ namespace Repository
                     .FirstOrDefaultAsync();
         }
 
+        public async Task<TheoDoi> GetTheoDoiByUserIdAndTruyenIdAsync(string userID, int truyenID)
+        {
+            return await FindByCondition(theoDoi => theoDoi.UserID.ToString() == userID && theoDoi.TruyenID == truyenID)
+                    .FirstOrDefaultAsync();
+        }
+
         public async Task<PagedList<Truyen>> GetTruyenByTheoDoiForPagination(TheoDoiParameters theoDoiParameters)
         {
             return await PagedList<Truyen>.ToPagedList(

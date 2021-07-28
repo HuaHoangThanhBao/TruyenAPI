@@ -449,6 +449,18 @@ Method: DELETE
 
 Request: Request/api/theodoi/{id}
 
+Note: delete theodoi by id
+
+````
+
+````console
+
+Method: DELETE
+
+Request: Request/api/theodoi/deleteforuser?userid={id}&truyenid={id}
+
+Note: delete theodoi by truyenid and userid
+
 ````
 
 #### BinhLuan table

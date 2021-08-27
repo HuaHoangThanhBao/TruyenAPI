@@ -9,6 +9,7 @@ using CoreLibrary.Models;
 using DataAccessLayer;
 using LoggerService;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -18,12 +19,14 @@ namespace API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private IRepositoryWrapper _repository;
         private readonly ILoggerManager _logger;
         private IMapper _mapper;
 
-        public UserController(IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
+        public UserController(UserManager<ApplicationUser> userManager, IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger)
         {
+            _userManager = userManager;
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
@@ -42,39 +45,11 @@ namespace API.Controllers
                 var users = await _repository.User.GetAllUsersAsync();
                 var usersResult = _mapper.Map<IEnumerable<UserDto>>(users);
 
-
                 return Ok(usersResult);
             }
             catch
             {
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllUsers" });
-            }
-        }
-
-        [HttpGet("{email}", Name = "UserByName")]
-        public async Task<IActionResult> GetUserByEmail(string email)
-        {
-            try
-            {
-                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
-
-                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
-                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
-
-                var user = await _repository.User.GetUserByEmailAsync(email);
-                if (user == null)
-                {
-                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "User không tồn tại" });
-                }
-                else
-                {
-                    var userResult = _mapper.Map<UserDto>(user);
-                    return Ok(userResult);
-                }
-            }
-            catch
-            {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetUserById" });
             }
         }
 
@@ -97,12 +72,22 @@ namespace API.Controllers
                 else
                 {
                     //var UserResult = _mapper.Map<UserDto>(User);
-                    return Ok(user);
+                    var userApp = await _userManager.FindByIdAsync(user.ApplicationUserID);
+                    return Ok(new UserInfo() 
+                    { 
+                        Email = userApp.Email, 
+                        Username = user.UserName, 
+                        FirstName = userApp.FirstName, 
+                        LastName = userApp.LastName, 
+                        HinhAnh = user.HinhAnh,
+                        TheoDois = user.TheoDois,
+                        BinhLuans = user.BinhLuans
+                    });
                 }
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTacGiaByDetails" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetUserByDetails" });
             }
         }
 
@@ -164,7 +149,7 @@ namespace API.Controllers
                 if (updateUserAvatarDto.HinhAnh == "")
                     return BadRequest("Hình ảnh không được để trống!");
 
-                var userRepo = await _repository.User.GetUserByEmailAsync(updateUserAvatarDto.Email);
+                var userRepo = await _repository.User.GetUserByIDAsync(updateUserAvatarDto.UserID);
 
                 if (userRepo == null)
                     return BadRequest("Tài khoản không tồn tại!");
@@ -173,14 +158,13 @@ namespace API.Controllers
                 ResponseDetails response = _repository.User.UpdateUser(new User()
                 {
                     UserID = userRepo.UserID,
-                    FirstName = userRepo.FirstName,
-                    LastName = userRepo.LastName,
-                    Username = userRepo.Username,
-                    Email = userRepo.Email,
+                    ApplicationUserID = userRepo.ApplicationUserID,
                     Quyen = userRepo.Quyen,
                     TinhTrang = userRepo.TinhTrang,
-                    Password = userRepo.Password,
-                    HinhAnh = updateUserAvatarDto.HinhAnh
+                    HinhAnh = updateUserAvatarDto.HinhAnh,
+                    RefreshToken = userRepo.RefreshToken,
+                    RefreshTokenExpiryTime = userRepo.RefreshTokenExpiryTime,
+                    UserName = userRepo.UserName
                 });
 
                 if (response.StatusCode == ResponseCode.Success)
@@ -190,7 +174,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Lỗi khi cập nhật avatar cho user với email {updateUserAvatarDto.Email}: ${ex}");
+                _logger.LogError($"Lỗi khi cập nhật avatar cho user với id {updateUserAvatarDto.UserID}: ${ex}");
             }
 
             return Ok();

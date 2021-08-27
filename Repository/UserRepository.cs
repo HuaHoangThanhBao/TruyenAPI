@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace Repository
 {
@@ -20,59 +21,6 @@ namespace Repository
         //KQ: !null = Username bị trùng, null: thêm thành công
         public ResponseDetails CreateUser(User user)
         {
-            user.Username = (user.Username == "" || user.Username == null) ? user.FirstName + user.LastName : user.Username;
-
-            /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(user.FirstName))
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Tên không được chứa ký tự đặc biệt",
-                    Value = user.FirstName.ToString()
-                };
-            }
-            /*End*/
-
-            /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(user.LastName))
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Họ không được chứa ký tự đặc biệt",
-                    Value = user.LastName.ToString()
-                };
-            }
-            /*End*/
-
-            /*Bắt lỗi [Email]*/
-            if (FindByCondition(t => t.Email.Equals(user.Email)).Any())
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Email bị trùng",
-                    Value = user.Email.ToString()
-                };
-            }
-            /*End*/
-
-            /*Bắt lỗi [Username]*/
-            if (FindByCondition(t => t.Username.Equals(user.Username)).Any())
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Username bị trùng",
-                    Value = user.Username.ToString()
-                };
-            }
-            /*End*/
-
-            string passHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            user.Password = passHash;
-
             Create(user);
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
@@ -81,61 +29,16 @@ namespace Repository
         //KQ: false: Username bị trùng, true: cập nhật thành công
         public ResponseDetails UpdateUser(User user)
         {
-            user.Username = (user.Username == "" || user.Username == null) ? user.FirstName + user.LastName : user.Username;
-
-            /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(user.FirstName))
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Tên không được chứa ký tự đặc biệt",
-                    Value = user.FirstName.ToString()
-                };
-            }
-            /*End*/
-
-            /*Bắt lỗi ký tự đặc biệt*/
-            if (ValidationExtensions.isSpecialChar(user.LastName))
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Họ không được chứa ký tự đặc biệt",
-                    Value = user.LastName.ToString()
-                };
-            }
-            /*End*/
-
-            /*Bắt lỗi [Email]*/
-            if (FindByCondition(t => t.Email.Equals(user.Email) && t.UserID != user.UserID).Any())
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Email bị trùng",
-                    Value = user.Email.ToString()
-                };
-            }
-            /*End*/
-
-            /*Bắt lỗi [Username]*/
-            if (FindByCondition(t => t.Username.Equals(user.Username) && t.UserID != user.UserID).Any())
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Username bị trùng",
-                    Value = user.Username.ToString()
-                };
-            }
-            /*End*/
-
-            string passHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            user.Password = passHash;
-
             Update(user);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa user thành công" };
+        }
+
+        public ResponseDetails UpdateUserRefreshToken(User user, string newRefreshToken, DateTime? newRefreshTokenExipredTime)
+        {
+            user.RefreshToken = newRefreshToken;
+            if (newRefreshTokenExipredTime != null) user.RefreshTokenExpiryTime = (DateTime)newRefreshTokenExipredTime;
+            Update(user);
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Cập nhật refresh token thành công" };
         }
 
         //Xóa logic
@@ -151,21 +54,20 @@ namespace Repository
         {
             return await FindAll()
                 .Where(user => !user.TinhTrang)
-                .OrderBy(user => user.Username)
+                .OrderBy(user => user.UserID)
                 .ToListAsync();
-        }
-
-        //Dùng cho khi xác thực login và lấy ra mã GUID để lưu lại phía client
-        public async Task<User> GetUserByEmailAsync(string email)
-        {
-            return await FindByCondition(user => user.Email.Equals(email))
-                    .FirstOrDefaultAsync();
         }
 
         //Dùng cho lấy user để get/update/delete
         public async Task<User> GetUserByIDAsync(string userID)
         {
             return await FindByCondition(user => user.UserID.ToString() == userID && !user.TinhTrang)
+                    .FirstOrDefaultAsync();
+        }
+
+        public async Task<User> GetUserByApplicationUserIDAsync(string applicationUserID)
+        {
+            return await FindByCondition(user => user.ApplicationUserID == applicationUserID && !user.TinhTrang)
                     .FirstOrDefaultAsync();
         }
 

@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Http;
 using LoggerService;
 using CoreLibrary.Helpers;
+using API.Service;
 
 namespace API
 {
@@ -30,6 +31,7 @@ namespace API
 
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
         {
+            services.AddTransient<ITokenService, TokenService>();
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
         }
 
@@ -51,7 +53,7 @@ namespace API
 
             services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {
-                opt.Password.RequiredLength = Data.PasswordRequiredLength;
+                opt.Password.RequiredLength = Data.PassRequiredMinLength;
                 opt.Password.RequireDigit = false;
 
                 opt.User.RequireUniqueEmail = true;
@@ -83,29 +85,10 @@ namespace API
                 .AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("X-Pagination"));
             });
 
-            /***********/
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-                options.HttpOnly = HttpOnlyPolicy.Always;
-                //options.Secure = CookieSecurePolicy.Always;
-                // you can add more options here and they will be applied to all cookies (middleware and manually created cookies)
-            });
-            /***********/
-
-            var jwtSettings = Configuration.GetSection("JwtSettings");
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddCookie(options =>
-            {
-                options.ExpireTimeSpan = Data.CookieExpireTime;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SameSite = SameSiteMode.None;
             })
             .AddJwtBearer(options =>
             {
@@ -116,9 +99,9 @@ namespace API
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
 
-                    ValidIssuer = jwtSettings.GetSection("validIssuer").Value,
-                    ValidAudience = jwtSettings.GetSection("validAudience").Value,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.GetSection("securityKey").Value))
+                    ValidIssuer = Configuration[$"{NamePars.JwtSettings}:{NamePars.ValidIssuer}"],
+                    ValidAudience = Configuration[$"{NamePars.JwtSettings}:{NamePars.ValidAudience}"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration[$"{NamePars.JwtSettings}:{NamePars.SecurityKeys}"]))
                 };
             });
             services.AddControllers();

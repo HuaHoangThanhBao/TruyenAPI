@@ -3,6 +3,7 @@ using CoreLibrary.Helpers;
 using CoreLibrary.Models;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,6 +53,7 @@ namespace Repository
                 };
             }
 
+            theoDoi.ThoiGian = DateTime.Now;
             Create(theoDoi);
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
@@ -90,6 +92,7 @@ namespace Repository
                 };
             }
 
+            theoDoi.ThoiGian = DateTime.Now;
             Update(theoDoi);
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa TheoDoi thành công" };
         }
@@ -132,6 +135,16 @@ namespace Repository
                  where c.UserID.ToString() == theoDoiParameters.UserID && !m.TinhTrang && !c.TinhTrang
                  select m).Include(m => m.Chuongs)
                           .OrderBy(on => on.TruyenID),
+                theoDoiParameters.PageNumber,
+                theoDoiParameters.PageSize);
+        }
+
+        public async Task<PagedList<TheoDoi>> GetTheoDoiLastestForPagination(TheoDoiParameters theoDoiParameters)
+        {
+            return await PagedList<TheoDoi>.ToPagedList(FindAll()
+                .Include(m => m.User)
+                .Include(m => m.Truyen)
+                .OrderByDescending(on => on.TheoDoiID).Take(theoDoiParameters.PageSize),
                 theoDoiParameters.PageNumber,
                 theoDoiParameters.PageSize);
         }

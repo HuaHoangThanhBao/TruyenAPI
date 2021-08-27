@@ -4,8 +4,8 @@ namespace CoreLibrary.DataTransferObjects
 {
     public class UpdateUserAvatarDto
     {
-        [Required(ErrorMessage = "Email không được để trống")]
-        public string Email { get; set; }
+        [Required(ErrorMessage = "UserID không được để trống")]
+        public string UserID { get; set; }
 
         public string HinhAnh { get; set; }
     }

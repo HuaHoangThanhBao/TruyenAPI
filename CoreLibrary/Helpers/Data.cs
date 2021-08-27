@@ -9,11 +9,15 @@ namespace CoreLibrary.Helpers
         //Identity
         public static readonly TimeSpan LockOutAccountTime = TimeSpan.FromDays(3);
         public static readonly int MaxFailedAccessAttempts = 3;
-        public static readonly int PasswordRequiredLength = 8;
-        public static readonly int PasswordRequiredMaxLength = 30;
+        public static readonly int PassRequiredMinLength = 8;
+        public static readonly int PassRequiredMaxLength = 30;
+        public static readonly int MinLength = 0;
+        public static readonly int NameRequiredMaxLength = 50;
+        public static readonly int EmailRequiredMaxLength = 30;
 
-        //Cookie
-        public static readonly TimeSpan CookieExpireTime = TimeSpan.FromDays(7);
-        public static readonly DateTime CookieOptionExpireTime = DateTime.Now.AddDays(7);
+        //Quyền của user
+        public static readonly int UserRole = 0;
+        public static readonly int EditorRole = 1;
+        public static readonly int AdminRole = 2;
     }
 }

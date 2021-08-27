@@ -21,5 +21,17 @@ namespace CoreLibrary.Helpers
                 _getAll = value;
             }
         }
+        private bool _lastestUpdate;
+        public bool LastestUpdate
+        {
+            get
+            {
+                return _lastestUpdate;
+            }
+            set
+            {
+                _lastestUpdate = value;
+            }
+        }
     }
 }

@@ -24,5 +24,7 @@ namespace CoreLibrary.Models
         [ForeignKey(nameof(User))]
         public Guid UserID { get; set; }
         public User User { get; set; }
+
+        public DateTime ThoiGian { get; set; }
     }
 }

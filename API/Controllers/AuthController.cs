@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using API.Extensions;
+using API.Service;
 using AutoMapper;
 using CoreLibrary;
 using CoreLibrary.DataTransferObjects;
@@ -24,6 +25,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers
@@ -40,9 +42,11 @@ namespace API.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILoggerManager _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ITokenService _tokenService;
+        private readonly IConfiguration _config;
 
         public AuthController(UserManager<ApplicationUser> userManager, IRepositoryWrapper repository, IMapper mapper, ILoggerManager logger, JwtHandler jwtHandler, IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, ITokenService tokenService, IConfiguration config)
         {
             _repository = repository;
             _userManager = userManager;
@@ -51,6 +55,8 @@ namespace API.Controllers
             _emailSender = emailSender;
             _jwtHandler = jwtHandler;
             _roleManager = roleManager;
+            _tokenService = tokenService;
+            _config = config;
         }
 
         [HttpGet("sendmail")]
@@ -78,38 +84,17 @@ namespace API.Controllers
 
             var user = _mapper.Map<ApplicationUser>(userForRegistration);
 
-
-            /**************/
-            if (userForRegistration.Password != userForRegistration.ConfirmPassword)
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu xác nhận không khớp!" });
-
-            if (userForRegistration.Password.Length < Data.PasswordRequiredLength || userForRegistration.Password.Length > Data.PasswordRequiredMaxLength)
-                return BadRequest(new AuthResponseDto { ErrorMessage = 
-                    $"Mật khẩu phải có độ dài trong khoảng từ {Data.PasswordRequiredLength} - {Data.PasswordRequiredMaxLength} ký tự" });
-
-            var hasNumber = new Regex(@"[0-9]+");
-            var hasUpperChar = new Regex(@"[A-Z]+");
-            var hasNoneAlpha = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
-
-            if (hasNoneAlpha.IsMatch(userForRegistration.LastName))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Họ không được chứa ký tự đặc biệt" });
-
-            if (hasNoneAlpha.IsMatch(userForRegistration.FirstName))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Tên không được chứa ký tự đặc biệt" });
-
-            if (!hasNumber.IsMatch(userForRegistration.Password))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu phải có ít nhất 1 chữ số (0-9)" });
-
-            if (!hasUpperChar.IsMatch(userForRegistration.Password))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu phải có ít nhất 1 ký tự in hoa (A-Z)" });
-
-            if (!hasNoneAlpha.IsMatch(userForRegistration.Password))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu phải có ít nhất 1 ký tự đặc biệt" });
+            //Nếu validate có lỗi thì trả về bad request
+            var validate = _repository.Authenticate.ValidateRegistration(userForRegistration);
+            if(validate != null)
+            {
+                return BadRequest(validate);
+            }
 
             var userFinding = await _userManager.FindByEmailAsync(userForRegistration.Email);
 
             if (userFinding != null)
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Email này đã tồn tại. Vui lòng nhập email khác!" });
+                return BadRequest(new AuthResponseDto { Message = "Email này đã tồn tại. Vui lòng nhập email khác!" });
 
             var result = await _userManager.CreateAsync(user, userForRegistration.Password);
             if (!result.Succeeded)
@@ -129,27 +114,21 @@ namespace API.Controllers
 
             await _userManager.SetTwoFactorEnabledAsync(user, true);
 
-            try
+            var response = _repository.User.CreateUser(
+            new User()
             {
-                var response = _repository.User.CreateUser(
-                    new User()
-                    {
-                        Username = userForRegistration.FirstName + userForRegistration.LastName,
-                        FirstName = userForRegistration.FirstName,
-                        LastName = userForRegistration.LastName,
-                        Email = userForRegistration.Email,
-                        Password = userForRegistration.Password
-                    }
-                );
+                Quyen = userForRegistration.Quyen,
+                UserName = user.LastName + " " + user.FirstName,
+                ApplicationUserID = user.Id
+            });
 
-                if (response.StatusCode == ResponseCode.Success)
-                {
-                    _repository.Save();
-                }
-            }
-            catch(Exception ex)
+            if (response.StatusCode == ResponseCode.Success)
             {
-                _logger.LogError($"Lỗi khi đăng ký user với email {userForRegistration.Email}: ${ex}");
+                _repository.Save();
+            }
+            else
+            {
+                _logger.LogError($"Lỗi khi đăng ký user với email {userForRegistration.Email}");
             }
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -162,44 +141,11 @@ namespace API.Controllers
 
             var callback = QueryHelpers.AddQueryString(userForRegistration.ClientURI, param);
 
-            var message = new Message(new string[] { userForRegistration.Email }, 
+            var message = new Message(new string[] { userForRegistration.Email },
                 "Xác thực tài khoản", $"Bạn vui lòng nhấn vào đường dẫn này để tiến hành xác thực tài khoản: {callback}", null);
             await _emailSender.SendEmailAsync(message);
 
             return Ok();
-        }
-
-        [HttpPost("logout")]
-        public async Task<IActionResult> LogOut()
-        {
-            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
-
-            if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
-
-            foreach (var cookieKey in Request.Cookies.Keys)
-            {
-                HttpContext.Response.Cookies.Delete(cookieKey);
-            }
-
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            return Ok();
-        }
-
-        [HttpPost("checklogin")]
-        public async Task<IActionResult> CheckLogin()
-        {
-            var cookies = Request.Cookies;
-            var userIDCookie = cookies["UserID"];
-
-            var user = await _repository.User.GetUserByIDAsync(userIDCookie);
-            if (user == null)
-            {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Phiên đăng nhập hết hạn!" });
-            }
-
-            return Ok(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = user.UserID.ToString().ToUpper() });
         }
 
         [HttpPost("login")]
@@ -215,15 +161,17 @@ namespace API.Controllers
             var user = await _userManager.FindByEmailAsync(userForAuthentication.Email);
 
             if (user == null)
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Tài khoản không tồn tại!" });
+                return BadRequest(new AuthResponseDto { Message = "Tài khoản không tồn tại!" });
 
-            if(userForAuthentication.Password.Length < Data.PasswordRequiredLength)
+            //Nếu validate có lỗi thì trả về bad request
+            var validate = _repository.Authenticate.ValidateLogin(userForAuthentication);
+            if (validate != null)
             {
-                return BadRequest(new AuthResponseDto { ErrorMessage = $"Độ dài mật khẩu phải ít nhất {Data.PasswordRequiredLength} ký tự" });
+                return BadRequest(validate);
             }
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
-                return Unauthorized(new AuthResponseDto { ErrorMessage = "Tài khoản này chưa được xác nhận. Vui lòng xác nhận tài khoản trước khi đăng nhập" });
+                return Unauthorized(new AuthResponseDto { Message = "Tài khoản này chưa được xác nhận. Vui lòng xác nhận tài khoản trước khi đăng nhập" });
 
             if (!await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
             {
@@ -232,7 +180,7 @@ namespace API.Controllers
                     _logger.LogWarn("User với email " + user.Email + " cố gắng đăng nhập sai thông tin");
                     return Unauthorized(new AuthResponseDto
                     {
-                        ErrorMessage = "Vì lý do bảo mật nên tài khoản đã bị khóa vì bạn đăng nhập thất bại quá 3 lần, " +
+                        Message = "Vì lý do bảo mật nên tài khoản đã bị khóa vì bạn đăng nhập thất bại quá 3 lần, " +
                         "chúng tôi đã gửi mail cho bạn để reset mật khẩu. Bạn vui lòng kiểm tra. Xin cảm ơn."
                     });
                 }
@@ -255,11 +203,11 @@ namespace API.Controllers
                     var message = new Message(new string[] { userForAuthentication.Email }, "Locked out account information", content, null);
                     await _emailSender.SendEmailAsync(message);
 
-                    return Unauthorized(new AuthResponseDto { ErrorMessage = "Vì lý do bảo mật nên tài khoản đã bị khóa nếu đăng nhập thất bại quá 3 lần, " +
+                    return Unauthorized(new AuthResponseDto { Message = "Vì lý do bảo mật nên tài khoản đã bị khóa nếu đăng nhập thất bại quá 3 lần, " +
                         "chúng tôi đã gửi mail cho bạn để reset mật khẩu" });
                 }
 
-                return Unauthorized(new AuthResponseDto { ErrorMessage = "Thông tin đăng nhập sai" });
+                return Unauthorized(new AuthResponseDto { Message = "Thông tin đăng nhập sai" });
             }
 
             /**************/
@@ -279,7 +227,7 @@ namespace API.Controllers
             var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
             if (!providers.Contains("Email"))
             {
-                return Unauthorized(new AuthResponseDto { ErrorMessage = "Thiếu thông tin provider để token đăng nhập." });
+                return Unauthorized(new AuthResponseDto { Message = "Thiếu thông tin provider để token đăng nhập." });
             }
 
             var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
@@ -296,47 +244,42 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
-            if (user == null)
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Tài khoản không tồn tại!" });
+            var userApp = await _userManager.FindByEmailAsync(twoFactorDto.Email);
+            if (userApp == null)
+                return BadRequest(new AuthResponseDto { Message = "Tài khoản không tồn tại!" });
 
-            var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
+            var validVerification = await _userManager.VerifyTwoFactorTokenAsync(userApp, twoFactorDto.Provider, twoFactorDto.Token);
             if (!validVerification)
                 return BadRequest("Token để xác thực đăng nhập không hợp lệ!");
 
-            //var token = await _jwtHandler.GenerateToken(user);
+            var user = await _repository.User.GetUserByApplicationUserIDAsync(userApp.Id);
 
+            var claims = await _jwtHandler.GenerateClaims(userApp, user);
 
-            /**************/
-            var claims = await _jwtHandler.GenerateClaims(user);
+            await _userManager.ResetAccessFailedCountAsync(userApp);
 
-            await _userManager.ResetAccessFailedCountAsync(user);
+            var accessToken = _tokenService.GenerateAccessToken(claims, _config);
+            var refreshToken = _tokenService.GenerateRefreshToken();
 
-            var authProperties = new AuthenticationProperties()
+            ResponseDetails response = _repository.User.UpdateUserRefreshToken(
+                user,
+                refreshToken,
+                DateTime.Now.AddMinutes(Convert.ToDouble(_config[$"{NamePars.JwtSettings}:{NamePars.ExpireTime}"]))
+            );
+            if (response.StatusCode == ResponseCode.Success)
             {
-                IsPersistent = true,
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var userGetting = await _repository.User.GetUserByEmailAsync(twoFactorDto.Email);
-
-            CookieOptions option = new CookieOptions()
+                _repository.Save();
+            }
+            else
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-                Expires = Data.CookieOptionExpireTime,
-                IsEssential = true,
-            };
+                _logger.LogError($"Lỗi khi cấp refresh token khi xác thực đăng nhập cho user với id {user.UserID}");
+            }
 
-            Response.Cookies.Append("UserID", userGetting.UserID.ToString().ToUpper(), option);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-            /**************/
-
-            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = userGetting.UserID.ToString().ToUpper()/*Không truyền token mà chỉ truyền userID*/ });
+            return Ok(new
+            {
+                Token = accessToken,
+                RefreshToken = refreshToken
+            });
         }
 
         [HttpGet("RegistrationVerification")]
@@ -395,25 +338,12 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Các trường dữ liệu nhập vào chưa chính xác!");
 
-            if (resetPasswordDto.Password != resetPasswordDto.ConfirmPassword)
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu xác nhận không khớp!" });
-
-            if (resetPasswordDto.Password.Length < Data.PasswordRequiredLength || resetPasswordDto.Password.Length > Data.PasswordRequiredMaxLength)
-                return BadRequest(new AuthResponseDto { ErrorMessage = 
-                    $"Mật khẩu phải có độ dài trong khoảng từ {Data.PasswordRequiredLength} - {Data.PasswordRequiredMaxLength} ký tự" });
-
-            var hasNumber = new Regex(@"[0-9]+");
-            var hasUpperChar = new Regex(@"[A-Z]+");
-            var hasNoneAlpha = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
-
-            if (!hasNumber.IsMatch(resetPasswordDto.Password))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu phải có ít nhất 1 chữ số (0-9)" });
-
-            if (!hasUpperChar.IsMatch(resetPasswordDto.Password))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu phải có ít nhất 1 ký tự in hoa (A-Z)" });
-
-            if (!hasNoneAlpha.IsMatch(resetPasswordDto.Password))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu phải có ít nhất 1 ký tự đặc biệt" });
+            //Nếu validate có lỗi thì trả về bad request
+            var validate = _repository.Authenticate.ValidateResetPassword(resetPasswordDto);
+            if (validate != null)
+            {
+                return BadRequest(validate);
+            }
 
             var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
             if (user == null)
@@ -435,7 +365,7 @@ namespace API.Controllers
         }
 
 
-        [HttpPost("UpdatePassword")]
+        [HttpPut("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto updatePasswordDto)
         {
             var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
@@ -446,35 +376,19 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Các trường dữ liệu nhập vào chưa chính xác!");
 
-            if (updatePasswordDto.Password != updatePasswordDto.ConfirmPassword)
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu xác nhận không khớp!" });
-
-            if (updatePasswordDto.Password.Length < Data.PasswordRequiredLength || updatePasswordDto.Password.Length > Data.PasswordRequiredMaxLength)
-                return BadRequest(new AuthResponseDto
-                {
-                    ErrorMessage =
-                    $"Mật khẩu phải mới có độ dài trong khoảng từ {Data.PasswordRequiredLength} - {Data.PasswordRequiredMaxLength} ký tự"
-                });
-
-            var hasNumber = new Regex(@"[0-9]+");
-            var hasUpperChar = new Regex(@"[A-Z]+");
-            var hasNoneAlpha = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
-
-            if (!hasNumber.IsMatch(updatePasswordDto.Password))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu mới phải có ít nhất 1 chữ số (0-9)" });
-
-            if (!hasUpperChar.IsMatch(updatePasswordDto.Password))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu mới phải có ít nhất 1 ký tự in hoa (A-Z)" });
-
-            if (!hasNoneAlpha.IsMatch(updatePasswordDto.Password))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu mới phải có ít nhất 1 ký tự đặc biệt" });
+            //Nếu validate có lỗi thì trả về bad request
+            var validate = _repository.Authenticate.ValidateUpdatePassword(updatePasswordDto);
+            if (validate != null)
+            {
+                return BadRequest(validate);
+            }
 
             var user = await _userManager.FindByEmailAsync(updatePasswordDto.Email);
             if (user == null)
                 return BadRequest("Tài khoản không tồn tại!");
 
             if (!await _userManager.CheckPasswordAsync(user, updatePasswordDto.OldPassword))
-                return BadRequest(new AuthResponseDto { ErrorMessage = "Mật khẩu cũ không chính xác" });
+                return BadRequest(new AuthResponseDto { Message = "Mật khẩu cũ không chính xác" });
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var param = new Dictionary<string, string>
@@ -489,34 +403,6 @@ namespace API.Controllers
                 var errors = resetPassResult.Errors.Select(e => e.Description);
 
                 return BadRequest(new { Errors = errors });
-            }
-
-            var userRepo = await _repository.User.GetUserByEmailAsync(updatePasswordDto.Email);
-
-            try
-            {
-                //Ta cập nhật lại bảng user nhưng chỉ với trường dữ liệu là password
-                ResponseDetails response = _repository.User.UpdateUser(new User()
-                {
-                    UserID = userRepo.UserID,
-                    FirstName = userRepo.FirstName,
-                    LastName = userRepo.LastName,
-                    Username = userRepo.Username,
-                    Email = userRepo.Email,
-                    Quyen = userRepo.Quyen,
-                    TinhTrang = userRepo.TinhTrang,
-                    Password = updatePasswordDto.Password,
-                    HinhAnh = userRepo.HinhAnh
-                });
-
-                if (response.StatusCode == ResponseCode.Success)
-                {
-                    _repository.Save();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Lỗi khi cập nhật password cho user với email {updatePasswordDto.Email}: ${ex}");
             }
 
             await _userManager.SetLockoutEnabledAsync(user, false);

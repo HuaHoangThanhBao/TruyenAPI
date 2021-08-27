@@ -248,6 +248,23 @@ namespace API.Controllers
                 Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
                 return Ok(truyens);
             }
+            if (theoDoiParameters.LastestUpdate)
+            {
+                var theoDois = await _repository.TheoDoi.GetTheoDoiLastestForPagination(theoDoiParameters);
+
+                var metadata = new
+                {
+                    theoDois.TotalCount,
+                    theoDois.PageSize,
+                    theoDois.CurrentPage,
+                    theoDois.TotalPages,
+                    theoDois.HasNext,
+                    theoDois.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(theoDois);
+            }
             else return BadRequest("wrong request to get theo doi pagination");
         }
     }

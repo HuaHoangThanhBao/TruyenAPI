@@ -250,7 +250,7 @@ namespace API.Controllers
 
             var validVerification = await _userManager.VerifyTwoFactorTokenAsync(userApp, twoFactorDto.Provider, twoFactorDto.Token);
             if (!validVerification)
-                return BadRequest("Token để xác thực đăng nhập không hợp lệ!");
+                return BadRequest(new AuthResponseDto { Message = "Token để xác thực đăng nhập không hợp lệ!" });
 
             var user = await _repository.User.GetUserByApplicationUserIDAsync(userApp.Id);
 
@@ -287,11 +287,11 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-                return BadRequest("Tài khoản không tồn tại!");
+                return BadRequest(new AuthResponseDto { Message = "Tài khoản không tồn tại!" });
 
             var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
             if (!confirmResult.Succeeded)
-                return BadRequest("Mã token để xác thực đăng ký không hợp lệ!");
+                return BadRequest(new AuthResponseDto { Message = "Mã token để xác thực đăng ký không hợp lệ!" });
 
             return Ok();
         }
@@ -306,11 +306,11 @@ namespace API.Controllers
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 
             if (!ModelState.IsValid)
-                return BadRequest("Các trường dữ liệu nhập vào chưa chính xác!");
+                return BadRequest(new AuthResponseDto { Message = "Các trường dữ liệu nhập vào chưa chính xác!" });
 
             var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
             if (user == null)
-                return BadRequest("Tài khoản không tồn tại!");
+                return BadRequest(new AuthResponseDto { Message = "Tài khoản không tồn tại!" });
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var param = new Dictionary<string, string>
@@ -336,7 +336,7 @@ namespace API.Controllers
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 
             if (!ModelState.IsValid)
-                return BadRequest("Các trường dữ liệu nhập vào chưa chính xác!");
+                return BadRequest(new AuthResponseDto { Message = "Các trường dữ liệu nhập vào chưa chính xác!" });
 
             //Nếu validate có lỗi thì trả về bad request
             var validate = _repository.Authenticate.ValidateResetPassword(resetPasswordDto);
@@ -347,7 +347,7 @@ namespace API.Controllers
 
             var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
             if (user == null)
-                return BadRequest("Tài khoản không tồn tại!");
+                return BadRequest(new AuthResponseDto { Message = "Tài khoản không tồn tại!" });
 
             var resetPassResult = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
             if (!resetPassResult.Succeeded)
@@ -374,7 +374,7 @@ namespace API.Controllers
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 
             if (!ModelState.IsValid)
-                return BadRequest("Các trường dữ liệu nhập vào chưa chính xác!");
+                return BadRequest(new AuthResponseDto { Message = "Các trường dữ liệu nhập vào chưa chính xác!" });
 
             //Nếu validate có lỗi thì trả về bad request
             var validate = _repository.Authenticate.ValidateUpdatePassword(updatePasswordDto);
@@ -385,7 +385,7 @@ namespace API.Controllers
 
             var user = await _userManager.FindByEmailAsync(updatePasswordDto.Email);
             if (user == null)
-                return BadRequest("Tài khoản không tồn tại!");
+                return BadRequest(new AuthResponseDto { Message = "Tài khoản không tồn tại!" });
 
             if (!await _userManager.CheckPasswordAsync(user, updatePasswordDto.OldPassword))
                 return BadRequest(new AuthResponseDto { Message = "Mật khẩu cũ không chính xác" });

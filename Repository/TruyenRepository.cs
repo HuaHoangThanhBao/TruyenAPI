@@ -37,6 +37,21 @@ namespace Repository
             }
             /*End*/
 
+            /*Kiểm tra xem chuỗi json nhập vào có bị trùng hình ảnh không*/
+            foreach (var dup in truyens.GroupBy(p => p.HinhAnh))
+            {
+                if (dup.Count() - 1 > 0)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Chuỗi json nhập vào bị trùng hình ảnh truyện",
+                        Value = dup.Key.ToString()
+                    };
+                }
+            }
+            /*End*/
+
             var tacGiaRepo = new TacGiaRepository(_context);
 
             foreach (var truyen in truyens)
@@ -61,6 +76,18 @@ namespace Repository
                         StatusCode = ResponseCode.Error,
                         Message = "Tên truyện bị trùng",
                         Value = truyen.TenTruyen
+                    };
+                }
+                /*End*/
+
+                /*Bắt lỗi [Hình ảnh]*/
+                if (FindByCondition(t => t.HinhAnh.Equals(truyen.HinhAnh)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Hình ảnh này đã tồn tại",
+                        Value = truyen.TenTruyen + ": " + truyen.HinhAnh
                     };
                 }
                 /*End*/
@@ -95,6 +122,18 @@ namespace Repository
                 {
                     StatusCode = ResponseCode.Error,
                     Message = "Tên truyện bị trùng"
+                };
+            }
+            /*End*/
+
+            /*Bắt lỗi [Hình ảnh]*/
+            if (FindByCondition(t => t.HinhAnh.Equals(truyen.HinhAnh)).Any())
+            {
+                return new ResponseDetails()
+                {
+                    StatusCode = ResponseCode.Error,
+                    Message = "Hình ảnh này đã tồn tại",
+                    Value = truyen.TenTruyen + ": " + truyen.HinhAnh
                 };
             }
             /*End*/

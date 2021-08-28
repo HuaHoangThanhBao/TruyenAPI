@@ -10,8 +10,8 @@ namespace CoreLibrary.DataTransferObjects
         public int TruyenID { get; set; }
 
         public int TacGiaID { get; set; }
+        public TacGia TacGia { get; set; }
 
-        
         public IEnumerable<PhuLucDto> PhuLucs { get; set; }
         public IEnumerable<Chuong> Chuongs { get; set; }
         public IEnumerable<TheoDoi> TheoDois { get; set; }
@@ -21,6 +21,8 @@ namespace CoreLibrary.DataTransferObjects
         public string TenTruyen { get; set; }
 
         public string MoTa { get; set; }
+
+        public int TrangThai { get; set; }
 
         public bool TinhTrang { get; set; }
 

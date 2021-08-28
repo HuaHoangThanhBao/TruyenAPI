@@ -37,12 +37,12 @@ namespace Repository
             }
             /*End*/
 
-            var truyenRepo = new TruyenRepository(_context);
+            var chuongRepo = new ChuongRepository(_context);
 
             foreach (var nd in noiDungChuongs)
             {
                 /*Bắt lỗi [ID]*/
-                if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(nd.ChuongID)).Any())
+                if (!chuongRepo.FindByCondition(t => t.ChuongID.Equals(nd.ChuongID)).Any())
                 {
                     return new ResponseDetails()
                     {
@@ -77,8 +77,8 @@ namespace Repository
         public ResponseDetails UpdateNoiDungChuong(NoiDungChuong nd)
         {
             /*Bắt lỗi [ID]*/
-            var truyenRepo = new TruyenRepository(_context);
-            if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(nd.ChuongID)).Any())
+            var chuongRepo = new ChuongRepository(_context);
+            if (!chuongRepo.FindByCondition(t => t.ChuongID.Equals(nd.ChuongID)).Any())
             {
                 return new ResponseDetails()
                 {

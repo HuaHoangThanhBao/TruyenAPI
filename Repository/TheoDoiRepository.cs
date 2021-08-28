@@ -48,7 +48,7 @@ namespace Repository
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
-                    Message = "User đã theo dõi truyện này",
+                    Message = "Bạn đã theo dõi truyện này",
                     Value = theoDoi.TruyenID.ToString()
                 };
             }
@@ -87,7 +87,7 @@ namespace Repository
                 return new ResponseDetails()
                 {
                     StatusCode = ResponseCode.Error,
-                    Message = "User đã theo dõi truyện này",
+                    Message = "Bạn đã theo dõi truyện này",
                     Value = theoDoi.TruyenID.ToString()
                 };
             }

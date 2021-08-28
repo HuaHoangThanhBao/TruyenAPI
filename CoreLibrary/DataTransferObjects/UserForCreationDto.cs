@@ -5,7 +5,7 @@ namespace CoreLibrary.DataTransferObjects
 {
     public class UserForCreationDto
     {
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "Tên không được để trống")]
         [StringLength(50, ErrorMessage = "Tên không được vượt quá 50 ký tự")]
@@ -33,7 +33,7 @@ namespace CoreLibrary.DataTransferObjects
 
     public class UserForUpdateDto
     {
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "Tên không được để trống")]
         [StringLength(50, ErrorMessage = "Tên không được vượt quá 50 ký tự")]

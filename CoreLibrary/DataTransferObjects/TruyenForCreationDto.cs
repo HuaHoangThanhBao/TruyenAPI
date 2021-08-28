@@ -9,7 +9,7 @@ namespace CoreLibrary.DataTransferObjects
         public int TacGiaID { get; set; }
 
         [Required(ErrorMessage = "Tên truyện không được để trống")]
-        [StringLength(200, ErrorMessage = "Tên thể loại không được vượt quá 200 ký tự")]
+        [StringLength(200, ErrorMessage = "Tên truyện không được vượt quá 200 ký tự")]
         public string TenTruyen { get; set; }
 
         [Required(ErrorMessage = "Mô tả truyện không được để trống")]
@@ -32,7 +32,7 @@ namespace CoreLibrary.DataTransferObjects
         public int TacGiaID { get; set; }
 
         [Required(ErrorMessage = "Tên truyện không được để trống")]
-        [StringLength(200, ErrorMessage = "Tên thể loại không được vượt quá 200 ký tự")]
+        [StringLength(200, ErrorMessage = "Tên truyện không được vượt quá 200 ký tự")]
         public string TenTruyen { get; set; }
 
         [Required(ErrorMessage = "Mô tả truyện không được để trống")]

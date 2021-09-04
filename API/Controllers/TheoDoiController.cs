@@ -78,6 +78,32 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("{id}/theodoisbyuser")]
+        public async Task<IActionResult> GetTheoDoisByUserId(Guid id)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var theoDoi = await _repository.TheoDoi.GetTheoDoiByUserIdAsync(id);
+                if (theoDoi == null)
+                {
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "TheoDoi không tồn tại" });
+                }
+                else
+                {
+                    return Ok(theoDoi);
+                }
+            }
+            catch
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTheoDoiById" });
+            }
+        }
+
         [HttpPost]
         public IActionResult CreateTheoDoi([FromBody] TheoDoiForCreationDto theoDoi)
         {

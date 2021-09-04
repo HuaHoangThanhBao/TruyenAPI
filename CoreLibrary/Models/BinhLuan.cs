@@ -31,6 +31,11 @@ namespace CoreLibrary.Models
         [StringLength(500, ErrorMessage = "Nội dung bình luận không được vượt quá 500 ký tự")]
         public string NoiDung { get; set; }
 
+        //Mặc định là 5 sao
+        [DefaultValue(5)]
+        [Range(1, 5)]
+        public int DanhGiaSao { get; set; }
+
         public string NgayBL { get; set; }
 
         [DefaultValue(false)]

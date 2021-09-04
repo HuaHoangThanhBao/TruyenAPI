@@ -191,5 +191,34 @@ namespace API.Controllers
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteNoiDungChuong" });
             }
         }
+
+        [HttpPut("multiple")]
+        public IActionResult DeleteMultipleNoiDungChuong([FromBody] IEnumerable<NoiDungChuongForDeleteDto> noiDungChuong)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+
+                var noiDungChuongEntity = _mapper.Map<IEnumerable<NoiDungChuong>>(noiDungChuong);
+
+                var response = _repository.NoiDungChuong.DeleteMultipleNoiDungChuong(noiDungChuongEntity);
+                if (response.StatusCode == ResponseCode.Success)
+                {
+                    _repository.Save();
+                }
+                else return BadRequest(response);
+
+                return Ok(noiDungChuongEntity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Gặp lỗi khi xóa danh sách nội dung chương: " + ex);
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm DeleteMultipleNoiDungChuong" });
+            }
+        }
     }
 }

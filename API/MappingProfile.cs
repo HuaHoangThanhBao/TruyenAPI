@@ -57,6 +57,9 @@ namespace API
             CreateMap<NoiDungChuongForCreationDto, NoiDungChuong>();
 
             CreateMap<NoiDungChuongForUpdateDto, NoiDungChuong>();
+
+            /*Thêm ngày 29/08/2021*/
+            CreateMap<NoiDungChuongForDeleteDto, NoiDungChuong>();
             /**/
 
             CreateMap<UserForCreationDto, User>();

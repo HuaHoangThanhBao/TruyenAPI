@@ -115,6 +115,45 @@ namespace Repository
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa nội dung chương thành công" };
         }
 
+        //Xóa logic
+        public ResponseDetails DeleteMultipleNoiDungChuong(IEnumerable<NoiDungChuong> noiDungChuongs)
+        {
+            /*Kiểm tra xem chuỗi json nhập vào có bị trùng tên chương không*/
+            foreach (var dup in noiDungChuongs.GroupBy(p => p.HinhAnh))
+            {
+                if (dup.Count() - 1 > 0)
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Chuỗi json nhập vào bị trùng đường dẫn ảnh",
+                        Value = dup.Key.ToString()
+                    };
+                }
+            }
+            /*End*/
+
+            var chuongRepo = new ChuongRepository(_context);
+
+            foreach (var nd in noiDungChuongs)
+            {
+                /*Bắt lỗi [ID]*/
+                if (!chuongRepo.FindByCondition(t => t.ChuongID.Equals(nd.ChuongID)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "ID chương không tồn tại",
+                        Value = nd.ChuongID.ToString()
+                    };
+                }
+                /*End*/
+
+                Update(nd);
+            }
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa các nội dung chương thành công" };
+        }
+
         //Lấy danh sách các nội dung chương
         public async Task<IEnumerable<NoiDungChuong>> GetAllNoiDungChuongsAsync()
         {

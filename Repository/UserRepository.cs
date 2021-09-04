@@ -19,10 +19,10 @@ namespace Repository
 
         //Kiểm tra collection truyền vào có tên trùng trong database không
         //KQ: !null = Username bị trùng, null: thêm thành công
-        public ResponseDetails CreateUser(User user)
+        public User CreateUser(User user)
         {
             Create(user);
-            return new ResponseDetails() { StatusCode = ResponseCode.Success };
+            return user;
         }
 
         //Kiểm tra object truyền vào có tên trùng trong database không
@@ -75,11 +75,6 @@ namespace Repository
         public async Task<User> GetUserByUserIDDetailAsync(string userID)
         {
             return await FindByCondition(user => user.UserID.ToString() == userID && !user.TinhTrang)
-                .Include(user => user.BinhLuans)
-                    .ThenInclude(b => b.Chuong)
-                        .ThenInclude(c => c.Truyen)
-                .Include(user => user.TheoDois)
-                    .ThenInclude(b => b.Truyen)
                 .FirstOrDefaultAsync();
         }
     }

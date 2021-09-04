@@ -11,5 +11,6 @@ namespace DataAccessLayer
         ResponseDetails CreateNoiDungChuong(IEnumerable<NoiDungChuong> noiDungChuong);
         ResponseDetails UpdateNoiDungChuong(NoiDungChuong noiDungChuong);
         ResponseDetails DeleteNoiDungChuong(NoiDungChuong noiDungChuong);
+        ResponseDetails DeleteMultipleNoiDungChuong(IEnumerable<NoiDungChuong> noiDungChuongs);
     }
 }

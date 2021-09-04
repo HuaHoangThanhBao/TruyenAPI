@@ -11,7 +11,7 @@ namespace DataAccessLayer
         Task<User> GetUserByIDAsync(string userID);
         Task<User> GetUserByApplicationUserIDAsync(string applicationUserID);
         Task<User> GetUserByUserIDDetailAsync(string userID);
-        ResponseDetails CreateUser(User user);
+        User CreateUser(User user);
         ResponseDetails UpdateUser(User user);
         ResponseDetails UpdateUserRefreshToken(User user, string newRefreshToken, DateTime? newRefreshTokenExipredTime);
         ResponseDetails DeleteUser(User user);

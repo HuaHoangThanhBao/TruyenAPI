@@ -17,6 +17,10 @@ namespace CoreLibrary.DataTransferObjects
         [StringLength(500, ErrorMessage = "Nội dung bình luận không được vượt quá 500 ký tự")]
         public string NoiDung { get; set; }
 
+        [DefaultValue(5)]
+        [Range(1, 5)]
+        public int DanhGiaSao { get; set; }
+
         public string NgayBL { get; set; }
 
         [DefaultValue(false)]
@@ -35,6 +39,10 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "Nội dung bình luận không được để trống")]
         [StringLength(500, ErrorMessage = "Nội dung bình luận không được vượt quá 500 ký tự")]
         public string NoiDung { get; set; }
+
+        [DefaultValue(5)]
+        [Range(1, 5)]
+        public int DanhGiaSao { get; set; }
 
         public string NgayBL { get; set; }
 

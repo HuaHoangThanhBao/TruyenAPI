@@ -108,6 +108,26 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("{id}/danhgiasao")]
+        public IActionResult GetSoSaoDanhGiaOfTruyen(int id)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var soSao = _repository.Truyen.GetDanhGiaSaoOfTruyenAsync(id);
+
+                return Ok(soSao);
+            }
+            catch
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTacGiaByDetails" });
+            }
+        }
+
         [HttpPost]
         public IActionResult CreateTruyen([FromBody] IEnumerable<TruyenForCreationDto> truyen)
         {

@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Helpers;
 using CoreLibrary.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ namespace DataAccessLayer
         Task<PagedList<BinhLuan>> GetBinhLuanOfChuongForPagination(int chuongID, BinhLuanParameters binhLuanParameters);
 
         Task<IEnumerable<BinhLuan>> GetAllBinhLuansAsync();
+        Task<IEnumerable<BinhLuan>> GetBinhLuanByUserIdAsync(Guid userId);
         Task<BinhLuan> GetBinhLuanByIdAsync(int binhLuanId);
         Task<BinhLuan> GetBinhLuanByDetailAsync(int binhLuanId);
         ResponseDetails CreateBinhLuan(BinhLuan binhLuan);

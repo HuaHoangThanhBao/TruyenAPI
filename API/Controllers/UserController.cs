@@ -114,7 +114,7 @@ namespace API.Controllers
                 var userEntity = _mapper.Map<User>(user);
 
                 var response = _repository.User.CreateUser(userEntity);
-                if (response.StatusCode == ResponseCode.Success)
+                if (response != null)
                 {
                     _repository.Save();
                 }

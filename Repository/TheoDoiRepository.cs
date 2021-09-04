@@ -112,6 +112,15 @@ namespace Repository
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<TheoDoi>> GetTheoDoiByUserIdAsync(Guid userId)
+        {
+            return await FindAll()
+                .Where(m => m.UserID.Equals(userId))
+                .Include(m => m.Truyen)
+                .OrderBy(ow => ow.TheoDoiID)
+                .ToListAsync();
+        }
+
         public async Task<TheoDoi> GetTheoDoiByIdAsync(int theoDoiId)
         {
             return await FindByCondition(theoDoi => theoDoi.TheoDoiID.Equals(theoDoiId))

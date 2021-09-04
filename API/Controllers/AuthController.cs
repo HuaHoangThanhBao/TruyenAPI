@@ -76,6 +76,83 @@ namespace API.Controllers
             return Ok("Email gửi thành công!");
         }
 
+        [HttpPost("admin-registration")]
+        public async Task<IActionResult> RegisterForAdminPage([FromBody] UserForRegistrationDto userForRegistration)
+        {
+            if (userForRegistration == null || !ModelState.IsValid)
+                return BadRequest();
+
+            var user = _mapper.Map<ApplicationUser>(userForRegistration);
+
+            //Nếu validate có lỗi thì trả về bad request
+            var validate = _repository.Authenticate.ValidateRegistration(userForRegistration);
+            if (validate != null)
+            {
+                return BadRequest(validate);
+            }
+
+            var userFinding = await _userManager.FindByEmailAsync(userForRegistration.Email);
+
+            if (userFinding != null)
+                return BadRequest(new AuthResponseDto { Message = "Email này đã tồn tại. Vui lòng nhập email khác!" });
+
+            var result = await _userManager.CreateAsync(user, userForRegistration.Password);
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description);
+
+                return BadRequest(new RegistrationResponseDto { Errors = errors });
+            }
+
+            var response = _repository.User.CreateUser(
+            new User()
+            {
+                Quyen = userForRegistration.Quyen,
+                UserName = user.LastName + " " + user.FirstName,
+                ApplicationUserID = user.Id
+            });
+
+            if (response != null)
+            {
+                _repository.Save();
+            }
+            else
+            {
+                _logger.LogError($"Lỗi khi đăng ký user cho trang admin với email {userForRegistration.Email}");
+            }
+
+            return Ok(new AuthResponseDto { Message = "Tài khoản đã được tạo!" });
+        }
+
+        [HttpPost("admin-registration/login")]
+        public async Task<IActionResult> AdminLogin([FromBody] UserForAuthenticationDto userForAuthentication)
+        {
+            var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+            if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+            var user = await _userManager.FindByEmailAsync(userForAuthentication.Email);
+
+            if (user == null)
+                return BadRequest(new AuthResponseDto { Message = "Tài khoản không tồn tại!" });
+
+            //Nếu validate có lỗi thì trả về bad request
+            var validate = _repository.Authenticate.ValidateLogin(userForAuthentication);
+            if (validate != null)
+                return BadRequest(validate);
+
+            if (!await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
+                return BadRequest(new AuthResponseDto { Message = "Thông tin đăng nhập sai" });
+
+            var userGetting = await _repository.User.GetUserByApplicationUserIDAsync(user.Id);
+
+            if(userGetting.Quyen == Data.UserRole)
+                return Unauthorized(new AuthResponseDto { Message = "Bạn không có được cấp quyền vào admin" });
+
+            return Ok(userGetting);
+        }
+
         [HttpPost("registration")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
@@ -122,7 +199,7 @@ namespace API.Controllers
                 ApplicationUserID = user.Id
             });
 
-            if (response.StatusCode == ResponseCode.Success)
+            if (response != null)
             {
                 _repository.Save();
             }
@@ -145,7 +222,7 @@ namespace API.Controllers
                 "Xác thực tài khoản", $"Bạn vui lòng nhấn vào đường dẫn này để tiến hành xác thực tài khoản: {callback}", null);
             await _emailSender.SendEmailAsync(message);
 
-            return Ok();
+            return Ok(new AuthResponseDto { Message = "Tài khoản đã được tạo!" });
         }
 
         [HttpPost("login")]
@@ -410,6 +487,95 @@ namespace API.Controllers
             await _userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
 
             return Ok();
+        }
+
+        [HttpPost("ExternalLogin")]
+        public async Task<IActionResult> ExternalLogin([FromBody] ExternalAuthDto externalAuth)
+        {
+            var info = new UserLoginInfo(externalAuth.Provider, externalAuth.IdToken, externalAuth.Provider);
+
+            var userApp = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            if (userApp == null)
+            {
+                userApp = await _userManager.FindByEmailAsync(externalAuth.Email);
+
+                //Nếu đã có tài khoản mà chưa có thông tin bảng Asp.netLogins thì thêm mới vào
+                if (userApp != null)
+                {
+                    await _userManager.AddLoginAsync(userApp, info);
+                }
+                else
+                {
+                    var newUserApp = new ApplicationUser { Email = externalAuth.Email, UserName = externalAuth.Email };
+                    await _userManager.CreateAsync(newUserApp);
+
+                    var roleExist = await _roleManager.RoleExistsAsync("User");
+                    if (!roleExist)
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("User"));
+                    }
+
+                    await _userManager.AddToRoleAsync(newUserApp, "User");
+                    await _userManager.AddLoginAsync(newUserApp, info);
+
+                    var refreshToken = _tokenService.GenerateRefreshToken();
+                    var newUser = new User()
+                    {
+                        Quyen = externalAuth.Quyen,
+                        UserName = externalAuth.UserName,
+                        ApplicationUserID = newUserApp.Id,
+                        RefreshToken = refreshToken,
+                        RefreshTokenExpiryTime = DateTime.Now.AddMinutes(Convert.ToDouble(_config[$"{NamePars.JwtSettings}:{NamePars.ExpireTime}"]))
+                    };
+
+                    var userCreated = _repository.User.CreateUser(newUser);
+                    if (userCreated != null)
+                    {
+                        _repository.Save();
+                    }
+                    else
+                    {
+                        _logger.LogError($"Lỗi khi đăng ký user với email {externalAuth.Email}");
+                    }
+
+                    newUserApp = await _userManager.FindByEmailAsync(externalAuth.Email);
+                    var claims = await _jwtHandler.GenerateClaims(newUserApp, userCreated);
+                    var accessToken = _tokenService.GenerateAccessToken(claims, _config);
+
+                    return Ok(new
+                    {
+                        Token = accessToken,
+                        RefreshToken = refreshToken
+                    });
+                }
+            }
+
+            //check for the Locked out account
+            //login
+            userApp = await _userManager.FindByEmailAsync(externalAuth.Email);
+            var user = await _repository.User.GetUserByApplicationUserIDAsync(userApp.Id);
+            var refreshTokenForLogin = _tokenService.GenerateRefreshToken();
+            ResponseDetails response = _repository.User.UpdateUserRefreshToken(
+                user,
+                refreshTokenForLogin,
+                DateTime.Now.AddMinutes(Convert.ToDouble(_config[$"{NamePars.JwtSettings}:{NamePars.ExpireTime}"]))
+            );
+            if (response.StatusCode == ResponseCode.Success)
+            {
+                _repository.Save();
+            }
+            else
+            {
+                _logger.LogError($"Lỗi khi cấp refresh token khi xác thực đăng nhập cho user với id {user.UserID}");
+            }
+            var claimsForLogin = await _jwtHandler.GenerateClaims(userApp, user);
+            var accessTokenForLogin = _tokenService.GenerateAccessToken(claimsForLogin, _config);
+
+            return Ok(new
+            {
+                Token = accessTokenForLogin,
+                RefreshToken = refreshTokenForLogin
+            });
         }
     }
 }

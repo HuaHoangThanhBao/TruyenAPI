@@ -8,6 +8,8 @@ namespace DataAccessLayer
 {
     public interface ITruyenRepository
     {
+        int GetDanhGiaSaoOfTruyenAsync(int truyenId);
+
         Task<PagedList<Truyen>> GetTruyenForPagination(TruyenParameters truyenParameters);
         Task<PagedList<Truyen>> GetTruyenLastestUpdateForPagination(TruyenParameters truyenParameters);
         Task<PagedList<Truyen>> GetTruyenOfTheLoaiForPagination(int theLoaiID, TruyenParameters truyenParameters);

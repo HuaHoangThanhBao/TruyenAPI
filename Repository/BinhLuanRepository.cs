@@ -198,6 +198,15 @@ namespace Repository
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<BinhLuan>> GetBinhLuanByUserIdAsync(Guid userId)
+        {
+            return await FindAll()
+                .Where(binhLuan => binhLuan.UserID.Equals(userId) && !binhLuan.TinhTrang)
+                .Include(m => m.Truyen)
+                .OrderBy(binhLuan => binhLuan.BinhLuanID)
+                .ToListAsync();
+        }
+
         public async Task<BinhLuan> GetBinhLuanByIdAsync(int binhLuanId)
         {
             return await FindByCondition(binhLuan => binhLuan.BinhLuanID.Equals(binhLuanId) && !binhLuan.TinhTrang)

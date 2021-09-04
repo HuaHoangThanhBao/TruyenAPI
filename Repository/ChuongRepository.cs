@@ -128,7 +128,9 @@ namespace Repository
         {
             return await FindAll()
                 .Where(chuong => !chuong.TinhTrang)
-                .OrderBy(chuong => chuong.TenChuong)
+                .OrderBy(chuong => chuong.ChuongID)
+                .Include(m => m.Truyen)
+                .Include(m => m.NoiDungChuongs)
                 .ToListAsync();
         }
 

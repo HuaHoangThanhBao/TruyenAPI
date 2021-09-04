@@ -78,6 +78,32 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("{id}/binhluansbyuser")]
+        public async Task<IActionResult> GetBinhLuansByUserId(Guid id)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var binhLuan = await _repository.BinhLuan.GetBinhLuanByUserIdAsync(id);
+                if (binhLuan == null)
+                {
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Bình luận không tồn tại" });
+                }
+                else
+                {
+                    return Ok(binhLuan);
+                }
+            }
+            catch
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetBinhLuanById" });
+            }
+        }
+
         [HttpGet("{id}/details")]
         public async Task<IActionResult> GetBinhLuanByDetails(int id)
         {

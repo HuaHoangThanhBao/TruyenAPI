@@ -50,6 +50,26 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("chuongwithnoidungchuong")]
+        public async Task<IActionResult> GetAllChuongsWithNoiDungChuong()
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var chuongs = await _repository.Chuong.GetAllChuongsAsync();
+
+                return Ok(chuongs);
+            }
+            catch
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllChuongs" });
+            }
+        }
+
         [HttpGet("{id}", Name = "ChuongById")]
         public async Task<IActionResult> GetChuongById(int id)
         {

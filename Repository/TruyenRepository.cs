@@ -127,7 +127,7 @@ namespace Repository
             /*End*/
 
             /*Bắt lỗi [Hình ảnh]*/
-            if (FindByCondition(t => t.HinhAnh.Equals(truyen.HinhAnh)).Any())
+            if (FindByCondition(t => t.HinhAnh.Equals(truyen.HinhAnh) && t.TruyenID != truyen.TruyenID).Any())
             {
                 return new ResponseDetails()
                 {
@@ -173,6 +173,34 @@ namespace Repository
                 .Include(truyen => truyen.TacGia)
                 .Include(truyen => truyen.Chuongs)
                 .FirstOrDefaultAsync();
+        }
+
+        public int GetDanhGiaSaoOfTruyenAsync(int truyenId)
+        {
+            var binhLuanOfTruyenlist = (from m in _context.Truyens
+                     join n in _context.BinhLuans
+                     on m.TruyenID equals n.TruyenID
+                     where m.TruyenID == truyenId
+                     select n);
+
+            var binhLuanOfEachChuonglist = (from m in _context.Chuongs
+                                        join n in _context.BinhLuans
+                                        on m.ChuongID equals n.ChuongID
+                                        join t in _context.Truyens
+                                        on m.TruyenID equals t.TruyenID
+                                        where m.TruyenID == truyenId
+                                        select n);
+
+            var sumBLTruyen = binhLuanOfTruyenlist.Sum(t => t.DanhGiaSao);
+            var countBLTruyen = binhLuanOfTruyenlist.Count();
+
+            var sumBLChuong = binhLuanOfTruyenlist.Sum(t => t.DanhGiaSao);
+            var countBLChuong = binhLuanOfTruyenlist.Count();
+
+            if ((sumBLTruyen + sumBLChuong) == 0 && (countBLTruyen + countBLChuong) == 0)
+                return 0;
+
+            return (sumBLTruyen + sumBLChuong) / (countBLTruyen + countBLChuong);
         }
 
         public async Task<PagedList<Truyen>> GetTruyenForPagination(TruyenParameters truyenParameters)

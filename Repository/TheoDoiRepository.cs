@@ -127,6 +127,11 @@ namespace Repository
                     .FirstOrDefaultAsync();
         }
 
+        public int GetLuotTheoDoiByTruyenID(int truyenID)
+        {
+            return FindAll().Where(m => m.TruyenID.Equals(truyenID)).Count();
+        }
+
         public async Task<TheoDoi> GetTheoDoiByUserIdAndTruyenIdAsync(string userID, int truyenID)
         {
             return await FindByCondition(theoDoi => theoDoi.UserID.ToString() == userID && theoDoi.TruyenID == truyenID)

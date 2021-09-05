@@ -12,6 +12,7 @@ namespace DataAccessLayer
         Task<PagedList<TheoDoi>> GetTheoDoiLastestForPagination(TheoDoiParameters theoDoiParameters);
         Task<IEnumerable<TheoDoi>> GetAllTheoDoisAsync();
 
+        int GetLuotTheoDoiByTruyenID(int truyenID);
         Task<IEnumerable<TheoDoi>> GetTheoDoiByUserIdAsync(Guid userId);
         Task<TheoDoi> GetTheoDoiByIdAsync(int theoDoiId);
         Task<TheoDoi> GetTheoDoiByUserIdAndTruyenIdAsync(string userID, int truyenID);

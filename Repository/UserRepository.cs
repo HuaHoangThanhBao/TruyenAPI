@@ -21,6 +21,8 @@ namespace Repository
         //KQ: !null = Username bị trùng, null: thêm thành công
         public User CreateUser(User user)
         {
+            //Mặc định
+            user.HinhAnh = "cat-lie.png";
             Create(user);
             return user;
         }

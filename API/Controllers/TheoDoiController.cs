@@ -100,7 +100,26 @@ namespace API.Controllers
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTheoDoiById" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetTheoDoisByUserId" });
+            }
+        }
+
+        [HttpGet("{id}/soluottheodoibytruyen")]
+        public IActionResult GetSoLuotTheoDoisByTruyenId(int id)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var soLuotTheoDoi = _repository.TheoDoi.GetLuotTheoDoiByTruyenID(id);
+                return Ok(soLuotTheoDoi);
+            }
+            catch
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetSoLuotTheoDoisByTruyenId" });
             }
         }
 

@@ -117,8 +117,8 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePhuLuc(int id, [FromBody] PhuLucForUpdateDto phuLuc)
+        [HttpPut]
+        public IActionResult UpdatePhuLuc([FromBody] IEnumerable<PhuLucForUpdateDto> phuLuc)
         {
             try
             {
@@ -137,15 +137,9 @@ namespace API.Controllers
                     return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
                 }
 
-                var phuLucEntity = await _repository.PhuLuc.GetPhuLucByIdAsync(id);
-                if (phuLucEntity == null)
-                {
-                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Phụ lục không tồn tại" });
-                }
+                var phuLucsResult = _mapper.Map<IEnumerable<PhuLuc>>(phuLuc);
 
-                _mapper.Map(phuLuc, phuLucEntity);
-
-                ResponseDetails response = _repository.PhuLuc.UpdatePhuLuc(phuLucEntity);
+                ResponseDetails response = _repository.PhuLuc.UpdatePhuLuc(phuLucsResult);
 
                 if (response.StatusCode == ResponseCode.Success)
                 {
@@ -157,7 +151,7 @@ namespace API.Controllers
             }
             catch(Exception ex)
             {
-                _logger.LogError("Gặp lỗi khi cập nhật phụ lục với ID " + id + ": " + ex);
+                _logger.LogError("Gặp lỗi khi cập nhật danh sách phụ lục của truyện: " + ex);
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm UpdatePhuLuc" });
             }
         }

@@ -17,6 +17,8 @@ namespace CoreLibrary.DataTransferObjects
 
     public class PhuLucForUpdateDto
     {
+        public int PhuLucID { get; set; }
+
         [Required(ErrorMessage = "TruyenID không được để trống")]
         public int TruyenID { get; set; }
 

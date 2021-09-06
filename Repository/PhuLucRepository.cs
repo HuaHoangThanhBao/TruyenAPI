@@ -69,42 +69,45 @@ namespace Repository
 
         //Kiểm tra object truyền vào có tên trùng trong database không
         //KQ: false: TenTacGia bị trùng, true: cập nhật thành công
-        public ResponseDetails UpdatePhuLuc(PhuLuc phuLuc)
+        public ResponseDetails UpdatePhuLuc(IEnumerable<PhuLuc> phuLucs)
         {
-            /*Bắt lỗi [ID]*/
-            var truyenRepo = new TruyenRepository(_context);
-            var theLoaiRepo = new TheLoaiRepository(_context);
+            foreach (var phuLuc in phuLucs)
+            {
+                /*Bắt lỗi [ID]*/
+                var truyenRepo = new TruyenRepository(_context);
+                var theLoaiRepo = new TheLoaiRepository(_context);
 
-            if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(phuLuc.TruyenID)).Any())
-            {
-                return new ResponseDetails()
+                if (!truyenRepo.FindByCondition(t => t.TruyenID.Equals(phuLuc.TruyenID)).Any())
                 {
-                    StatusCode = ResponseCode.Error,
-                    Message = "ID truyện không tồn tại",
-                    Value = phuLuc.TruyenID.ToString()
-                };
-            }
-            if (!theLoaiRepo.FindByCondition(t => t.TheLoaiID.Equals(phuLuc.TheLoaiID)).Any())
-            {
-                return new ResponseDetails()
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "ID truyện không tồn tại",
+                        Value = phuLuc.TruyenID.ToString()
+                    };
+                }
+                if (!theLoaiRepo.FindByCondition(t => t.TheLoaiID.Equals(phuLuc.TheLoaiID)).Any())
                 {
-                    StatusCode = ResponseCode.Error,
-                    Message = "ID thể loại không tồn tại",
-                    Value = phuLuc.TheLoaiID.ToString()
-                };
-            }
-            if (FindByCondition(m => m.TheLoaiID == phuLuc.TheLoaiID && m.TruyenID == phuLuc.TruyenID).Any())
-            {
-                return new ResponseDetails()
-                {
-                    StatusCode = ResponseCode.Error,
-                    Message = "Truyện này đã tồn tại thể loại này",
-                    Value = "ID truyện: " + phuLuc.TruyenID + "/ ID thể loại: " + phuLuc.TheLoaiID.ToString()
-                };
-            }
-            /*End*/
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "ID thể loại không tồn tại",
+                        Value = phuLuc.TheLoaiID.ToString()
+                    };
+                }
+                /*End*/
 
-            Update(phuLuc);
+                //Nếu phụ lục nhập vào chưa có
+                if (!FindByCondition(m => m.TheLoaiID == phuLuc.TheLoaiID && m.TruyenID == phuLuc.TruyenID).Any())
+                {
+                    Create(phuLuc);
+                }
+                else
+                {
+                    Update(phuLuc);
+                }
+            }
+
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Sửa phụ lục thành công" };
         }
 
@@ -134,7 +137,7 @@ namespace Repository
         public async Task<IEnumerable<PhuLuc>> GetPhuLucByTruyenIdAsync(int truyenId)
         {
             return await FindAll()
-                .Where(phuLuc => phuLuc.TruyenID == truyenId && !phuLuc.TinhTrang)
+                .Where(phuLuc => phuLuc.TruyenID == truyenId)
                 .Include(phuLuc => phuLuc.TheLoai)
                 .ToListAsync();
         }

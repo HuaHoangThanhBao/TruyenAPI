@@ -205,7 +205,7 @@ namespace Repository
 
         public async Task<PagedList<Truyen>> GetTruyenForPagination(TruyenParameters truyenParameters)
         {
-            return await PagedList<Truyen>.ToPagedList(FindAll().Where(m => !m.TinhTrang).Include(m => m.Chuongs)
+            return await PagedList<Truyen>.ToPagedList(FindAll().Where(m => !m.TinhTrang && m.TrangThai == 1).Include(m => m.Chuongs)
                 .OrderBy(truyen => truyen.TenTruyen),
                 truyenParameters.PageNumber,
                 truyenParameters.PageSize);
@@ -220,7 +220,7 @@ namespace Repository
 
             return await PagedList<Truyen>.ToPagedList(
 
-               _context.Truyens.Where(m => !m.TinhTrang).OrderByDescending(user => user.Chuongs.Max(d => d.ThoiGianCapNhat)).Include(m => m.Chuongs)
+               _context.Truyens.Where(m => !m.TinhTrang && m.TrangThai == 1).OrderByDescending(user => user.Chuongs.Max(d => d.ThoiGianCapNhat)).Include(m => m.Chuongs)
 
                 ,
                 truyenParameters.PageNumber,
@@ -234,7 +234,7 @@ namespace Repository
                 (from m in _context.Truyens
                  join n in _context.PhuLucs
                  on m.TruyenID equals n.TruyenID
-                 where n.TheLoaiID == theLoaiID && !m.TinhTrang && !n.TinhTrang
+                 where n.TheLoaiID == theLoaiID && !m.TinhTrang && !n.TinhTrang && m.TrangThai == 1
                  select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
 
                 ,
@@ -261,7 +261,7 @@ namespace Repository
         {
             return await PagedList<Truyen>.ToPagedList(
 
-               _context.Truyens.Where(m => !m.TinhTrang).OrderByDescending(user => user.Chuongs.Sum(d => d.LuotXem))
+               _context.Truyens.Where(m => !m.TinhTrang && m.TrangThai == 1).OrderByDescending(user => user.Chuongs.Sum(d => d.LuotXem))
                .Take(truyenParameters.PageSize).Include(m => m.Chuongs)
 
                 ,
@@ -273,7 +273,7 @@ namespace Repository
         {
             return await
                 FindAll()
-                .Where(truyen => !truyen.TinhTrang)
+                .Where(truyen => !truyen.TinhTrang && truyen.TrangThai == 1)
                 .OrderBy(on => on.TruyenID)
                 .ToListAsync();
         }

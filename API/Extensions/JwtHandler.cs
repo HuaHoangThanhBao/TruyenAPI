@@ -66,9 +66,9 @@ namespace API
 
         public async Task<List<Claim>> GenerateClaims(ApplicationUser userApp, User user)
         {
-            var signingCredentials = GetSigningCredentials();
+            //var signingCredentials = GetSigningCredentials();
             var claims = await GetClaims(userApp, user);
-            var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+            //var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
 
             return claims;
         }
@@ -111,7 +111,7 @@ namespace API
                 var payload = await GoogleJsonWebSignature.ValidateAsync(externalAuth.IdToken, settings);
                 return payload;
             }
-            catch (Exception ex)
+            catch
             {
                 //log an exception
                 return null;

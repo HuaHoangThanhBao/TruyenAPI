@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Extensions;
 using AutoMapper;
@@ -11,6 +12,7 @@ using LoggerService;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -43,7 +45,21 @@ namespace API.Controllers
                     return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
 
                 var users = await _repository.User.GetAllUsersAsync();
-                var usersResult = _mapper.Map<IEnumerable<UserDto>>(users);
+
+                var applicationUsers = await _userManager.Users.ToListAsync();
+                var result = (from m in users
+                              join n in applicationUsers
+                              on m.ApplicationUserID equals n.Id
+                              select new UserDto { 
+                                  UserID = m.UserID,
+                                  LockoutEnabled = n.LockoutEnabled, 
+                                  Quyen = m.Quyen, 
+                                  UserName = m.UserName, 
+                                  HinhAnh = m.HinhAnh,
+                                  TinhTrang = m.TinhTrang
+                              });
+
+                var usersResult = _mapper.Map<IEnumerable<UserDto>>(result);
 
                 return Ok(usersResult);
             }
@@ -88,6 +104,47 @@ namespace API.Controllers
             catch
             {
                 return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetUserByDetails" });
+            }
+        }
+
+        [HttpPost("pheduyetuser")]
+        public async Task<IActionResult> PheDuyetUser([FromBody] UserForAcceptanceDto user)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                if (user == null)
+                {
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thông tin trống" });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Các trường dữ liệu chưa đúng" });
+                }
+
+                if (user.Quyen != Data.EditorRole)
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Bạn không có quyền phê duyệt user này" });
+
+                var userFound = await _repository.User.GetUserByIDAsync(user.UserID.ToString());
+                if (userFound == null)
+                    return NotFound(new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "User không tồn tại" });
+
+                var userApp = await _userManager.FindByIdAsync(userFound.ApplicationUserID);
+
+                //Phê duyệt rồi thì tắt lockout accountd đi
+                await _userManager.SetLockoutEnabledAsync(userApp, false);
+
+                return Ok(new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Phê duyệt thành công" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Lỗi khi create new user: " + ex);
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm PheDuyetUser" });
             }
         }
 

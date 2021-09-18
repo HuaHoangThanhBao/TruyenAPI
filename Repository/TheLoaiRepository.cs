@@ -114,7 +114,7 @@ namespace Repository
             }
             else
             {
-                return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Thể loại này đang tồn tại trong phụ lục" };
+                return new ResponseDetails() { StatusCode = ResponseCode.Error, Message = "Thể loại này đang tồn tại trong phụ lục" };
             }
         }
 
@@ -122,14 +122,13 @@ namespace Repository
         public async Task<IEnumerable<TheLoai>> GetAllTheLoaisAsync()
         {
             return await FindAll()
-                .Where(ow => !ow.TinhTrang)
                 .OrderBy(ow => ow.TenTheLoai)
                 .ToListAsync();
         }
 
         public async Task<TheLoai> GetTheLoaiByIdAsync(int theLoaiId)
         {
-            return await FindByCondition(theLoai => theLoai.TheLoaiID.Equals(theLoaiId) && !theLoai.TinhTrang)
+            return await FindByCondition(theLoai => theLoai.TheLoaiID.Equals(theLoaiId))
                     .FirstOrDefaultAsync();
         }
 

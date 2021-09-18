@@ -55,7 +55,6 @@ namespace Repository
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await FindAll()
-                .Where(user => !user.TinhTrang)
                 .OrderBy(user => user.UserID)
                 .ToListAsync();
         }
@@ -63,7 +62,7 @@ namespace Repository
         //Dùng cho lấy user để get/update/delete
         public async Task<User> GetUserByIDAsync(string userID)
         {
-            return await FindByCondition(user => user.UserID.ToString() == userID && !user.TinhTrang)
+            return await FindByCondition(user => user.UserID.ToString() == userID)
                     .FirstOrDefaultAsync();
         }
 

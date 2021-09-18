@@ -10,17 +10,14 @@ namespace CoreLibrary.DataTransferObjects
 
         public string UserName { get; set; }
 
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Email { get; set; }
-
         public int Quyen { get; set; }
 
         public bool TinhTrang { get; set; }
 
         public string HinhAnh { get; set; }
+
+        //Dùng để get user để kiểm tra phân quyền và xét duyệt truy cập dashboard (editor)
+        public bool LockoutEnabled { get; set; }
 
         public IEnumerable<TheoDoi> TheoDois { get; set; }
         public IEnumerable<BinhLuan> BinhLuans { get; set; }

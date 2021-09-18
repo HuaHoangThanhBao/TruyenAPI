@@ -103,6 +103,14 @@ namespace API.Controllers
 
                 return BadRequest(new RegistrationResponseDto { Errors = errors });
             }
+            var roleExist = await _roleManager.RoleExistsAsync("Editor");
+            if (!roleExist)
+            {
+                await _roleManager.CreateAsync(new IdentityRole("Editor"));
+            }
+
+            await _userManager.AddToRoleAsync(user, "Editor");
+            await _userManager.SetLockoutEnabledAsync(user, true);//Lockout account để đợi admin xét duyệt xong mới mở ra
 
             var response = _repository.User.CreateUser(
             new User()
@@ -149,6 +157,9 @@ namespace API.Controllers
 
             if(userGetting.Quyen == Data.UserRole)
                 return Unauthorized(new AuthResponseDto { Message = "Bạn không có được cấp quyền vào admin" });
+
+           if(user.LockoutEnabled)
+                return Unauthorized(new AuthResponseDto { Message = "Bạn chưa được admin phê duyệt" });
 
             return Ok(userGetting);
         }

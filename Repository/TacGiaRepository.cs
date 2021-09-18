@@ -122,14 +122,13 @@ namespace Repository
         public async Task<IEnumerable<TacGia>> GetAllTacGiasAsync()
         {
             return await FindAll()
-                .Where(tacGia => !tacGia.TinhTrang)
                 .OrderBy(tacGia => tacGia.TenTacGia)
                 .ToListAsync();
         }
 
         public async Task<TacGia> GetTacGiaByIdAsync(int tacGiaId)
         {
-            return await FindByCondition(tacGia => tacGia.TacGiaID.Equals(tacGiaId) && !tacGia.TinhTrang)
+            return await FindByCondition(tacGia => tacGia.TacGiaID.Equals(tacGiaId))
                     .FirstOrDefaultAsync();
         }
 

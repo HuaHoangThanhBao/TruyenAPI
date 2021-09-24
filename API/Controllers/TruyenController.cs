@@ -306,23 +306,32 @@ namespace API.Controllers
             }
             else if (truyenParameters.Sorting && truyenParameters.TenTruyen != null)
             {
-                List<Truyen> truyenUnsigned = new List<Truyen>();
+                List<TruyenOnSearch> truyenUnsigned = new List<TruyenOnSearch>();
 
                 var all = await _repository.Truyen.FindTruyenForPagination();
 
                 string unsignTenTruyen = "";
-                string unsignTruyenParam = ConvertToUnSign(truyenParameters.TenTruyen);
+                string unsignTenKhac = "";
+                string unsignTenTruyenParam = ConvertToUnSign(truyenParameters.TenTruyen);
+                string unsignTenKhacParam = ConvertToUnSign(truyenParameters.TenKhac);
 
                 foreach (var item in all)
                 {
                     unsignTenTruyen = ConvertToUnSign(item.TenTruyen);
-                    if (unsignTenTruyen.Contains(unsignTruyenParam))
+                    if (item.TenKhac != null)
                     {
-                        truyenUnsigned.Add(new Truyen()
+                        unsignTenKhac = ConvertToUnSign(item.TenKhac).ToLower();
+                    }
+                    if (unsignTenTruyen.Contains(unsignTenTruyenParam) || unsignTenKhac.Contains(unsignTenKhacParam))
+                    {
+                        var newestChapter = await _repository.Chuong.GetNewestChuongByTruyenIdAsync(item.TruyenID);
+                        truyenUnsigned.Add(new TruyenOnSearch()
                         {
                             TruyenID = item.TruyenID,
                             TenTruyen = item.TenTruyen,
-                            HinhAnh = item.HinhAnh
+                            TenKhac = item.TenKhac,
+                            HinhAnh = item.HinhAnh,
+                            NewestChapter = newestChapter
                         });
                     }
                 }

@@ -65,12 +65,14 @@ namespace Repository
                 }
                 /*End*/
 
-                chuong.ThoiGianCapNhat = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
+                chuong.STT = FindByCondition(m => m.TruyenID.Equals(chuong.TruyenID)).Max(m => m.STT) + 1;
+                chuong.ThoiGianCapNhat = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                 Random r = new Random();
                 chuong.LuotXem = r.Next(5000, 15000);
 
                 //Tạo dữ liệu nhưng chưa add vào CSDL
                 Create(chuong);
+                _context.SaveChanges();
             }
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
         }
@@ -105,8 +107,9 @@ namespace Repository
             }
             /*End*/
 
+            chuong.TenChuong = chuong.TenChuong.ToLower();
             var chuongOld = FindByCondition(m => m.ChuongID.Equals(chuong.ChuongID)).FirstOrDefault();
-            chuong.ThoiGianCapNhat = (chuong.ThoiGianCapNhat == "" || chuong.ThoiGianCapNhat == null) ? chuongOld.ThoiGianCapNhat: chuong.ThoiGianCapNhat;
+            chuong.ThoiGianCapNhat = (chuong.ThoiGianCapNhat == "" || chuong.ThoiGianCapNhat == null) ? chuongOld.ThoiGianCapNhat: DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             chuong.LuotXem = chuong.LuotXem == 0 ? chuongOld.LuotXem: chuong.LuotXem;
 
             //Tạo bản ghi mới nhưng chưa update vào CSDL
@@ -123,12 +126,18 @@ namespace Repository
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa chương thành công" };
         }
 
+        public ResponseDetails DeleteHardChuong(Chuong chuong)
+        {
+            Delete(chuong);
+            return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Xóa chương hard code thành công" };
+        }
+
         //Lấy danh sách các chương không bị xóa
         public async Task<IEnumerable<Chuong>> GetAllChuongsAsync()
         {
             return await FindAll()
                 .Where(chuong => !chuong.TinhTrang)
-                .OrderBy(chuong => chuong.ChuongID)
+                .OrderBy(chuong => chuong.STT)
                 .Include(m => m.Truyen)
                 .Include(m => m.NoiDungChuongs)
                 .ToListAsync();
@@ -137,6 +146,22 @@ namespace Repository
         public async Task<Chuong> GetChuongByIdAsync(int chuongId)
         {
             return await FindByCondition(chuong => chuong.ChuongID.Equals(chuongId) && !chuong.TinhTrang)
+                    .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Chuong>> GetAllChuongsByTruyenIdAsync(int truyenID)
+        {
+            return await FindAll()
+                .Where(chuong => chuong.TruyenID.Equals(truyenID) && !chuong.TinhTrang)
+                .OrderBy(chuong => chuong.STT)
+                .ToListAsync();
+        }
+
+        //Chưa tạo api cho hàm này
+        public async Task<Chuong> GetNewestChuongByTruyenIdAsync(int truyenID)
+        {
+            return await FindByCondition(chuong => chuong.TruyenID.Equals(truyenID) && !chuong.TinhTrang)
+                .OrderByDescending(chuong => chuong.STT)
                     .FirstOrDefaultAsync();
         }
 

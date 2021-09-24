@@ -12,6 +12,9 @@ namespace CoreLibrary.DataTransferObjects
         [StringLength(200, ErrorMessage = "Tên truyện không được vượt quá 200 ký tự")]
         public string TenTruyen { get; set; }
 
+        [StringLength(200, ErrorMessage = "Tên khác không được vượt quá 200 ký tự")]
+        public string TenKhac { get; set; }
+
         [Required(ErrorMessage = "Mô tả truyện không được để trống")]
         [StringLength(1000, ErrorMessage = "Mô tả truyện không được vượt quá 1000 ký tự")]
         public string MoTa { get; set; }
@@ -34,6 +37,9 @@ namespace CoreLibrary.DataTransferObjects
         [Required(ErrorMessage = "Tên truyện không được để trống")]
         [StringLength(200, ErrorMessage = "Tên truyện không được vượt quá 200 ký tự")]
         public string TenTruyen { get; set; }
+
+        [StringLength(200, ErrorMessage = "Tên khác không được vượt quá 200 ký tự")]
+        public string TenKhac { get; set; }
 
         [Required(ErrorMessage = "Mô tả truyện không được để trống")]
         [StringLength(1000, ErrorMessage = "Mô tả truyện không được vượt quá 1000 ký tự")]

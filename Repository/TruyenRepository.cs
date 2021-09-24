@@ -92,7 +92,9 @@ namespace Repository
                 }
                 /*End*/
 
+                truyen.TenTruyen = truyen.TenTruyen.ToLower();
                 Create(truyen);
+                _context.SaveChanges();
             }
 
             return new ResponseDetails() { StatusCode = ResponseCode.Success };
@@ -213,11 +215,6 @@ namespace Repository
 
         public async Task<PagedList<Truyen>> GetTruyenLastestUpdateForPagination(TruyenParameters truyenParameters)
         {
-            var chuongs = (from m in _context.Chuongs
-                           where !m.TinhTrang
-                           orderby m.ThoiGianCapNhat descending
-                           select m);
-
             return await PagedList<Truyen>.ToPagedList(
 
                _context.Truyens.Where(m => !m.TinhTrang && m.TrangThai == 1).OrderByDescending(user => user.Chuongs.Max(d => d.ThoiGianCapNhat)).Include(m => m.Chuongs)
@@ -241,21 +238,6 @@ namespace Repository
                 truyenParameters.PageNumber,
                 truyenParameters.PageSize);
         }
-
-        //public async Task<PagedList<Truyen>> GetTruyenOfTheoDoiForPagination(Guid userID, TruyenParameters truyenParameters)
-        //{
-        //    return await PagedList<Truyen>.ToPagedList(
-
-        //        (from m in _context.Truyens
-        //         join n in _context.TheoDois
-        //         on m.TruyenID equals n.TruyenID
-        //         where n.UserID == userID && !m.TinhTrang
-        //         select m).Include(m => m.Chuongs).Distinct().OrderBy(m => m.TruyenID)
-
-        //        ,
-        //        truyenParameters.PageNumber,
-        //        truyenParameters.PageSize);
-        //}
 
         public async Task<PagedList<Truyen>> GetTopViewForPagination(TruyenParameters truyenParameters)
         {

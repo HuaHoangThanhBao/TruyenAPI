@@ -64,6 +64,7 @@ namespace Repository
                 }
                 /*End*/
 
+                theLoai.TenTheLoai = theLoai.TenTheLoai.ToLower();
                 Create(theLoai);
             }
             return new ResponseDetails() { StatusCode = ResponseCode.Success };

@@ -63,10 +63,21 @@ namespace Repository
                         Value = nd.HinhAnh
                     };
                 }
+
+                if (FindByCondition(t => t.HinhAnh.Equals(nd.HinhAnh)).Any())
+                {
+                    return new ResponseDetails()
+                    {
+                        StatusCode = ResponseCode.Error,
+                        Message = "Hình ảnh này đã nằm trong 1 chương khác",
+                        Value = nd.HinhAnh
+                    };
+                }
                 /*End*/
 
                 //Tạo dữ liệu nhưng chưa add vào CSDL
                 Create(nd);
+                _context.SaveChanges();
             }
 
             return new ResponseDetails() { StatusCode = ResponseCode.Success, Message = "Thêm nội dung chương thành công"};

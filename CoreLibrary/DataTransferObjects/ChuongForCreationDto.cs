@@ -8,6 +8,8 @@ namespace CoreLibrary.DataTransferObjects
     {
         public int TruyenID { get; set; }
 
+        public int STT { get; set; }
+
         [Required(ErrorMessage = "Tên chương không được để trống")]
         [StringLength(50, ErrorMessage = "Tên chương không được vượt quá 50 ký tự")]
         public string TenChuong { get; set; }
@@ -27,6 +29,8 @@ namespace CoreLibrary.DataTransferObjects
     public class ChuongForUpdateDto
     {
         public int TruyenID { get; set; }
+
+        public int STT { get; set; }
 
         [Required(ErrorMessage = "Tên chương không được để trống")]
         [StringLength(50, ErrorMessage = "Tên chương không được vượt quá 50 ký tự")]

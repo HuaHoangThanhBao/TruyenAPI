@@ -7,6 +7,7 @@ namespace CoreLibrary.Helpers
         public int TheLoaiID { get; set; }
         //public Guid UserID { get; set; }
         public string TenTruyen { get; set; }
+        public string TenKhac { get; set; }
 
         private bool _sorting;
         public bool Sorting

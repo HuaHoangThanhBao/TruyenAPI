@@ -14,6 +14,7 @@ namespace CoreLibrary.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ChuongID { get; set; }
 
+        public int STT { get; set; }
 
         [Required(ErrorMessage = "TruyenID không được để trống")]
         //Tập khóa ngoại

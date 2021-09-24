@@ -9,6 +9,8 @@ namespace CoreLibrary.DataTransferObjects
 
         public int ChuongID { get; set; }
 
+        public int STT { get; set; }
+
         public int TruyenID { get; set; }
 
         public string TenChuong { get; set; }

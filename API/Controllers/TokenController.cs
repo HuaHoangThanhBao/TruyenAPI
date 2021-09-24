@@ -60,7 +60,7 @@ namespace API.Controllers
             var user = await _repository.User.GetUserByIDAsync(userID);
             if (user == null || user.RefreshToken != tokenApiModel.RefreshToken)
             {
-                return BadRequest(new ResponseDetails() { Message = "các giá trị token không khớp với dữ liệu trong database", StatusCode = ResponseCode.Error });
+                return Ok(new ResponseDetails() { Message = "các giá trị token không khớp với dữ liệu trong database", StatusCode = ResponseCode.Error });
             }
 
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims, _config);

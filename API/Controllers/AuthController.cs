@@ -528,6 +528,7 @@ namespace API.Controllers
 
                     await _userManager.AddToRoleAsync(newUserApp, "User");
                     await _userManager.AddLoginAsync(newUserApp, info);
+                    await _userManager.SetLockoutEnabledAsync(newUserApp, false);
 
                     var refreshToken = _tokenService.GenerateRefreshToken();
                     var newUser = new User()
@@ -562,6 +563,7 @@ namespace API.Controllers
             }
 
             //check for the Locked out account
+            await _userManager.SetLockoutEnabledAsync(userApp, false);
             //login
             userApp = await _userManager.FindByEmailAsync(externalAuth.Email);
             var user = await _repository.User.GetUserByApplicationUserIDAsync(userApp.Id);

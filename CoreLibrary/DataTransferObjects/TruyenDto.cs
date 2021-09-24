@@ -20,6 +20,8 @@ namespace CoreLibrary.DataTransferObjects
 
         public string TenTruyen { get; set; }
 
+        public string TenKhac { get; set; }
+
         public string MoTa { get; set; }
 
         public int TrangThai { get; set; }

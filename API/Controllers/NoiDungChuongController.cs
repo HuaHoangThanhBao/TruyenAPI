@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Cors;
 using CoreLibrary.Helpers;
 using LoggerService;
 using System;
+using System.Linq;
 
 namespace API.Controllers
 {
@@ -78,7 +79,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateNoiDungChuong([FromBody] IEnumerable<NoiDungChuongForCreationDto> noiDungChuong)
+        public async Task<IActionResult> CreateNoiDungChuong([FromBody] IEnumerable<NoiDungChuongForCreationDto> noiDungChuong)
         {
             try
             {
@@ -104,7 +105,18 @@ namespace API.Controllers
                 {
                     _repository.Save();
                 }
-                else return BadRequest(response);
+                else
+                {
+                    //Trong trường hợp add chương bị lỗi thì tìm record chương và xóa nó đi
+                    //Tại vì bussiness logic là phải gọi api add chương mới gọi tới add nội dung chương
+                    var chuong = await _repository.Chuong.GetChuongByIdAsync(noiDungChuong.ToList()[0].ChuongID);
+                    if(chuong != null)
+                    {
+                        _repository.Chuong.DeleteHardChuong(chuong);
+                        _repository.Save();
+                    }
+                    return BadRequest(response);
+                }
 
                 var createdNoiDungChuong = _mapper.Map<IEnumerable<NoiDungChuongDto>>(noiDungChuongEntity);
 

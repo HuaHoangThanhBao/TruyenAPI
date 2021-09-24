@@ -26,11 +26,14 @@ namespace CoreLibrary.Models
         public ICollection<PhuLuc> PhuLucs { get; set; }
         public ICollection<Chuong> Chuongs { get; set; }
         public ICollection<TheoDoi> TheoDois { get; set; }
-
+        
 
         [Required(ErrorMessage = "Tên truyện không được để trống")]
-        [StringLength(200, ErrorMessage = "Tên thể loại không được vượt quá 200 ký tự")]
+        [StringLength(200, ErrorMessage = "Tên truyện không được vượt quá 200 ký tự")]
         public string TenTruyen { get; set; }
+
+        [StringLength(200, ErrorMessage = "Tên khác không được vượt quá 200 ký tự")]
+        public string TenKhac { get; set; }
 
         [Required(ErrorMessage = "Mô tả truyện không được để trống")]
         [StringLength(1000, ErrorMessage = "Mô tả truyện không được vượt quá 1000 ký tự")]

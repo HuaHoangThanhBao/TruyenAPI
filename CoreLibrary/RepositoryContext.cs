@@ -19,14 +19,14 @@ namespace CoreLibrary
             base.OnModelCreating(modelBuilder);
         }
 
-        public DbSet<Truyen> Truyens { get; set; }
-        public DbSet<NoiDungChuong> NoiDungChuongs { get; set; }
-        public DbSet<TacGia> TacGias { get; set; }
-        public DbSet<TheLoai> TheLoais { get; set; }
-        public DbSet<Chuong> Chuongs { get; set; }
-        public DbSet<PhuLuc> PhuLucs { get; set; }
-        public DbSet<TheoDoi> TheoDois { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<BinhLuan> BinhLuans { get; set; }
+        public virtual DbSet<Truyen> Truyens { get; set; }
+        public virtual DbSet<NoiDungChuong> NoiDungChuongs { get; set; }
+        public virtual DbSet<TacGia> TacGias { get; set; }
+        public virtual DbSet<TheLoai> TheLoais { get; set; }
+        public virtual DbSet<Chuong> Chuongs { get; set; }
+        public virtual DbSet<PhuLuc> PhuLucs { get; set; }
+        public virtual DbSet<TheoDoi> TheoDois { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<BinhLuan> BinhLuans { get; set; }
     }
 }

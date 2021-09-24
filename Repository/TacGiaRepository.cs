@@ -64,6 +64,7 @@ namespace Repository
                 }
                 /*End*/
 
+                tacGia.TenTacGia = tacGia.TenTacGia.ToLower();
                 Create(tacGia);
             }
             return new ResponseDetails() { StatusCode = ResponseCode.Success };

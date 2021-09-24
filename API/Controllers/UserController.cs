@@ -92,7 +92,7 @@ namespace API.Controllers
                     return Ok(new UserInfo() 
                     { 
                         Email = userApp.Email, 
-                        Username = user.UserName, 
+                        UserName = user.UserName, 
                         FirstName = userApp.FirstName, 
                         LastName = userApp.LastName, 
                         HinhAnh = user.HinhAnh,

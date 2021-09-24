@@ -50,6 +50,26 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("{id}/chuongbytruyenid")]
+        public async Task<IActionResult> GetAllChuongsByTruyenID(int id)
+        {
+            try
+            {
+                var apiKeyAuthenticate = APICredentialAuth.APIKeyCheck(Request.Headers[NamePars.APIKeyStr]);
+
+                if (apiKeyAuthenticate.StatusCode == ResponseCode.Error)
+                    return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = apiKeyAuthenticate.Message });
+
+                var chuongs = await _repository.Chuong.GetAllChuongsByTruyenIdAsync(id);
+
+                return Ok(chuongs);
+            }
+            catch
+            {
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllChuongsByTruyenID" });
+            }
+        }
+
         [HttpGet("chuongwithnoidungchuong")]
         public async Task<IActionResult> GetAllChuongsWithNoiDungChuong()
         {
@@ -66,7 +86,7 @@ namespace API.Controllers
             }
             catch
             {
-                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllChuongs" });
+                return BadRequest(new ResponseDetails() { StatusCode = ResponseCode.Exception, Message = "Lỗi execption ở hàm GetAllChuongsWithNoiDungChuong" });
             }
         }
 

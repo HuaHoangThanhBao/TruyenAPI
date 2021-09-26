@@ -65,7 +65,12 @@ namespace Repository
                 }
                 /*End*/
 
-                chuong.STT = FindByCondition(m => m.TruyenID.Equals(chuong.TruyenID)).Max(m => m.STT) + 1;
+                var found = FindByCondition(m => m.TruyenID.Equals(chuong.TruyenID));
+                if (found.Count() > 0)
+                {
+                    chuong.STT = found.Max(m => m.STT) + 1;
+                }
+                else chuong.STT = 1;
                 chuong.ThoiGianCapNhat = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                 Random r = new Random();
                 chuong.LuotXem = r.Next(5000, 15000);
